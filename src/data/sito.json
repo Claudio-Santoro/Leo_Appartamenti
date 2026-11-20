@@ -1,0 +1,28 @@
+{
+  "nome": "LEO Appartamenti",
+  "indirizzo": "Viale Conte Pepoli 17, 91016 Erice (TP)",
+  "lat": 38.036046,
+  "lng": 12.584691,
+  "telefono": "[[+39 XXX XXX XXXX]]",
+  "whatsapp": "[[39XXXXXXXXXX]]",
+  "email": "[[info@leoappartamenti.it]]",
+  "cir": "19081008C256200",
+  "cin": ["IT081008C2CK6GS8ZN", "IT081008C2JLZFMDZ2"],
+  "booking": {
+    "voto": "8,7",
+    "recensioni": 175,
+    "aggiornato": "2026-11",
+    "url": "https://www.booking.com/hotel/it/leo-appartamenti-con-vista-panoramica.it.html"
+  },
+  "checkin": "15:00–23:30",
+  "checkout": "08:00–11:00",
+  "condizioni": {
+    "cancellazione": "[[gratuita fino a N giorni prima dell'arrivo]]",
+    "soggiornoMinimo": "[[N notti]]",
+    "caparra": "[[XX% alla conferma]]",
+    "tassaSoggiorno": "[[€ X a persona a notte]]",
+    "animali": "[[€ XX a soggiorno]]",
+    "navetta": "[[€ XX a tratta]]",
+    "scontoDiretto": "[[X%]]"
+  }
+}

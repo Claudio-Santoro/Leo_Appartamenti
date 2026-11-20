@@ -1,0 +1,6 @@
+---
+import V from '../../views/Apartment.astro';
+import apts from '../../data/appartamenti.json';
+export const getStaticPaths = () => apts.map((a) => ({ params: { id: a.id } }));
+---
+<V lang="it" id={Astro.params.id} />

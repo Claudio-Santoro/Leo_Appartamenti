@@ -1,0 +1,70 @@
+---
+import apts from '../data/appartamenti.json';
+import sito from '../data/sito.json';
+import { url } from '../i18n.js';
+interface Props { lang: 'it' | 'en' }
+const { lang } = Astro.props;
+const T = {
+  it: { name: 'Nome e cognome', email: 'Email', phone: 'Telefono (facoltativo)', apts: 'Appartamenti (anche più di uno per i gruppi)', in: 'Arrivo', out: 'Partenza', adults: 'Adulti', kids: 'Bambini', pets: 'Viaggio con un animale', msg: 'Messaggio (orario di arrivo, richieste…)', privacy: 'Ho letto l’', privacyLink: 'informativa privacy', privacyEnd: ' e acconsento al trattamento dei dati per rispondere alla mia richiesta.', send: 'Invia la richiesta', wa: 'Scrivici su WhatsApp', note: 'Non è una prenotazione vincolante: ti rispondiamo con disponibilità e prezzo, di solito entro poche ore.', dateErr: 'La partenza deve essere dopo l’arrivo.', waText: 'Ciao! Vorrei informazioni per', from: 'dal', to: 'al', guests: 'ospiti' },
+  en: { name: 'Full name', email: 'Email', phone: 'Phone (optional)', apts: 'Apartments (choose more than one for groups)', in: 'Arrival', out: 'Departure', adults: 'Adults', kids: 'Children', pets: 'Travelling with a pet', msg: 'Message (arrival time, requests…)', privacy: 'I have read the ', privacyLink: 'privacy notice', privacyEnd: ' and consent to my data being used to reply to my request.', send: 'Send request', wa: 'Message us on WhatsApp', note: 'This is not a binding booking: we will reply with availability and price, usually within a few hours.', dateErr: 'Departure must be after arrival.', waText: 'Hi! I would like information about', from: 'from', to: 'to', guests: 'guests' },
+}[lang];
+---
+<form class="form" name="richiesta" method="POST" action={url('thanks', lang)} data-netlify="true" netlify-honeypot="bot-field"
+  data-wa={sito.whatsapp} data-wa-text={T.waText} data-from={T.from} data-to={T.to} data-guests={T.guests} data-date-err={T.dateErr}>
+  <input type="hidden" name="form-name" value="richiesta" />
+  <input type="hidden" name="lingua" value={lang} />
+  <p class="hp"><label>Non compilare <input name="bot-field" tabindex="-1" autocomplete="off" /></label></p>
+
+  <fieldset>
+    <legend>{T.apts}</legend>
+    {apts.map((a) => (
+      <label class="check"><input type="checkbox" name="appartamenti" value={a.id} /> {a.nome} ({a.ospiti} max)</label>
+    ))}
+  </fieldset>
+  <div class="row">
+    <label>{T.in}<input type="date" name="arrivo" required /></label>
+    <label>{T.out}<input type="date" name="partenza" required /></label>
+    <label>{T.adults}<input type="number" name="adulti" min="1" max="15" value="2" required /></label>
+    <label>{T.kids}<input type="number" name="bambini" min="0" max="10" value="0" /></label>
+  </div>
+  <div class="row">
+    <label>{T.name}<input name="nome" autocomplete="name" required /></label>
+    <label>{T.email}<input type="email" name="email" autocomplete="email" required /></label>
+    <label>{T.phone}<input type="tel" name="telefono" autocomplete="tel" /></label>
+  </div>
+  <label class="check"><input type="checkbox" name="animale" value="si" /> {T.pets}</label>
+  <label>{T.msg}<textarea name="messaggio" rows="4"></textarea></label>
+  <label class="check"><input type="checkbox" name="privacy" value="accettata" required /> <span>{T.privacy}<a href={url('privacy', lang)}>{T.privacyLink}</a>{T.privacyEnd}</span></label>
+  <p class="small muted">{T.note}</p>
+  <div class="btns">
+    <button class="btn" type="submit">{T.send}</button>
+    <a class="btn wa" href={`https://wa.me/${sito.whatsapp}`} data-wa-link>{T.wa}</a>
+  </div>
+</form>
+
+<script>
+  const f = document.querySelector<HTMLFormElement>('form[name="richiesta"]');
+  if (f) {
+    const get = (n: string) => (f.elements.namedItem(n) as HTMLInputElement).value;
+    const arrivo = f.elements.namedItem('arrivo') as HTMLInputElement;
+    const partenza = f.elements.namedItem('partenza') as HTMLInputElement;
+    arrivo.min = partenza.min = new Date().toISOString().slice(0, 10);
+    const check = () => partenza.setCustomValidity(arrivo.value && partenza.value && partenza.value <= arrivo.value ? f.dataset.dateErr! : '');
+    arrivo.addEventListener('change', check);
+    partenza.addEventListener('change', check);
+    f.addEventListener('submit', check);
+
+    // Il link WhatsApp porta con sé quanto già compilato nel modulo.
+    f.querySelector<HTMLAnchorElement>('[data-wa-link]')!.addEventListener('click', (e) => {
+      const d = f.dataset;
+      const apts = [...f.querySelectorAll<HTMLInputElement>('input[name="appartamenti"]:checked')].map((b) => b.parentElement!.textContent!.trim().split(' (')[0]);
+      const fmt = (s: string) => s.split('-').reverse().join('/');
+      const guests = Number(get('adulti') || 0) + Number(get('bambini') || 0);
+      let text = `${d.waText} ${apts.join(' + ') || 'LEO Appartamenti'}`;
+      if (get('arrivo') && get('partenza')) text += ` ${d.from} ${fmt(get('arrivo'))} ${d.to} ${fmt(get('partenza'))}`;
+      if (guests) text += `, ${guests} ${d.guests}`;
+      if (get('nome')) text += `. ${get('nome')}`;
+      (e.currentTarget as HTMLAnchorElement).href = `https://wa.me/${d.wa}?text=${encodeURIComponent(text)}`;
+    });
+  }
+</script>

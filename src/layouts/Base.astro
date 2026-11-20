@@ -1,0 +1,84 @@
+---
+import '@fontsource/cormorant-garamond/500.css';
+import '@fontsource/cormorant-garamond/600.css';
+import '../styles/global.css';
+import { url, ui } from '../i18n.js';
+import sito from '../data/sito.json';
+
+interface Props { lang: 'it' | 'en'; page: string; id?: string; title: string; description: string; noindex?: boolean }
+const { lang, page, id, title, description, noindex = false } = Astro.props;
+const t = ui[lang];
+const other = lang === 'it' ? 'en' : 'it';
+const abs = (l: 'it' | 'en') => new URL(url(page, l, id), Astro.site).href;
+const nav = ['apts', 'arrive', 'faq'] as const;
+const current = (p: string) => (p === page ? 'page' : undefined);
+---
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    {noindex && <meta name="robots" content="noindex" />}
+    <link rel="canonical" href={abs(lang)} />
+    <link rel="alternate" hreflang="it" href={abs('it')} />
+    <link rel="alternate" hreflang="en" href={abs('en')} />
+    <link rel="alternate" hreflang="x-default" href={abs('it')} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content={lang === 'it' ? 'it_IT' : 'en_GB'} />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%231e4d6b'/%3E%3Ctext x='16' y='23' font-size='20' text-anchor='middle' fill='%23fff' font-family='Georgia'%3EL%3C/text%3E%3C/svg%3E" />
+    <slot name="head" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="wrap">
+        <a class="brand" href={url('home', lang)}>LEO Appartamenti<small>Erice · Sicilia</small></a>
+        <details class="menu">
+          <summary aria-label="Menu">☰</summary>
+          <nav class="nav" aria-label="Menu">
+            {nav.map((p) => <a href={url(p, lang)} aria-current={current(p)}>{t.nav[p]}</a>)}
+            <a href={url(page, other, id)} hreflang={other} lang={other}>{t.langName}</a>
+            <a class="btn" href={url('avail', lang)}>{t.nav.book}</a>
+          </nav>
+        </details>
+        <nav class="nav" aria-label="Menu">
+          {nav.map((p) => <a href={url(p, lang)} aria-current={current(p)}>{t.nav[p]}</a>)}
+          <a href={url(page, other, id)} hreflang={other} lang={other}>{t.langName}</a>
+          <a class="btn" href={url('avail', lang)}>{t.nav.book}</a>
+        </nav>
+      </div>
+    </header>
+
+    <main><slot /></main>
+
+    <footer class="site-footer">
+      <div class="wrap">
+        <div class="grid">
+          <div>
+            <h3>LEO Appartamenti</h3>
+            <p>{t.tagline}</p>
+          </div>
+          <div>
+            <h3>{t.footer.address}</h3>
+            <p>{sito.indirizzo}<br /><a href={url('arrive', lang)}>{t.nav.arrive}</a></p>
+          </div>
+          <div>
+            <h3>{t.footer.contacts}</h3>
+            <p>
+              <a href={`tel:${sito.telefono.replace(/\s/g, '')}`}>{sito.telefono}</a><br />
+              <a href={`https://wa.me/${sito.whatsapp}`}>WhatsApp</a><br />
+              <a href={`mailto:${sito.email}`}>{sito.email}</a>
+            </p>
+          </div>
+        </div>
+        <div class="legal">
+          {t.footer.codes}: CIR {sito.cir} · CIN {sito.cin.join(' · ')}<br />
+          <a href={url('privacy', lang)}>{t.footer.privacy}</a> · <a href={url('terms', lang)}>{t.footer.terms}</a> · © {new Date().getFullYear()} LEO Appartamenti
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

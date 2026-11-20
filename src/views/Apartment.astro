@@ -1,0 +1,60 @@
+---
+import Base from '../layouts/Base.astro';
+import Gallery from '../components/Gallery.astro';
+import apts from '../data/appartamenti.json';
+import sito from '../data/sito.json';
+import { url, ui } from '../i18n.js';
+import { photos } from '../images.js';
+interface Props { lang: 'it' | 'en'; id: string }
+const { lang, id } = Astro.props;
+const a = apts.find((x) => x.id === id)!;
+const t = ui[lang];
+const T = {
+  it: { amen: 'Dotazioni', amenList: ['Cucina attrezzata', 'Aria condizionata e riscaldamento', 'Wi-Fi gratuito', 'TV satellitare', 'Lavatrice', 'Patio con tavolo all’aperto', 'Bagno con doccia, asciugacapelli, set di cortesia', 'Biancheria e asciugamani'], info: 'Informazioni', checkin: 'Check-in', checkout: 'Check-out', flex: 'flessibile su richiesta', price: 'Prezzo', priceVal: 'su richiesta', others: 'Gli altri appartamenti', name: 'Il nome' },
+  en: { amen: 'Amenities', amenList: ['Equipped kitchen', 'Air conditioning and heating', 'Free Wi-Fi', 'Satellite TV', 'Washing machine', 'Patio with outdoor table', 'Bathroom with shower, hairdryer, toiletries', 'Bed linen and towels'], info: 'Information', checkin: 'Check-in', checkout: 'Check-out', flex: 'flexible on request', price: 'Price', priceVal: 'on request', others: 'The other apartments', name: 'The name' },
+}[lang];
+const others = apts.filter((x) => x.id !== id);
+// ponytail: prezzi ancora null in appartamenti.json → "su richiesta". Quando ci saranno, mostrare "da € X / notte".
+const prices = Object.values(a.prezzi).filter((v): v is number => typeof v === 'number');
+const priceText = prices.length ? `${lang === 'it' ? 'da' : 'from'} € ${Math.min(...prices)} / ${lang === 'it' ? 'notte' : 'night'}` : T.priceVal;
+---
+<Base lang={lang} page="apts" id={id} title={`${a.nome} · ${a.mq} m², ${a.ospiti} ${t.guests} · LEO Appartamenti Erice`} description={a.breve[lang]}>
+  <section class="page-hero">
+    <div class="wrap">
+      <p class="muted small"><a href={url('apts', lang)}>{t.nav.apts}</a> / {a.nome}</p>
+      <h1>{a.nome}</h1>
+      <ul class="facts" style="font-size:1.05rem;margin-bottom:24px"><li>{a.mq} m²</li><li>{a.ospiti} {t.guests}</li><li>{a.letti[lang]}</li><li>{a.piano[lang]}</li></ul>
+    </div>
+  </section>
+
+  <section class="wrap"><Gallery photos={photos(a.id, lang, a.nome)} lang={lang} /></section>
+
+  <section class="section">
+    <div class="wrap split" style="align-items:start">
+      <div>
+        <p class="lead" style="color:var(--ink)">{a.descrizione[lang]}</p>
+        <p class="muted"><em>{T.name}: {a.nomeOrigine[lang]}</em></p>
+        <h2 style="font-size:1.8rem;margin-top:1.2em">{T.amen}</h2>
+        <ul class="ticks">{T.amenList.map((x) => <li>{x}</li>)}{a.camino && <li>{t.fireplace}</li>}</ul>
+      </div>
+      <aside class="form" style="position:sticky;top:88px">
+        <h2 style="font-size:1.8rem;margin:0">{T.info}</h2>
+        <p style="margin:0"><strong>{T.price}:</strong> {priceText}<br />
+          <strong>{T.checkin}:</strong> {sito.checkin} ({T.flex})<br />
+          <strong>{T.checkout}:</strong> {sito.checkout}<br />
+          {a.cin && <><strong>CIN:</strong> {a.cin}</>}
+        </p>
+        <a class="btn" href={`${url('avail', lang)}?apt=${a.id}`}>{t.checkAvail}</a>
+      </aside>
+    </div>
+  </section>
+
+  <section class="section alt">
+    <div class="wrap">
+      <h2>{T.others}</h2>
+      <div class="grid two">
+        {others.map((o) => <a class="feature" style="text-decoration:none;color:inherit" href={url('apts', lang, o.id)}><h3>{o.nome} →</h3><p>{o.breve[lang]}</p></a>)}
+      </div>
+    </div>
+  </section>
+</Base>

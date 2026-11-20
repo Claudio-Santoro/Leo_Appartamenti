@@ -1,0 +1,59 @@
+---
+import Base from '../layouts/Base.astro';
+import sito from '../data/sito.json';
+import { url } from '../i18n.js';
+interface Props { lang: 'it' | 'en' }
+const { lang } = Astro.props;
+const c = sito.condizioni;
+const ph = (s: string) => `<span class="ph">${s}</span>`;
+const T = {
+  it: {
+    title: 'Domande frequenti · LEO Appartamenti Erice', desc: 'Parcheggio, check-in, animali, bambini, clima, tassa di soggiorno: le risposte alle domande più comuni.', h1: 'Domande frequenti',
+    more: 'Non trovi la risposta?', write: 'Scrivici su WhatsApp',
+    items: [
+      ['Si arriva in auto? Dove parcheggio?', 'Sì: siamo fuori dalla zona a traffico limitato e arrivi fino alla porta. C’è parcheggio sul posto e in strada, e una colonnina per l’auto elettrica.'],
+      ['Quali sono gli orari di check-in e check-out?', `Check-in di persona dalle ${sito.checkin.replace('–', ' alle ')}, check-out dalle ${sito.checkout.replace('–', ' alle ')}. Il check-in è flessibile su richiesta: avvisaci dell’orario di arrivo.`],
+      ['Posso portare il mio animale?', `Sì, su richiesta. Costo: ${ph(c.animali)}. Segnalalo nella richiesta di prenotazione.`],
+      ['Gli appartamenti sono adatti ai bambini?', 'Sì, i bambini di ogni età sono benvenuti. Per culla e seggiolone chiedici in fase di prenotazione.'],
+      ['Fa freddo a Erice?', 'Erice è a 750 metri: la sera è fresca anche d’estate e la nebbia è frequente. Tutti gli appartamenti hanno aria condizionata e riscaldamento, e Venere ha anche il camino.'],
+      ['Ci sono scale o ascensore?', 'Non c’è ascensore. Venere è al piano terra con ingresso indipendente: è la scelta migliore per chi ha difficoltà con le scale.'],
+      ['C’è il Wi-Fi?', 'Sì, gratuito in tutti gli appartamenti.'],
+      ['La colazione è inclusa?', 'No, ma ogni appartamento ha la cucina e a pochi passi ci sono bar e le famose pasticcerie di Erice.'],
+      ['Quanto è la tassa di soggiorno?', `${ph(c.tassaSoggiorno)}, si paga all’arrivo.`],
+      ['Qual è la politica di cancellazione?', `Cancellazione ${ph(c.cancellazione)}. Trovi tutto nelle <a href="${url('terms', 'it')}">condizioni di soggiorno</a>.`],
+      ['Organizzate il transfer dall’aeroporto?', `Sì, su richiesta e a pagamento (${ph(c.navetta)}) da Trapani Birgi e Palermo.`],
+      ['Si possono fare feste?', 'No, non accettiamo feste né addii al celibato o al nubilato.'],
+    ],
+  },
+  en: {
+    title: 'FAQ · LEO Appartamenti Erice', desc: 'Parking, check-in, pets, children, weather, tourist tax: answers to the most common questions.', h1: 'Frequently asked questions',
+    more: 'Can’t find the answer?', write: 'Message us on WhatsApp',
+    items: [
+      ['Can I drive there? Where do I park?', 'Yes: we are outside the restricted traffic zone and you can drive right up to the door. There is parking on site and on the street, plus an EV charging point.'],
+      ['What are the check-in and check-out times?', `In-person check-in from ${sito.checkin.replace('–', ' to ')}, check-out from ${sito.checkout.replace('–', ' to ')}. Check-in is flexible on request: just let us know your arrival time.`],
+      ['Can I bring my pet?', `Yes, on request. Fee: ${ph(c.animali)}. Please mention it in your booking request.`],
+      ['Are the apartments suitable for children?', 'Yes, children of all ages are welcome. Ask us about a cot and high chair when you book.'],
+      ['Is it cold in Erice?', 'Erice is 750 m above sea level: evenings are cool even in summer and fog is common. All apartments have air conditioning and heating, and Venere also has a fireplace.'],
+      ['Are there stairs or a lift?', 'There is no lift. Venere is on the ground floor with its own entrance: the best choice if stairs are a problem.'],
+      ['Is there Wi-Fi?', 'Yes, free in all apartments.'],
+      ['Is breakfast included?', 'No, but every apartment has a kitchen and Erice’s cafés and famous pastry shops are a short walk away.'],
+      ['What is the bidet for?', 'It’s the low basin next to the toilet, standard in Italian bathrooms: it’s used for personal hygiene after using the toilet. Not a foot bath!'],
+      ['How much is the tourist tax?', `${ph(c.tassaSoggiorno)}, paid on arrival.`],
+      ['What is the cancellation policy?', `Cancellation ${ph(c.cancellazione)}. See our <a href="${url('terms', 'en')}">terms of stay</a>.`],
+      ['Do you arrange airport transfers?', `Yes, on request and for a fee (${ph(c.navetta)}) from Trapani Birgi and Palermo.`],
+      ['Are parties allowed?', 'No, we do not accept parties, stag or hen dos.'],
+    ],
+  },
+}[lang];
+const ld = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: T.items.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a.replace(/<[^>]+>/g, '') } })) };
+---
+<Base lang={lang} page="faq" title={T.title} description={T.desc}>
+  <script slot="head" type="application/ld+json" set:html={JSON.stringify(ld)} />
+  <section class="page-hero"><div class="wrap"><h1>{T.h1}</h1></div></section>
+  <section class="section" style="padding-top:24px">
+    <div class="wrap faq prose">
+      {T.items.map(([q, a]) => <details><summary>{q}</summary><p set:html={a} /></details>)}
+      <p style="margin-top:32px">{T.more} <a class="btn wa" href={`https://wa.me/${sito.whatsapp}`}>{T.write}</a></p>
+    </div>
+  </section>
+</Base>

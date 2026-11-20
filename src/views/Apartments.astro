@@ -1,0 +1,59 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import apts from '../data/appartamenti.json';
+import { url, ui } from '../i18n.js';
+import { photos } from '../images.js';
+interface Props { lang: 'it' | 'en' }
+const { lang } = Astro.props;
+const t = ui[lang];
+const yes = lang === 'it' ? 'Sì' : 'Yes';
+const no = '—';
+const T = {
+  it: { title: 'Gli appartamenti · LEO Appartamenti Erice', desc: 'Venere, Elimo e Balio: tre appartamenti a Erice da 4 a 7 persone. Confrontali e scegli quello giusto per te.', h1: 'Gli appartamenti', lead: 'Tre appartamenti vicini, tutti con vista. Venere è il più grande, Elimo e Balio sono pensati per coppie e piccole famiglie. Per i gruppi si possono prenotare insieme.', compare: 'Confronto', size: 'Superficie', guests: 'Ospiti', layout: 'Caratteristiche', all: 'In tutti', allList: 'Cucina, aria condizionata e riscaldamento, Wi-Fi gratuito, TV, lavatrice, patio, bagno con doccia. Animali su richiesta.' },
+  en: { title: 'The apartments · LEO Appartamenti Erice', desc: 'Venere, Elimo and Balio: three apartments in Erice for 4 to 7 guests. Compare them and choose the right one for you.', h1: 'The apartments', lead: 'Three neighbouring apartments, all with a view. Venere is the largest; Elimo and Balio suit couples and small families. Groups can book them together.', compare: 'Comparison', size: 'Size', guests: 'Guests', layout: 'Features', all: 'In all of them', allList: 'Kitchen, air conditioning and heating, free Wi-Fi, TV, washing machine, patio, bathroom with shower. Pets on request.' },
+}[lang];
+---
+<Base lang={lang} page="apts" title={T.title} description={T.desc}>
+  <section class="page-hero"><div class="wrap"><h1>{T.h1}</h1><p class="lead">{T.lead}</p></div></section>
+
+  <section class="section" style="padding-top:24px">
+    <div class="wrap grid three">
+      {apts.map((a) => {
+        const cover = photos(a.id, lang, a.nome)[0];
+        return (
+          <article class="card">
+            <Image src={cover.src} alt={cover.alt} widths={[400, 800]} sizes="(max-width: 700px) 100vw, 360px" />
+            <div class="body">
+              <h2 style="font-size:1.8rem;margin:0">{a.nome}</h2>
+              <ul class="facts"><li>{a.mq} m²</li><li>{a.ospiti} {t.guests}</li></ul>
+              <p>{a.breve[lang]}</p>
+              <a class="btn ghost" href={url('apts', lang, a.id)}>{t.details} {a.nome}</a>
+            </div>
+          </article>
+        );
+      })}
+    </div>
+  </section>
+
+  <section class="section alt">
+    <div class="wrap">
+      <h2>{T.compare}</h2>
+      <div class="table-wrap">
+        <table class="compare">
+          <thead><tr><td></td>{apts.map((a) => <th scope="col"><a href={url('apts', lang, a.id)}>{a.nome}</a></th>)}</tr></thead>
+          <tbody>
+            <tr><th scope="row">{T.size}</th>{apts.map((a) => <td>{a.mq} m²</td>)}</tr>
+            <tr><th scope="row">{T.guests}</th>{apts.map((a) => <td>{a.ospiti}</td>)}</tr>
+            <tr><th scope="row">{t.beds}</th>{apts.map((a) => <td>{a.letti[lang]}</td>)}</tr>
+            <tr><th scope="row">{t.baths}</th>{apts.map((a) => <td>{a.bagni}</td>)}</tr>
+            <tr><th scope="row">{T.layout}</th>{apts.map((a) => <td>{a.piano[lang]}</td>)}</tr>
+            <tr><th scope="row">{t.fireplace}</th>{apts.map((a) => <td>{a.camino ? yes : no}</td>)}</tr>
+          </tbody>
+        </table>
+      </div>
+      <p style="margin-top:16px"><strong>{T.all}:</strong> {T.allList}</p>
+      <a class="btn" href={url('avail', lang)}>{t.checkAvail}</a>
+    </div>
+  </section>
+</Base>

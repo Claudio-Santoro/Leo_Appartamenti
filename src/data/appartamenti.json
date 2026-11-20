@@ -1,0 +1,56 @@
+[
+  {
+    "id": "venere",
+    "nome": "Venere",
+    "mq": 90,
+    "ospiti": 7,
+    "bagni": 1,
+    "camino": true,
+    "cin": null,
+    "prezzi": { "bassa": null, "media": null, "alta": null, "picco": null },
+    "letti": { "it": "2 camere matrimoniali, stanza extra, divano letto", "en": "2 double bedrooms, extra room, sofa bed" },
+    "piano": { "it": "Piano terra, ingresso indipendente", "en": "Ground floor, private entrance" },
+    "nomeOrigine": { "it": "Come il Castello di Venere, a pochi minuti a piedi.", "en": "Named after the Castle of Venus, a few minutes' walk away." },
+    "breve": { "it": "Il più grande: 90 mq, camino e cortile. Per famiglie e gruppi fino a 7 persone.", "en": "The largest: 90 m², fireplace and courtyard. For families and groups of up to 7." },
+    "descrizione": {
+      "it": "Venere è al piano terra, con ingresso indipendente e un cortile in pietra dove pranzare all'aperto. Dentro trovi un ampio soggiorno con divano e tavolo da pranzo, il camino per le sere fresche di Erice, una cucina completa con forno, due camere matrimoniali e una stanza in più. Il bagno ha una doccia grande con parete in pietra.",
+      "en": "Venere is on the ground floor, with its own entrance and a stone courtyard for eating outdoors. Inside there's a large living room with sofa and dining table, a fireplace for Erice's cool evenings, a full kitchen with oven, two double bedrooms and an extra room. The bathroom has a large walk-in shower with a stone wall."
+    }
+  },
+  {
+    "id": "elimo",
+    "nome": "Elimo",
+    "mq": 45,
+    "ospiti": 4,
+    "bagni": 1,
+    "camino": false,
+    "cin": null,
+    "prezzi": { "bassa": null, "media": null, "alta": null, "picco": null },
+    "letti": { "it": "1 matrimoniale, divano letto", "en": "1 double bed, sofa bed" },
+    "piano": { "it": "Pareti in pietra, arredo moderno", "en": "Stone walls, modern furnishings" },
+    "nomeOrigine": { "it": "Come gli Elimi, il popolo che fondò Erice.", "en": "Named after the Elymians, the people who founded Erice." },
+    "breve": { "it": "45 mq con pareti in pietra a vista e arredo moderno. Per coppie o famiglie fino a 4 persone.", "en": "45 m² with exposed stone walls and modern furnishings. For couples or families of up to 4." },
+    "descrizione": {
+      "it": "Elimo unisce la pietra antica delle pareti a un arredo moderno e luminoso. Soggiorno con divano letto e tavolo da pranzo, angolo cottura attrezzato, camera matrimoniale e bagno con doccia.",
+      "en": "Elimo pairs ancient stone walls with bright, modern furnishings. Living room with sofa bed and dining table, equipped kitchenette, double bedroom and bathroom with shower."
+    }
+  },
+  {
+    "id": "balio",
+    "nome": "Balio",
+    "mq": 45,
+    "ospiti": 4,
+    "bagni": 1,
+    "camino": false,
+    "cin": null,
+    "prezzi": { "bassa": null, "media": null, "alta": null, "picco": null },
+    "letti": { "it": "1 matrimoniale, divano letto", "en": "1 double bed, sofa bed" },
+    "piano": { "it": "Cucina abitabile separata", "en": "Separate kitchen" },
+    "nomeOrigine": { "it": "Come il Giardino del Balio, il parco panoramico di Erice.", "en": "Named after the Balio Garden, Erice's panoramic park." },
+    "breve": { "it": "45 mq accoglienti, con cucina separata. Per coppie o famiglie fino a 4 persone.", "en": "A cosy 45 m² with a separate kitchen. For couples or families of up to 4." },
+    "descrizione": {
+      "it": "Balio è un appartamento caldo e accogliente: soggiorno con divano letto e tavolo in legno, cucina separata, camera matrimoniale luminosa e bagno con doccia.",
+      "en": "Balio is a warm, welcoming apartment: living room with sofa bed and wooden table, separate kitchen, bright double bedroom and bathroom with shower."
+    }
+  }
+]

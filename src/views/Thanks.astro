@@ -1,0 +1,18 @@
+---
+import Base from '../layouts/Base.astro';
+import sito from '../data/sito.json';
+import { url } from '../i18n.js';
+interface Props { lang: 'it' | 'en' }
+const { lang } = Astro.props;
+const T = {
+  it: { title: 'Richiesta inviata', p: 'Grazie! Abbiamo ricevuto la tua richiesta e ti rispondiamo al più presto, di solito entro poche ore.', urgent: 'Hai fretta? Scrivici su WhatsApp', back: 'Torna alla home' },
+  en: { title: 'Request sent', p: 'Thank you! We have received your request and will reply as soon as possible, usually within a few hours.', urgent: 'In a hurry? Message us on WhatsApp', back: 'Back to home' },
+}[lang];
+---
+<Base lang={lang} page="thanks" title={`${T.title} · LEO Appartamenti`} description={T.p} noindex>
+  <section class="section"><div class="wrap prose">
+    <h1>{T.title}</h1>
+    <p class="lead">{T.p}</p>
+    <div class="btns"><a class="btn wa" href={`https://wa.me/${sito.whatsapp}`}>{T.urgent}</a><a class="btn ghost" href={url('home', lang)}>{T.back}</a></div>
+  </div></section>
+</Base>
