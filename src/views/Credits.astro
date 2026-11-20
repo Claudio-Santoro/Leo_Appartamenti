@@ -1,0 +1,25 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import crediti from '../data/crediti.json';
+import { img } from '../images.js';
+interface Props { lang: 'it' | 'en' }
+const { lang } = Astro.props;
+const T = {
+  it: { title: 'Crediti fotografici', lead: 'Le foto di Erice e dei dintorni vengono da Wikimedia Commons e sono usate secondo le loro licenze libere (ridimensionate per il web). Le foto degli appartamenti sono dei proprietari.', by: 'Foto di', source: 'fonte' },
+  en: { title: 'Photo credits', lead: 'The photos of Erice and its surroundings come from Wikimedia Commons and are used under their free licences (resized for the web). The photos of the apartments belong to the owners.', by: 'Photo by', source: 'source' },
+}[lang];
+---
+<Base lang={lang} page="credits" title={`${T.title} · LEO Appartamenti`} description={T.lead}>
+  <section class="page-head"><div class="wrap enter"><h1>{T.title}</h1><p class="lead">{T.lead}</p></div></section>
+  <section class="section tight"><div class="wrap">
+    <ul class="credits">
+      {crediti.map((c) => (
+        <li>
+          <Image src={img(c.file.replace(/\.jpg$/, ''))} alt="" widths={[360]} sizes="240px" />
+          {T.by} {c.author} · <a href={c.licenseUrl} rel="license noopener" target="_blank">{c.license}</a> · <a href={c.source} rel="noopener" target="_blank">{T.source}</a>
+        </li>
+      ))}
+    </ul>
+  </div></section>
+</Base>
