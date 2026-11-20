@@ -19,7 +19,6 @@ const T = {
     h1: ['Erice,', 'sopra le nuvole.'],
     sub: 'Tre appartamenti appena fuori dalle mura, con il patio che guarda Trapani e il mare. Arrivi in auto fino alla porta, ti accogliamo noi.',
     discover: 'Gli appartamenti',
-    facts: ['Viale Conte Pepoli · Porta Trapani', '3 appartamenti · da 4 a 7 ospiti', `${sito.booking.voto} su Booking · ${sito.booking.recensioni} recensioni`],
     heroAlt: 'Erice, il borgo di pietra sospeso sopra il mare e le nuvole',
     vistaN: 'I — La vista', vistaH: 'Da Erice: Trapani, il mare, le Egadi.',
     vistaP: 'Dal patio guardi Trapani e il mare: è la cosa che i nostri ospiti ricordano di più. Al tramonto le saline si accendono di rosa e le isole compaiono una dietro l’altra.',
@@ -45,7 +44,6 @@ const T = {
     h1: ['Erice,', 'above the clouds.'],
     sub: 'Three apartments just outside the old walls, with a patio looking out over Trapani and the sea. Drive right up to the door — we’ll be there to welcome you.',
     discover: 'The apartments',
-    facts: ['Viale Conte Pepoli · Porta Trapani', '3 apartments · 4 to 7 guests', `${score} on Booking · ${sito.booking.recensioni} reviews`],
     heroAlt: 'Erice, the stone village hanging above the sea and the clouds',
     vistaN: 'I — The view', vistaH: 'From Erice: Trapani, the sea, the Egadi.',
     vistaP: 'From the patio you look out over Trapani and the sea: it’s what our guests remember most. At sunset the salt pans glow pink and the islands appear one behind the other.',
@@ -88,7 +86,6 @@ const ld = {
           <a class="btn ghost" href={url('apts', lang)}>{T.discover}</a>
         </div>
       </div>
-      <ul class="facts enter">{T.facts.map((f) => <li>{f}</li>)}</ul>
     </div>
   </section>
 
