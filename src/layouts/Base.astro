@@ -50,7 +50,7 @@ const wa = `https://wa.me/${sito.whatsapp}`;
     <a class="skip" href="#main">{t.skip}</a>
     <header class:list={['site-header', { over }]}>
       <div class="wrap">
-        <a class="brand" href={url('home', lang)}>LEO Appartamenti<small>ERICE · SICILIA</small></a>
+        <a class="brand" href={url('home', lang)}>LEO Appartamenti</a>
         <nav class="nav" aria-label="Menu">
           {links.map((l) => <a href={l.href} aria-current={l.key === page ? 'page' : undefined}>{l.label}</a>)}
           <a href={url(page, other, id)} hreflang={other} lang={other}>{other.toUpperCase()}</a>
@@ -62,7 +62,7 @@ const wa = `https://wa.me/${sito.whatsapp}`;
 
     <div class="menu-panel" id="menu-panel" role="dialog" aria-modal="true" aria-label={t.menu}>
       <div class="top">
-        <a class="brand" href={url('home', lang)}>LEO Appartamenti<small>ERICE · SICILIA</small></a>
+        <a class="brand" href={url('home', lang)}>LEO Appartamenti</a>
         <button class="close" type="button" aria-label={t.close}>×</button>
       </div>
       <nav aria-label="Menu">
