@@ -1,50 +1,64 @@
 ---
 import Base from '../layouts/Base.astro';
+import ArtImage from '../components/ArtImage.astro';
 import sito from '../data/sito.json';
-import { url } from '../i18n.js';
+import { url, ui } from '../i18n.js';
+import { img } from '../images.js';
 interface Props { lang: 'it' | 'en' }
 const { lang } = Astro.props;
+const t = ui[lang];
 const { lat, lng } = sito;
 const gmaps = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`;
 // OpenStreetMap: nessun cookie di profilazione, quindi niente banner per la mappa.
-const osm = `https://www.openstreetmap.org/export/embed.html?bbox=${lng - 0.007},${lat - 0.004},${lng + 0.007},${lat + 0.004}&layer=mapnik&marker=${lat},${lng}`;
+const osm = `https://www.openstreetmap.org/export/embed.html?bbox=${lng - 0.006},${lat - 0.005},${lng + 0.006},${lat + 0.005}&layer=mapnik&marker=${lat},${lng}`;
+const roman = ['I', 'II', 'III', 'IV'];
 const T = {
   it: {
     title: 'Come arrivare a Erice · LEO Appartamenti', desc: 'Come raggiungere LEO Appartamenti a Erice in auto, in funivia da Trapani, in autobus o dagli aeroporti di Trapani e Palermo.',
-    h1: 'Come arrivare', lead: `Siamo in ${sito.indirizzo}, appena fuori dalle mura del centro storico, vicino a Porta Trapani.`,
-    nav: 'Apri il percorso in Google Maps',
+    eyebrow: 'Viale Conte Pepoli 17 · Erice', h1: 'Come arrivare', lead: 'Siamo appena fuori dalle mura del centro storico, vicino a Porta Trapani: si arriva in auto fino alla porta.',
+    nav: 'Apri il percorso in Google Maps', alt: 'La strada per Erice: la funivia da Trapani e Porta Trapani, l’ingresso al borgo',
     blocks: [
       ['In auto', 'Da Trapani a Erice sono circa 13 km di strada in salita, 20–25 minuti. Siamo <strong>fuori dalla zona a traffico limitato</strong>: arrivi in auto fino alla porta. C’è parcheggio sul posto e in strada, e una colonnina per la ricarica dell’auto elettrica. Ad agosto e nei giorni di festa a Erice c’è molto traffico: se puoi, arriva nel primo pomeriggio.'],
       ['In funivia da Trapani', 'La funivia collega Trapani (zona Casa Santa) a Erice in circa 10 minuti, con una vista spettacolare. La stazione di arrivo è vicino a Porta Trapani, a pochi minuti a piedi da noi. <strong>Con vento forte la funivia può chiudere</strong>: in quel caso usa l’autobus o un taxi. <span class="ph">[[link agli orari ufficiali]]</span>'],
       ['In autobus', 'Gli autobus AST collegano Trapani a Erice più volte al giorno, con meno corse nei festivi. La fermata è a Porta Trapani, vicino a noi.'],
-      ['In aereo', 'L’aeroporto più vicino è <strong>Trapani Birgi</strong> (circa 30 km, 35 minuti in auto). Da <strong>Palermo Falcone Borsellino</strong> sono circa 90 km, poco più di un’ora in auto. Su richiesta organizziamo una navetta a pagamento: chiedi al momento della prenotazione.'],
+      ['In aereo', 'L’aeroporto più vicino è <strong>Trapani Birgi</strong> (circa 30 km, 35 minuti in auto). Da <strong>Palermo Falcone Borsellino</strong> sono circa 90 km, poco più di un’ora. Su richiesta organizziamo una navetta a pagamento: chiedi al momento della prenotazione.'],
     ],
-    tip: 'Erice è a 750 metri di altitudine: anche d’estate la sera è fresca e spesso arriva la nebbia. Porta una felpa!',
+    tip: 'Erice è a 750 metri: anche d’estate la sera è fresca e spesso sale la nebbia. Porta una felpa!',
   },
   en: {
     title: 'Getting to Erice · LEO Appartamenti', desc: 'How to reach LEO Appartamenti in Erice by car, by cable car from Trapani, by bus or from Trapani and Palermo airports.',
-    h1: 'Getting here', lead: `We are at ${sito.indirizzo}, just outside the walls of the old town, near Porta Trapani.`,
-    nav: 'Open directions in Google Maps',
+    eyebrow: 'Viale Conte Pepoli 17 · Erice', h1: 'Getting here', lead: 'We are just outside the walls of the old town, near Porta Trapani: you can drive right up to the door.',
+    nav: 'Open directions in Google Maps', alt: 'The way to Erice: the cable car from Trapani and Porta Trapani, the gate into the village',
     blocks: [
       ['By car', 'From Trapani to Erice it’s about 13 km uphill, 20–25 minutes. We are <strong>outside the restricted traffic zone</strong>: you can drive right up to the door. There is parking on site and on the street, plus an EV charging point. In August and on public holidays Erice gets busy: if you can, arrive in the early afternoon.'],
       ['By cable car from Trapani', 'The cable car links Trapani (Casa Santa area) to Erice in about 10 minutes, with a spectacular view. The top station is near Porta Trapani, a few minutes’ walk from us. <strong>In strong wind the cable car may close</strong>: in that case take the bus or a taxi. <span class="ph">[[link to official timetable]]</span>'],
       ['By bus', 'AST buses run from Trapani to Erice several times a day, with fewer services on public holidays. The stop is at Porta Trapani, close to us.'],
-      ['By plane', 'The nearest airport is <strong>Trapani Birgi</strong> (about 30 km, 35 minutes by car). <strong>Palermo Falcone Borsellino</strong> is about 90 km away, just over an hour by car. On request we can arrange a paid shuttle: ask when you book.'],
+      ['By plane', 'The nearest airport is <strong>Trapani Birgi</strong> (about 30 km, 35 minutes by car). <strong>Palermo Falcone Borsellino</strong> is about 90 km away, just over an hour. On request we can arrange a paid shuttle: ask when you book.'],
     ],
-    tip: 'Erice is 750 metres above sea level: even in summer the evenings are cool and fog is common. Bring a sweater!',
+    tip: 'Erice is 750 m above sea level: even in summer the evenings are cool and fog often rolls in. Bring a sweater!',
   },
 }[lang];
 ---
 <Base lang={lang} page="arrive" title={T.title} description={T.desc}>
-  <section class="page-hero"><div class="wrap"><h1>{T.h1}</h1><p class="lead">{T.lead}</p><a class="btn" href={gmaps} target="_blank" rel="noopener">{T.nav} ↗</a></div></section>
+  <section class="page-head"><div class="wrap enter">
+    <p class="eyebrow">{T.eyebrow}</p>
+    <h1>{T.h1}</h1>
+    <p class="lead">{T.lead}</p>
+    <a class="btn" href={gmaps} target="_blank" rel="noopener">{T.nav} ↗</a>
+  </div></section>
+
+  <ArtImage desktop={img('borgo/funivia')} mobile={img('borgo/m-porta-trapani')} alt={T.alt} class="page-banner fade-y" />
+
   <section class="section">
-    <div class="wrap split" style="align-items:start">
+    <div class="wrap split top">
       <div class="prose">
-        {T.blocks.map(([h, p]) => <><h2>{h}</h2><p set:html={p} /></>)}
-        <p class="feature" style="margin-top:24px">{T.tip}</p>
+        {T.blocks.map(([h, p], i) => (
+          <div data-reveal="text"><span class="num" style="margin-top:1.6em">{roman[i]}</span><h2 style="margin-top:0">{h}</h2><p set:html={p} /></div>
+        ))}
+        <p class="note" style="margin-top:40px">{T.tip}</p>
       </div>
       <iframe class="map" src={osm} title={T.h1} loading="lazy"></iframe>
     </div>
   </section>
-  <section class="wrap"><a class="btn" href={url('avail', lang)}>{lang === 'it' ? 'Verifica disponibilità' : 'Check availability'}</a></section>
+  <section class="wrap" style="padding-bottom:96px"><a class="btn" href={url('avail', lang)}>{t.checkAvail}</a></section>
 </Base>

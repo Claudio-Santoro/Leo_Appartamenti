@@ -60,11 +60,11 @@ const pages = {
 const P = pages[kind][lang];
 ---
 <Base lang={lang} page={kind} title={`${P.title} · LEO Appartamenti Erice`} description={P.title}>
-  <section class="page-hero"><div class="wrap"><h1>{P.title}</h1></div></section>
-  <section class="section" style="padding-top:8px">
+  <section class="page-head"><div class="wrap enter"><h1>{P.title}</h1></div></section>
+  <section class="section tight">
     <div class="wrap prose">
       {P.sections.map(([h, p]) => <><h2>{h}</h2><p set:html={p} /></>)}
-      <p class="small muted">CIR {sito.cir} · CIN {sito.cin.join(' · ')}</p>
+      <p class="small muted" style="margin-top:48px">CIR {sito.cir} · CIN {sito.cin.join(' · ')}</p>
     </div>
   </section>
 </Base>

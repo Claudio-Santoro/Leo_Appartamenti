@@ -1,67 +1,71 @@
 ---
 import { Image } from 'astro:assets';
 import Base from '../layouts/Base.astro';
+import ArtImage from '../components/ArtImage.astro';
+import ApartmentCard from '../components/ApartmentCard.astro';
 import apts from '../data/appartamenti.json';
 import sito from '../data/sito.json';
 import { url, ui } from '../i18n.js';
-import { photos } from '../images.js';
+import { img } from '../images.js';
 interface Props { lang: 'it' | 'en' }
 const { lang } = Astro.props;
 const t = ui[lang];
-const hero = photos('venere', lang)[0];
-const erice = photos('erice', lang);
+const roman = ['I', 'II', 'III'];
+const score = lang === 'it' ? sito.booking.voto : sito.booking.voto.replace(',', '.');
 const T = {
   it: {
     title: 'LEO Appartamenti · Appartamenti con vista a Erice',
-    desc: 'Tre appartamenti a Erice, appena fuori dalle mura, con vista sul mare di Trapani. Si arriva in auto fino alla porta. Accoglienza di persona e check-in flessibile.',
-    h1: 'Erice, con vista sul mare',
-    sub: 'Tre appartamenti a due passi da Porta Trapani, con patio panoramico, parcheggio e accoglienza di persona.',
-    discover: 'Scopri gli appartamenti',
-    why: [
-      ['Vista panoramica', 'Dal patio si vedono Trapani e il mare. È la cosa che i nostri ospiti ricordano di più.'],
-      ['Accoglienza di persona', 'Ti accogliamo noi all’arrivo, con consigli su dove mangiare e cosa vedere. Check-in flessibile su richiesta.'],
-      ['In auto fino alla porta', 'Siamo fuori dalla zona a traffico limitato, con parcheggio e colonnina per l’auto elettrica. Porta Trapani e la funivia sono a pochi passi.'],
-    ],
-    aptsH: 'Gli appartamenti',
-    aptsP: 'Tutti con cucina, aria condizionata e riscaldamento, Wi-Fi gratuito, lavatrice e patio.',
-    groupH: 'Siete in tanti?',
-    groupP: 'Prenotate tutta la struttura: tre appartamenti vicini, fino a 15 persone. Perfetto per famiglie allargate e gruppi di amici.',
-    groupBtn: 'Chiedi per il gruppo',
-    revH: 'Cosa dicono gli ospiti',
-    revOn: `su Booking.com · ${sito.booking.recensioni} recensioni`,
-    revThemes: ['Vista mozzafiato dal patio', 'Proprietari disponibili e gentili', 'Posizione comoda ma tranquilla', 'Appartamenti puliti e spaziosi'],
-    revLink: 'Leggi le recensioni su Booking',
-    directH: 'Prenota direttamente con noi',
-    direct: ['Tariffa riservata a chi prenota dal sito', 'Check-in flessibile su richiesta', 'Parli direttamente con chi ti accoglie', 'Nessun costo di prenotazione'],
-    ericeH: 'Erice, il borgo sopra le nuvole',
-    ericeP: 'A 750 metri sul mare, Erice è un borgo medievale di pietra e vicoli. Da qui raggiungi a piedi il Castello di Venere, il Giardino del Balio e il Real Duomo. In auto o in funivia, Trapani, le Saline, San Vito Lo Capo e le isole Egadi sono vicine.',
-    ericeBtn: 'Come arrivare',
+    desc: 'Tre appartamenti a Erice, appena fuori dalle mura, con vista su Trapani e le Egadi. Si arriva in auto fino alla porta. Accoglienza di persona e check-in flessibile.',
+    eyebrow: 'Erice · 750 m sul mare',
+    h1: ['Erice,', 'sopra le nuvole.'],
+    sub: 'Tre appartamenti appena fuori dalle mura, con il patio che guarda Trapani e il mare. Arrivi in auto fino alla porta, ti accogliamo noi.',
+    discover: 'Gli appartamenti',
+    facts: ['Viale Conte Pepoli · Porta Trapani', '3 appartamenti · da 4 a 7 ospiti', `${sito.booking.voto} su Booking · ${sito.booking.recensioni} recensioni`],
+    heroAlt: 'Erice, il borgo di pietra sospeso sopra il mare e le nuvole',
+    vistaN: 'I — La vista', vistaH: 'Da Erice: Trapani, il mare, le Egadi.',
+    vistaP: 'Dal patio guardi Trapani e il mare: è la cosa che i nostri ospiti ricordano di più. Al tramonto le saline si accendono di rosa e le isole compaiono una dietro l’altra.',
+    vistaAlt: 'Il panorama dall’alto di Erice verso Trapani e il mare',
+    aptsN: 'II — Le case', aptsH: 'Venere, Elimo e Balio.',
+    aptsP: 'Tre appartamenti vicini, tutti con cucina, aria condizionata, riscaldamento e Wi-Fi. Per i gruppi si prenotano insieme: fino a 15 persone.',
+    fogN: 'III — Il borgo', fogH: 'Quando sale la nebbia.',
+    fogP: 'Capita spesso, anche d’estate: il Castello di Venere sparisce e riappare tra le nuvole. Erice cambia faccia in pochi minuti, ed è bellissima così.',
+    fogAlt: 'Erice avvolta dalla nebbia',
+    borgoN: 'IV — A piedi da casa', borgoH: 'Tutto il borgo, a pochi passi.',
+    borgoP: 'Siamo appena fuori dalle mura: in pochi minuti sei nel centro medievale, tra chiese, vicoli di pietra e pasticcerie.',
+    walk: [['Porta Trapani', 'circa 250 m'], ['Real Duomo', 'circa 200 m'], ['Castello di Venere', 'circa 600 m'], ['Funivia per Trapani', 'a pochi minuti']],
+    borgoAlt: ['Il Castello di Venere', 'Porta Trapani', 'Il rosone del Real Duomo'],
+    revN: 'V — Gli ospiti', revOn: `su Booking.com · ${sito.booking.recensioni} recensioni`,
+    revThemes: ['La vista dal patio', 'Proprietari disponibili e gentili', 'Comodo, ma tranquillo', 'Appartamenti puliti e spaziosi'],
+    revLink: 'Leggi le recensioni',
+    bookN: 'VI — Prenota diretto', bookH: 'Scrivici, ti rispondiamo noi.',
+    book: ['Tariffa riservata a chi prenota dal sito', 'Check-in flessibile su richiesta', 'Parli con chi ti accoglie', 'Nessun costo di prenotazione'],
   },
   en: {
     title: 'LEO Appartamenti · Apartments with a view in Erice',
-    desc: 'Three apartments in Erice, just outside the old walls, with views over Trapani and the sea. Drive right up to the door. Personal welcome and flexible check-in.',
-    h1: 'Erice, with a sea view',
-    sub: 'Three apartments a short walk from Porta Trapani, with a panoramic patio, parking and a personal welcome.',
-    discover: 'See the apartments',
-    why: [
-      ['Panoramic view', 'From the patio you can see Trapani and the sea. It’s what our guests remember most.'],
-      ['A personal welcome', 'We meet you on arrival, with tips on where to eat and what to see. Flexible check-in on request.'],
-      ['Drive to the door', 'We are outside the restricted traffic zone, with parking and an EV charging point. Porta Trapani and the cable car are a short walk away.'],
-    ],
-    aptsH: 'The apartments',
-    aptsP: 'All with kitchen, air conditioning and heating, free Wi-Fi, washing machine and patio.',
-    groupH: 'Travelling as a group?',
-    groupP: 'Book the whole property: three neighbouring apartments for up to 15 people. Ideal for extended families and groups of friends.',
-    groupBtn: 'Ask about groups',
-    revH: 'What our guests say',
-    revOn: `on Booking.com · ${sito.booking.recensioni} reviews`,
-    revThemes: ['Breathtaking view from the patio', 'Helpful, friendly hosts', 'Convenient yet quiet location', 'Clean, spacious apartments'],
-    revLink: 'Read the reviews on Booking',
-    directH: 'Book directly with us',
-    direct: ['Special rate when you book on our website', 'Flexible check-in on request', 'Talk directly to your hosts', 'No booking fees'],
-    ericeH: 'Erice, the village above the clouds',
-    ericeP: 'At 750 metres above the sea, Erice is a medieval village of stone and narrow lanes. From here you can walk to the Castle of Venus, the Balio Garden and the cathedral. By car or cable car, Trapani, the salt pans, San Vito Lo Capo and the Egadi Islands are close by.',
-    ericeBtn: 'Getting here',
+    desc: 'Three apartments in Erice, just outside the old walls, overlooking Trapani and the Egadi Islands. Drive right up to the door. Personal welcome and flexible check-in.',
+    eyebrow: 'Erice · 750 m above the sea',
+    h1: ['Erice,', 'above the clouds.'],
+    sub: 'Three apartments just outside the old walls, with a patio looking out over Trapani and the sea. Drive right up to the door — we’ll be there to welcome you.',
+    discover: 'The apartments',
+    facts: ['Viale Conte Pepoli · Porta Trapani', '3 apartments · 4 to 7 guests', `${score} on Booking · ${sito.booking.recensioni} reviews`],
+    heroAlt: 'Erice, the stone village hanging above the sea and the clouds',
+    vistaN: 'I — The view', vistaH: 'From Erice: Trapani, the sea, the Egadi.',
+    vistaP: 'From the patio you look out over Trapani and the sea: it’s what our guests remember most. At sunset the salt pans glow pink and the islands appear one behind the other.',
+    vistaAlt: 'The view from high up in Erice towards Trapani and the sea',
+    aptsN: 'II — The homes', aptsH: 'Venere, Elimo and Balio.',
+    aptsP: 'Three neighbouring apartments, all with kitchen, air conditioning, heating and Wi-Fi. Groups can book them together: up to 15 people.',
+    fogN: 'III — The village', fogH: 'When the fog rolls in.',
+    fogP: 'It happens often, even in summer: the Castle of Venus vanishes and reappears among the clouds. Erice changes its face in minutes, and it’s beautiful that way.',
+    fogAlt: 'Erice wrapped in fog',
+    borgoN: 'IV — On foot from home', borgoH: 'The whole village, a few steps away.',
+    borgoP: 'We are just outside the walls: in a few minutes you are in the medieval centre, among churches, stone lanes and pastry shops.',
+    walk: [['Porta Trapani', 'about 250 m'], ['Cathedral', 'about 200 m'], ['Castle of Venus', 'about 600 m'], ['Cable car to Trapani', 'a few minutes']],
+    borgoAlt: ['The Castle of Venus', 'Porta Trapani', 'The rose window of the cathedral'],
+    revN: 'V — Our guests', revOn: `on Booking.com · ${sito.booking.recensioni} reviews`,
+    revThemes: ['The view from the patio', 'Helpful, friendly hosts', 'Convenient, yet quiet', 'Clean, spacious apartments'],
+    revLink: 'Read the reviews',
+    bookN: 'VI — Book direct', bookH: 'Write to us, we’ll reply.',
+    book: ['Special rate when you book on our website', 'Flexible check-in on request', 'Talk directly to your hosts', 'No booking fees'],
   },
 }[lang];
 const ld = {
@@ -72,82 +76,91 @@ const ld = {
   amenityFeature: ['Wi-Fi', 'Parking', 'Air conditioning', 'EV charging', 'Sea view'].map((name) => ({ '@type': 'LocationFeatureSpecification', name, value: true })),
 };
 ---
-<Base lang={lang} page="home" title={T.title} description={T.desc}>
+<Base lang={lang} page="home" title={T.title} description={T.desc} over>
   <script slot="head" type="application/ld+json" set:html={JSON.stringify(ld)} />
 
   <section class="hero">
-    <Image src={hero.src} alt={hero.alt} widths={[800, 1400, 2000]} sizes="100vw" loading="eager" fetchpriority="high" />
+    <ArtImage desktop={img('borgo/belvedere-nuvole')} mobile={img('borgo/m-vicolo-cofano')} alt={T.heroAlt} class="bg" eager />
     <div class="wrap">
-      <h1>{T.h1}</h1>
-      <p>{T.sub}</p>
+      <div class="enter">
+        <p class="eyebrow">{T.eyebrow}</p>
+        <h1>{T.h1[0]}<br />{T.h1[1]}</h1>
+        <p>{T.sub}</p>
+        <div class="btns">
+          <a class="btn light" href={url('avail', lang)}>{t.checkAvail}</a>
+          <a class="btn ghost" href={url('apts', lang)}>{T.discover}</a>
+        </div>
+      </div>
+      <ul class="facts enter">{T.facts.map((f) => <li>{f}</li>)}</ul>
+    </div>
+  </section>
+
+  <section class="photo-sec left">
+    <div class="media"><ArtImage desktop={img('borgo/vista-trapani-egadi')} mobile={img('borgo/m-vista-pianura')} alt={T.vistaAlt} class="bg parallax" /></div>
+    <div class="wrap">
+      <div class="txt" data-reveal="text">
+        <span class="num">{T.vistaN}</span>
+        <h2>{T.vistaH}</h2>
+        <p>{T.vistaP}</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="head" data-reveal="text">
+        <div><span class="num">{T.aptsN}</span><h2>{T.aptsH}</h2></div>
+        <p>{T.aptsP}</p>
+      </div>
+      <div class="apts">
+        {apts.map((a, i) => <ApartmentCard a={a} lang={lang} n={roman[i]} full />)}
+      </div>
+    </div>
+  </section>
+
+  <section class="photo-sec center">
+    <div class="media"><ArtImage desktop={img('borgo/castello-nebbia')} mobile={img('borgo/m-nebbia-vicolo')} alt={T.fogAlt} class="bg kenburns" /></div>
+    <div class="wrap">
+      <div class="txt" data-reveal="text">
+        <span class="num">{T.fogN}</span>
+        <h2>{T.fogH}</h2>
+        <p>{T.fogP}</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="borgo">
+    <div class="wrap split">
+      <div class="borgo">
+        <Image src={img('borgo/castello-venere')} alt={T.borgoAlt[0]} widths={[600, 1000]} sizes="(max-width: 900px) 92vw, 34vw" class="soft" data-reveal />
+        <Image src={img('borgo/m-porta-trapani')} alt={T.borgoAlt[1]} widths={[400, 700]} sizes="(max-width: 900px) 45vw, 22vw" class="soft" data-reveal />
+        <Image src={img('borgo/duomo-rosone')} alt={T.borgoAlt[2]} widths={[400, 700]} sizes="(max-width: 900px) 45vw, 22vw" class="soft" data-reveal />
+      </div>
+      <div data-reveal="text">
+        <span class="num">{T.borgoN}</span>
+        <h2>{T.borgoH}</h2>
+        <p class="lead">{T.borgoP}</p>
+        <ul class="facts-list">{T.walk.map(([a, b]) => <li><span>{a}</span><span>{b}</span></li>)}</ul>
+        <p style="margin-top:28px"><a class="link" href={url('arrive', lang)}>{t.nav.arrive}</a></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="trust">
+    <div class="alt" style="background:var(--calc-2)" data-reveal="text">
+      <span class="num">{T.revN}</span>
+      <div class="score">{score}</div>
+      <p class="muted">{T.revOn}</p>
+      <ul class="ticks" style="margin:28px 0">{T.revThemes.map((r) => <li>{r}</li>)}</ul>
+      <a class="link" href={sito.booking.url} rel="noopener" target="_blank">{T.revLink} ↗</a>
+    </div>
+    <div class="dark" data-reveal="text">
+      <span class="num">{T.bookN}</span>
+      <h2>{T.bookH}</h2>
+      <ul class="ticks" style="margin:28px 0 40px">{T.book.map((r) => <li>{r}</li>)}</ul>
       <div class="btns">
         <a class="btn light" href={url('avail', lang)}>{t.checkAvail}</a>
-        <a class="btn ghost" style="color:#fff;border-color:#fff" href={url('apts', lang)}>{T.discover}</a>
-      </div>
-    </div>
-  </section>
-
-  <section class="section">
-    <div class="wrap grid three">
-      {T.why.map(([h, p]) => <div class="feature"><h3>{h}</h3><p>{p}</p></div>)}
-    </div>
-  </section>
-
-  <section class="section alt">
-    <div class="wrap">
-      <h2>{T.aptsH}</h2>
-      <p class="lead">{T.aptsP}</p>
-      <div class="grid three">
-        {apts.map((a) => {
-          const cover = photos(a.id, lang, a.nome)[0];
-          return (
-            <article class="card">
-              <Image src={cover.src} alt={cover.alt} widths={[400, 800]} sizes="(max-width: 700px) 100vw, 360px" />
-              <div class="body">
-                <h3>{a.nome}</h3>
-                <ul class="facts"><li>{a.mq} m²</li><li>{a.ospiti} {t.guests}</li>{a.camino && <li>{t.fireplace}</li>}</ul>
-                <p>{a.breve[lang]}</p>
-                <a class="btn ghost" href={url('apts', lang, a.id)}>{t.details} {a.nome}</a>
-              </div>
-            </article>
-          );
-        })}
-      </div>
-      <div class="cta-band" style="margin-top:32px">
-        <div><h2>{T.groupH}</h2><p>{T.groupP}</p></div>
-        <a class="btn light" href={url('avail', lang)}>{T.groupBtn}</a>
-      </div>
-    </div>
-  </section>
-
-  <section class="section">
-    <div class="wrap grid two">
-      <div>
-        <h2>{T.revH}</h2>
-        <div class="rating">
-          <span class="score">{lang === 'it' ? sito.booking.voto : sito.booking.voto.replace(',', '.')}</span>
-          <span class="muted">/10 {T.revOn}</span>
-        </div>
-        <ul class="ticks" style="margin-top:20px">{T.revThemes.map((r) => <li>{r}</li>)}</ul>
-        <p style="margin-top:16px"><a href={sito.booking.url} rel="noopener" target="_blank">{T.revLink} ↗</a></p>
-      </div>
-      <div>
-        <h2>{T.directH}</h2>
-        <ul class="ticks">{T.direct.map((r) => <li>{r}</li>)}</ul>
-        <p style="margin-top:20px"><a class="btn" href={url('avail', lang)}>{t.checkAvail}</a></p>
-      </div>
-    </div>
-  </section>
-
-  <section class="section alt">
-    <div class="wrap split">
-      <div class="mosaic">
-        {erice.map((p) => <Image src={p.src} alt={p.alt} widths={[400, 900]} sizes="(max-width: 820px) 100vw, 560px" />)}
-      </div>
-      <div>
-        <h2>{T.ericeH}</h2>
-        <p>{T.ericeP}</p>
-        <a class="btn ghost" href={url('arrive', lang)}>{T.ericeBtn}</a>
+        <a class="btn wa" href={`https://wa.me/${sito.whatsapp}`}>WhatsApp</a>
       </div>
     </div>
   </section>

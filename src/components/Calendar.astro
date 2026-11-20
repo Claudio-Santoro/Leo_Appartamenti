@@ -3,8 +3,8 @@ import apts from '../data/appartamenti.json';
 interface Props { lang: 'it' | 'en' }
 const { lang } = Astro.props;
 const labels = {
-  it: { apt: 'Appartamento', prev: 'Mese precedente', next: 'Mese successivo', free: 'Libero', booked: 'Occupato', sel: 'Le tue date', pick: 'Scegli la data di arrivo', pickOut: 'Ora scegli la data di partenza', busy: 'Ci sono notti occupate in questo periodo: scegli altre date.', nights: 'notti', night: 'notte', loading: 'Caricamento disponibilità…', unavailable: 'Il calendario non è disponibile in questo momento: invia comunque la richiesta, ti rispondiamo noi.', week: ['Lu', 'Ma', 'Me', 'Gi', 'Ve', 'Sa', 'Do'] },
-  en: { apt: 'Apartment', prev: 'Previous month', next: 'Next month', free: 'Available', booked: 'Booked', sel: 'Your dates', pick: 'Choose your arrival date', pickOut: 'Now choose your departure date', busy: 'Some nights in this period are booked: please choose other dates.', nights: 'nights', night: 'night', loading: 'Loading availability…', unavailable: 'The calendar is not available right now: send us a request anyway and we will reply.', week: ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'] },
+  it: { apt: 'Appartamento', prev: 'Mese precedente', next: 'Mese successivo', free: 'Libero', booked: 'Occupato', sel: 'Le tue date', pick: 'Scegli la data di arrivo', pickOut: 'Ora scegli la data di partenza', busy: 'Ci sono notti occupate in questo periodo: scegli altre date.', nights: 'notti', night: 'notte', loading: 'Caricamento disponibilità…', go: 'Continua con la richiesta ↓', unavailable: 'Il calendario non è disponibile in questo momento: invia comunque la richiesta, ti rispondiamo noi.', week: ['Lu', 'Ma', 'Me', 'Gi', 'Ve', 'Sa', 'Do'] },
+  en: { apt: 'Apartment', prev: 'Previous month', next: 'Next month', free: 'Available', booked: 'Booked', sel: 'Your dates', pick: 'Choose your arrival date', pickOut: 'Now choose your departure date', busy: 'Some nights in this period are booked: please choose other dates.', nights: 'nights', night: 'night', loading: 'Loading availability…', go: 'Continue to your request ↓', unavailable: 'The calendar is not available right now: send us a request anyway and we will reply.', week: ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'] },
 }[lang];
 const cfg = { lang: lang === 'it' ? 'it-IT' : 'en-GB', labels, apts: apts.map((a) => ({ id: a.id, nome: a.nome })) };
 ---
@@ -64,7 +64,7 @@ const cfg = { lang: lang === 'it' ? 'it-IT' : 'en-GB', labels, apts: apts.map((a
     const days = new Date(Date.UTC(d0.getUTCFullYear(), d0.getUTCMonth() + 1, 0)).getUTCDate();
     const offset = (d0.getUTCDay() + 6) % 7;
     const title = new Intl.DateTimeFormat(cfg.lang, { month: 'long', year: 'numeric', timeZone: 'UTC' }).format(d0);
-    let html = `<div class="cal-month"><h3>${title}</h3><div class="cal-grid">`;
+    let html = `<div class="cal-month"><h2>${title}</h2><div class="cal-grid">`;
     html += L.week.map((w: string) => `<span class="cal-wd" aria-hidden="true">${w}</span>`).join('') + '<span></span>'.repeat(offset);
     for (let i = 1; i <= days; i++) {
       const s = first.slice(0, 8) + String(i).padStart(2, '0');
@@ -84,7 +84,11 @@ const cfg = { lang: lang === 'it' ? 'it-IT' : 'en-GB', labels, apts: apts.map((a
     if (data && data[apt] === null) status.textContent = L.unavailable;
     else if (!data) status.textContent = L.loading;
     else if (msg) status.textContent = msg;
-    else if (checkIn && checkOut) { const n = nights(checkIn, checkOut); status.textContent = `${checkIn.split('-').reverse().join('/')} → ${checkOut.split('-').reverse().join('/')} · ${n} ${n === 1 ? L.night : L.nights}`; }
+    else if (checkIn && checkOut) {
+      const n = nights(checkIn, checkOut);
+      // Solo date e numeri generati qui: niente input dell'utente nell'HTML.
+      status.innerHTML = `${checkIn.split('-').reverse().join('/')} → ${checkOut.split('-').reverse().join('/')} · ${n} ${n === 1 ? L.night : L.nights} &nbsp;<a class="link" href="#richiesta">${L.go}</a>`;
+    }
     else status.textContent = checkIn ? L.pickOut : L.pick;
   }
 

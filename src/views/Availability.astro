@@ -6,19 +6,24 @@ import sito from '../data/sito.json';
 interface Props { lang: 'it' | 'en' }
 const { lang } = Astro.props;
 const T = {
-  it: { title: 'Disponibilità e richiesta di prenotazione · LEO Appartamenti Erice', desc: 'Controlla le date libere di Venere, Elimo e Balio e chiedi la tua prenotazione diretta.', h1: 'Disponibilità', lead: 'Scegli l’appartamento e le date sul calendario: il modulo qui sotto si compila da solo. Ti rispondiamo con la conferma e il prezzo.', form: 'Richiesta di prenotazione', or: 'Preferisci parlarci?', call: 'Chiamaci al' },
-  en: { title: 'Availability and booking request · LEO Appartamenti Erice', desc: 'Check available dates for Venere, Elimo and Balio and send a direct booking request.', h1: 'Availability', lead: 'Pick the apartment and your dates on the calendar: the form below fills in automatically. We will reply with confirmation and price.', form: 'Booking request', or: 'Prefer to talk?', call: 'Call us on' },
+  it: { title: 'Disponibilità e richiesta di prenotazione · LEO Appartamenti Erice', desc: 'Controlla le date libere di Venere, Elimo e Balio e chiedi la tua prenotazione diretta.', eyebrow: 'Prenota diretto', h1: 'Disponibilità', lead: 'Scegli l’appartamento e tocca le date sul calendario: il modulo qui sotto si compila da solo. Ti rispondiamo con conferma e prezzo.', formN: 'Ultimo passo', form: 'La tua richiesta', or: 'Preferisci parlarci?', call: 'Chiamaci al' },
+  en: { title: 'Availability and booking request · LEO Appartamenti Erice', desc: 'Check available dates for Venere, Elimo and Balio and send a direct booking request.', eyebrow: 'Book direct', h1: 'Availability', lead: 'Pick the apartment and tap your dates on the calendar: the form below fills in automatically. We will reply with confirmation and price.', formN: 'Last step', form: 'Your request', or: 'Prefer to talk?', call: 'Call us on' },
 }[lang];
 ---
-<Base lang={lang} page="avail" title={T.title} description={T.desc}>
-  <section class="page-hero"><div class="wrap"><h1>{T.h1}</h1><p class="lead">{T.lead}</p></div></section>
-  <section class="section" style="padding-top:24px">
-    <div class="wrap" style="display:grid;gap:40px">
+<Base lang={lang} page="avail" title={T.title} description={T.desc} bar={false}>
+  <section class="page-head"><div class="wrap enter">
+    <p class="eyebrow">{T.eyebrow}</p>
+    <h1>{T.h1}</h1>
+    <p class="lead">{T.lead}</p>
+  </div></section>
+  <section class="section tight">
+    <div class="wrap" style="display:grid;gap:clamp(56px,8vw,96px)">
       <Calendar lang={lang} />
-      <div>
+      <div id="richiesta">
+        <span class="num">{T.formN}</span>
         <h2>{T.form}</h2>
         <RequestForm lang={lang} />
-        <p class="muted" style="margin-top:16px">{T.or} {T.call} <a href={`tel:${sito.telefono.replace(/\s/g, '')}`}>{sito.telefono}</a> · <a href={`mailto:${sito.email}`}>{sito.email}</a></p>
+        <p class="muted" style="margin-top:20px">{T.or} {T.call} <a href={`tel:${sito.telefono.replace(/\s/g, '')}`}>{sito.telefono}</a> · <a href={`mailto:${sito.email}`}>{sito.email}</a></p>
       </div>
     </div>
   </section>

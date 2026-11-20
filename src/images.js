@@ -19,3 +19,10 @@ export function photos(folder, lang = 'it', prefix = '') {
       return { src, alt: prefix ? `${prefix} – ${label}` : label };
     });
 }
+
+// Una singola foto per percorso, es. img('borgo/belvedere-nuvole').
+export function img(name) {
+  const src = all[`/src/assets/${name}.jpg`];
+  if (!src) throw new Error(`Foto mancante: src/assets/${name}.jpg`);
+  return src;
+}

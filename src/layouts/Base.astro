@@ -1,25 +1,38 @@
 ---
 import '@fontsource/cormorant-garamond/500.css';
 import '@fontsource/cormorant-garamond/600.css';
+import '@fontsource/cormorant-garamond/500-italic.css';
+import '@fontsource-variable/inter';
 import '../styles/global.css';
 import { url, ui } from '../i18n.js';
 import sito from '../data/sito.json';
 
-interface Props { lang: 'it' | 'en'; page: string; id?: string; title: string; description: string; noindex?: boolean }
-const { lang, page, id, title, description, noindex = false } = Astro.props;
+interface Props {
+  lang: 'it' | 'en'; page: string; id?: string; title: string; description: string;
+  noindex?: boolean;
+  over?: boolean;  // header trasparente sopra la foto d'apertura (home)
+  bar?: boolean;   // barra Disponibilità / WhatsApp fissa su smartphone
+}
+const { lang, page, id, title, description, noindex = false, over = false, bar = true } = Astro.props;
 const t = ui[lang];
 const other = lang === 'it' ? 'en' : 'it';
 const abs = (l: 'it' | 'en') => new URL(url(page, l, id), Astro.site).href;
-const nav = ['apts', 'arrive', 'faq'] as const;
-const current = (p: string) => (p === page ? 'page' : undefined);
+const links = [
+  { href: url('apts', lang), label: t.nav.apts, key: 'apts' },
+  { href: `${url('home', lang)}#borgo`, label: t.nav.erice, key: 'erice' },
+  { href: url('arrive', lang), label: t.nav.arrive, key: 'arrive' },
+  { href: url('faq', lang), label: t.nav.faq, key: 'faq' },
+];
+const wa = `https://wa.me/${sito.whatsapp}`;
 ---
 <!doctype html>
 <html lang={lang}>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>{title}</title>
     <meta name="description" content={description} />
+    <meta name="theme-color" content="#EEE7DB" />
     {noindex && <meta name="robots" content="noindex" />}
     <link rel="canonical" href={abs(lang)} />
     <link rel="alternate" hreflang="it" href={abs('it')} />
@@ -29,56 +42,109 @@ const current = (p: string) => (p === page ? 'page' : undefined);
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
     <meta property="og:locale" content={lang === 'it' ? 'it_IT' : 'en_GB'} />
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%231e4d6b'/%3E%3Ctext x='16' y='23' font-size='20' text-anchor='middle' fill='%23fff' font-family='Georgia'%3EL%3C/text%3E%3C/svg%3E" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 40'%3E%3Cpath d='M2 16A14 14 0 0 1 30 16V40H2Z' fill='%231E1A15'/%3E%3Ctext x='16' y='33' font-size='18' text-anchor='middle' fill='%23EEE7DB' font-family='Georgia'%3EL%3C/text%3E%3C/svg%3E" />
+    <script is:inline>document.documentElement.classList.add('js')</script>
     <slot name="head" />
   </head>
-  <body>
-    <header class="site-header">
+  <body class={bar ? 'has-bar' : undefined}>
+    <a class="skip" href="#main">{t.skip}</a>
+    <header class:list={['site-header', { over }]}>
       <div class="wrap">
-        <a class="brand" href={url('home', lang)}>LEO Appartamenti<small>Erice · Sicilia</small></a>
-        <details class="menu">
-          <summary aria-label="Menu">☰</summary>
-          <nav class="nav" aria-label="Menu">
-            {nav.map((p) => <a href={url(p, lang)} aria-current={current(p)}>{t.nav[p]}</a>)}
-            <a href={url(page, other, id)} hreflang={other} lang={other}>{t.langName}</a>
-            <a class="btn" href={url('avail', lang)}>{t.nav.book}</a>
-          </nav>
-        </details>
+        <a class="brand" href={url('home', lang)}>LEO Appartamenti<small>ERICE · SICILIA</small></a>
         <nav class="nav" aria-label="Menu">
-          {nav.map((p) => <a href={url(p, lang)} aria-current={current(p)}>{t.nav[p]}</a>)}
-          <a href={url(page, other, id)} hreflang={other} lang={other}>{t.langName}</a>
+          {links.map((l) => <a href={l.href} aria-current={l.key === page ? 'page' : undefined}>{l.label}</a>)}
+          <a href={url(page, other, id)} hreflang={other} lang={other}>{other.toUpperCase()}</a>
           <a class="btn" href={url('avail', lang)}>{t.nav.book}</a>
         </nav>
+        <button class="menu-btn" type="button" aria-expanded="false" aria-controls="menu-panel" aria-label={t.menu}><span></span><span></span></button>
       </div>
     </header>
 
-    <main><slot /></main>
+    <div class="menu-panel" id="menu-panel" role="dialog" aria-modal="true" aria-label={t.menu}>
+      <div class="top">
+        <a class="brand" href={url('home', lang)}>LEO Appartamenti<small>ERICE · SICILIA</small></a>
+        <button class="close" type="button" aria-label={t.close}>×</button>
+      </div>
+      <nav aria-label="Menu">
+        {links.map((l) => <a href={l.href}>{l.label}</a>)}
+        <a href={url(page, other, id)} hreflang={other} lang={other}>{t.langName}</a>
+      </nav>
+      <div class="btns">
+        <a class="btn" href={url('avail', lang)}>{t.checkAvail}</a>
+        <a class="btn wa" href={wa}>WhatsApp</a>
+      </div>
+    </div>
+
+    <main id="main"><slot /></main>
+
+    {bar && (
+      <div class="mbar" aria-label={t.checkAvail}>
+        <a class="btn" href={url('avail', lang)}>{t.nav.book}</a>
+        <a class="btn wa" href={wa}>WhatsApp</a>
+      </div>
+    )}
 
     <footer class="site-footer">
       <div class="wrap">
-        <div class="grid">
+        <div class="cols">
           <div>
-            <h3>LEO Appartamenti</h3>
-            <p>{t.tagline}</p>
+            <div class="logo">LEO Appartamenti</div>
+            <p>{t.tagline}<br />{sito.indirizzo}</p>
           </div>
           <div>
-            <h3>{t.footer.address}</h3>
-            <p>{sito.indirizzo}<br /><a href={url('arrive', lang)}>{t.nav.arrive}</a></p>
+            <h3>{t.footer.explore}</h3>
+            <ul>
+              {links.map((l) => <li><a href={l.href}>{l.label}</a></li>)}
+              <li><a href={url('avail', lang)}>{t.nav.book}</a></li>
+            </ul>
           </div>
           <div>
             <h3>{t.footer.contacts}</h3>
-            <p>
-              <a href={`tel:${sito.telefono.replace(/\s/g, '')}`}>{sito.telefono}</a><br />
-              <a href={`https://wa.me/${sito.whatsapp}`}>WhatsApp</a><br />
-              <a href={`mailto:${sito.email}`}>{sito.email}</a>
-            </p>
+            <ul>
+              <li><a href={`tel:${sito.telefono.replace(/\s/g, '')}`}>{sito.telefono}</a></li>
+              <li><a href={wa}>WhatsApp</a></li>
+              <li><a href={`mailto:${sito.email}`}>{sito.email}</a></li>
+            </ul>
           </div>
         </div>
         <div class="legal">
           {t.footer.codes}: CIR {sito.cir} · CIN {sito.cin.join(' · ')}<br />
+          {t.footer.photos} <a href={url('credits', lang)}>{t.footer.credits}</a><br />
           <a href={url('privacy', lang)}>{t.footer.privacy}</a> · <a href={url('terms', lang)}>{t.footer.terms}</a> · © {new Date().getFullYear()} LEO Appartamenti
         </div>
       </div>
     </footer>
+
+    <script>
+      // Header che diventa solido scorrendo, barra fissa su smartphone, menu a tutto schermo.
+      const header = document.querySelector('.site-header');
+      const bar = document.querySelector('.mbar');
+      const onScroll = () => {
+        const y = window.scrollY;
+        header?.classList.toggle('scrolled', y > 40);
+        bar?.classList.toggle('show', y > window.innerHeight * 0.5);
+      };
+      addEventListener('scroll', onScroll, { passive: true });
+      onScroll();
+
+      const panel = document.getElementById('menu-panel')!;
+      const openBtn = document.querySelector<HTMLButtonElement>('.menu-btn')!;
+      const setMenu = (open: boolean) => {
+        panel.classList.toggle('open', open);
+        openBtn.setAttribute('aria-expanded', String(open));
+        document.body.style.overflow = open ? 'hidden' : '';
+        if (open) panel.querySelector<HTMLElement>('.close')!.focus(); else openBtn.focus();
+      };
+      openBtn.addEventListener('click', () => setMenu(true));
+      panel.querySelector('.close')!.addEventListener('click', () => setMenu(false));
+      panel.querySelectorAll('nav a').forEach((a) => a.addEventListener('click', () => setMenu(false)));
+      addEventListener('keydown', (e) => { if (e.key === 'Escape' && panel.classList.contains('open')) setMenu(false); });
+
+      // Le foto e i testi marcati data-reveal si scoprono quando entrano nello schermo.
+      const io = new IntersectionObserver((entries) => {
+        for (const e of entries) if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+      }, { rootMargin: '0px 0px -12% 0px', threshold: 0.08 });
+      document.querySelectorAll('[data-reveal]').forEach((el) => io.observe(el));
+    </script>
   </body>
 </html>

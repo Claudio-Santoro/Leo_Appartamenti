@@ -1,0 +1,23 @@
+---
+// Immagine con "art direction": una foto orizzontale per desktop e una verticale per smartphone.
+import { getImage } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+interface Props {
+  desktop: ImageMetadata;
+  mobile?: ImageMetadata;
+  alt: string;
+  class?: string;
+  eager?: boolean;
+  sizes?: string;
+}
+const { desktop, mobile, alt, class: cls, eager = false, sizes = '100vw' } = Astro.props;
+const d = await getImage({ src: desktop, widths: [960, 1440, 1920], format: 'webp' });
+const m = mobile ? await getImage({ src: mobile, widths: [480, 800, 1170], format: 'webp' }) : null;
+---
+<picture>
+  {m && <source media="(max-width: 700px)" srcset={m.srcSet.attribute} sizes="100vw" type="image/webp" />}
+  <source srcset={d.srcSet.attribute} sizes={sizes} type="image/webp" />
+  <img src={d.src} alt={alt} class={cls} width={desktop.width} height={desktop.height}
+    loading={eager ? 'eager' : 'lazy'} fetchpriority={eager ? 'high' : 'auto'} decoding="async" />
+</picture>

@@ -49,11 +49,15 @@ const ld = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: T
 ---
 <Base lang={lang} page="faq" title={T.title} description={T.desc}>
   <script slot="head" type="application/ld+json" set:html={JSON.stringify(ld)} />
-  <section class="page-hero"><div class="wrap"><h1>{T.h1}</h1></div></section>
-  <section class="section" style="padding-top:24px">
+  <section class="page-head"><div class="wrap enter">
+    <p class="eyebrow">{lang === 'it' ? 'Prima di partire' : 'Before you go'}</p>
+    <h1>{T.h1}</h1>
+  </div></section>
+  <section class="section tight">
     <div class="wrap faq prose">
       {T.items.map(([q, a]) => <details><summary>{q}</summary><p set:html={a} /></details>)}
-      <p style="margin-top:32px">{T.more} <a class="btn wa" href={`https://wa.me/${sito.whatsapp}`}>{T.write}</a></p>
+      <p style="margin-top:48px" class="lead">{T.more}</p>
+      <a class="btn wa" href={`https://wa.me/${sito.whatsapp}`}>{T.write}</a>
     </div>
   </section>
 </Base>

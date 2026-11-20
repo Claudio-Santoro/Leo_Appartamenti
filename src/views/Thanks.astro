@@ -10,9 +10,9 @@ const T = {
 }[lang];
 ---
 <Base lang={lang} page="thanks" title={`${T.title} · LEO Appartamenti`} description={T.p} noindex>
-  <section class="section"><div class="wrap prose">
+  <section class="page-head"><div class="wrap prose enter">
     <h1>{T.title}</h1>
     <p class="lead">{T.p}</p>
-    <div class="btns"><a class="btn wa" href={`https://wa.me/${sito.whatsapp}`}>{T.urgent}</a><a class="btn ghost" href={url('home', lang)}>{T.back}</a></div>
+    <div class="btns"><a class="btn wa" href={`https://wa.me/${sito.whatsapp}`}>{T.urgent}</a><a class="btn line" href={url("home", lang)}>{T.back}</a></div>
   </div></section>
 </Base>
