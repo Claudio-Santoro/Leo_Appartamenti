@@ -26,9 +26,9 @@ const priceText = prices.length ? `${lang === 'it' ? 'da' : 'from'} € ${Math.m
     <p class="lead">{a.breve[lang]}</p>
   </div></section>
 
-  <section class="wrap">
+  <section>
     <Gallery photos={photos(a.id, lang, a.nome)} lang={lang} />
-    <p class="gallery-hint">{T.swipe}</p>
+    <p class="gallery-hint wrap">{T.swipe}</p>
   </section>
 
   <section class="section">
@@ -62,7 +62,7 @@ const priceText = prices.length ? `${lang === 'it' ? 'da' : 'from'} € ${Math.m
           const c = photos(o.id, lang, o.nome)[0];
           return (
             <a href={url('apts', lang, o.id)} data-reveal>
-              <Image class="arch" src={c.src} alt={c.alt} widths={[240]} sizes="120px" />
+              <Image class="thumb" src={c.src} alt={c.alt} widths={[240]} sizes="120px" />
               <div><h3>{o.nome}</h3><p>{o.breve[lang]}</p></div>
             </a>
           );

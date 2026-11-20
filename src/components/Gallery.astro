@@ -10,7 +10,7 @@ const L = lang === 'it' ? { open: 'Apri foto', close: 'Chiudi', prev: 'Foto prec
 <div class="gallery">
   {photos.map((p, i) => (
     <button type="button" data-full={full[i].src} data-alt={p.alt} aria-label={`${L.open}: ${p.alt}`}>
-      <Image class="soft" src={p.src} alt={p.alt} widths={i === 0 ? [600, 1200] : [400, 700]} sizes={i === 0 ? '(max-width: 700px) 84vw, 560px' : '(max-width: 700px) 84vw, 280px'} loading={i === 0 ? 'eager' : 'lazy'} fetchpriority={i === 0 ? 'high' : 'auto'} />
+      <Image src={p.src} alt={p.alt} widths={i === 0 ? [800, 1200, 1800] : [500, 800, 1200]} sizes={i === 0 ? '(max-width: 700px) 100vw, 50vw' : '(max-width: 700px) 100vw, 25vw'} loading={i === 0 ? 'eager' : 'lazy'} fetchpriority={i === 0 ? 'high' : 'auto'} />
     </button>
   ))}
 </div>
