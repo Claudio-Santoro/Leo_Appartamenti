@@ -34,7 +34,8 @@ const T = {
     zoom: 'Ingrandisci la foto', close: 'Chiudi', prev: 'Foto precedente', next: 'Foto successiva',
     clearAlt: 'La strada per il Castello di Venere in una giornata limpida', revOn: `su Booking.com · ${sito.booking.recensioni} recensioni`,
     revThemes: ['La vista dal patio', 'Proprietari disponibili e gentili', 'Comodo, ma tranquillo', 'Appartamenti puliti e spaziosi'],
-    revLink: 'Leggi le recensioni', bookH: 'Scrivici, ti rispondiamo noi.',
+    revLink: 'Leggi le recensioni',
+    arriveQ: 'Come si arriva fin quassù?', arriveP: 'In auto fino alla porta, siamo fuori dalla zona a traffico limitato e c’è parcheggio. Oppure in funivia da Trapani: dieci minuti sopra il mare, e scendi a pochi passi da noi.', arriveCta: 'Auto, funivia, bus e aeroporti', bookH: 'Scrivici, ti rispondiamo noi.',
     book: ['Tariffa riservata a chi prenota dal sito', 'Check-in flessibile su richiesta', 'Parli con chi ti accoglie', 'Nessun costo di prenotazione'],
   },
   en: {
@@ -58,7 +59,8 @@ const T = {
     zoom: 'Enlarge photo', close: 'Close', prev: 'Previous photo', next: 'Next photo',
     clearAlt: 'The road to the Castle of Venus on a clear day', revOn: `on Booking.com · ${sito.booking.recensioni} reviews`,
     revThemes: ['The view from the patio', 'Helpful, friendly hosts', 'Convenient, yet quiet', 'Clean, spacious apartments'],
-    revLink: 'Read the reviews', bookH: 'Write to us, we’ll reply.',
+    revLink: 'Read the reviews',
+    arriveQ: 'How do you get up here?', arriveP: 'By car right to the door: we are outside the restricted traffic zone and there is parking. Or by cable car from Trapani: ten minutes above the sea, and you step off a few minutes from us.', arriveCta: 'Car, cable car, bus and airports', bookH: 'Write to us, we’ll reply.',
     book: ['Special rate when you book on our website', 'Flexible check-in on request', 'Talk directly to your hosts', 'No booking fees'],
   },
 }[lang];
@@ -157,7 +159,11 @@ const ld = {
           </li>
         ))}
       </ol>
-      <p class="walk-more"><a class="link" href={url('arrive', lang)}>{t.nav.arrive}</a></p>
+      <div class="walk-more">
+        <h3>{T.arriveQ}</h3>
+        <p>{T.arriveP}</p>
+        <a class="btn line" href={url('arrive', lang)}>{T.arriveCta} →</a>
+      </div>
       <dialog class="lightbox" id="borgo-zoom">
         <img alt="" />
         <button type="button" class="close" aria-label={T.close}>×</button>

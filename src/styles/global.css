@@ -339,7 +339,11 @@ p { margin: 0 0 1em; text-wrap: pretty; }
   .route .window, .route .window.tall { aspect-ratio: 3 / 4; margin: 0 0 12px; }
   .route .start .name { margin-top: 0; }
 }
-.walk-more { margin-top: 40px; }
+/* Come arrivare: una domanda con la sua risposta breve, sotto il sentiero */
+.walk-more { margin-top: clamp(56px, 7vw, 96px); padding-top: clamp(36px, 4vw, 52px); border-top: 1px solid var(--stone); display: grid; grid-template-columns: 1fr 1.2fr auto; gap: 16px clamp(24px, 4vw, 64px); align-items: center; }
+.walk-more h3 { margin: 0; }
+.walk-more p { margin: 0; color: var(--muted); font-size: 1.1rem; line-height: 1.6; max-width: 44ch; }
+@media (max-width: 1000px) { .walk-more { grid-template-columns: 1fr; align-items: start; } .walk-more .btn { justify-self: start; } }
 .route-from { display: none; }
 @media (max-width: 800px) {
   .route-from { display: flex; align-items: center; gap: 12px; margin: 0 0 18px; font: italic 400 1.25rem/1.2 var(--serif); }
@@ -616,6 +620,25 @@ html.time-reveal::view-transition-new(root) { animation: reveal .7s var(--ease) 
 @media (min-width: 701px) {
   /* parte dal bordo dello schermo, non dal margine del testo: niente bordo netto sopra la nebbia */
   .hero .wrap::before { content: ''; position: absolute; left: calc((100% - 100vw) / 2); bottom: 0; z-index: -1; width: 100vw; height: 80%; pointer-events: none;
-    background: radial-gradient(ellipse 55% 65% at 14% 80%, rgba(12, 14, 13, .58), rgba(12, 14, 13, .25) 55%, transparent 80%); }
+    background: radial-gradient(ellipse 55% 65% at 14% 80%, rgba(12, 14, 13, .58), rgba(12, 14, 13, .25) 55%, transparent 80%);
+    -webkit-mask-image: linear-gradient(to bottom, #000 65%, transparent); mask-image: linear-gradient(to bottom, #000 65%, transparent); } /* niente orlo sul bordo dell'apertura */
   .hero .wrap { isolation: isolate; }
 }
+
+/* ---------- Bordi sfumati: la nebbia e le foto si sciolgono nel fondo, mai un orlo dritto ---------- */
+/* la nebbia è più densa in basso: senza maschera il suo bordo inferiore taglia netto (di notte è grigia sul nero) */
+.fog-canvas, .fog-css { -webkit-mask-image: linear-gradient(to bottom, #000 62%, transparent 100%); mask-image: linear-gradient(to bottom, #000 62%, transparent 100%); }
+@media (min-width: 701px) {
+  .hero .fog-canvas, .hero .fog-css { -webkit-mask-image: linear-gradient(to bottom, #000 78%, transparent 100%); mask-image: linear-gradient(to bottom, #000 78%, transparent 100%); }
+  :root[data-time='night'] .hero { background: none; } /* sotto c'è la grana del body: un colore pieno farebbe una riga */
+  :root[data-time='night'] .hero::after { background: linear-gradient(180deg, rgba(18,22,20,.62) 0%, rgba(18,22,20,0) 26%, rgba(18,22,20,0) 42%, rgba(18,22,20,.8) 78%, rgba(18,22,20,0) 100%); } /* finisce nel fondo della pagina */
+  :root[data-time='night'] .hero .bg { -webkit-mask-image: linear-gradient(to bottom, #000 70%, transparent 100%); mask-image: linear-gradient(to bottom, #000 70%, transparent 100%); }
+}
+@media (max-width: 700px) {
+  :root[data-time='night'] .hero .night-bg { -webkit-mask-image: linear-gradient(to bottom, #000 45%, transparent 100%); mask-image: linear-gradient(to bottom, #000 45%, transparent 100%); }
+}
+.photo-sec.fog { background: var(--calc-2); } /* la foto sfuma nel colore della sezione che segue */
+.photo-sec.fog .media { -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 8%, #000 62%, transparent 100%); mask-image: linear-gradient(to bottom, transparent 0, #000 8%, #000 62%, transparent 100%); }
+
+/* Il voto di notte prende la luce dei lampioni: il verde pino sul fondo scuro non si leggeva */
+:root[data-time='night'] .trust .score { color: var(--cotto-light); text-shadow: 0 0 28px rgba(var(--glow), .25); }
