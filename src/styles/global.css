@@ -75,18 +75,56 @@ p { margin: 0 0 1em; text-wrap: pretty; }
 .eyebrow { font: 500 .78rem/1.4 var(--sans); letter-spacing: .22em; text-transform: uppercase; color: var(--muted); margin: 0 0 14px; }
 .num { font-family: var(--serif); font-style: italic; font-weight: 400; font-size: 1.45rem; color: var(--cotto); margin: 0 0 6px; display: block; }
 
-/* ---------- Pulsanti: targhe di pietra a spigoli smussati; al passaggio si accende un lampione ---------- */
-.btn { --b: var(--pine); --t: #F6EBD2; position: relative; isolation: isolate; display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 52px; padding: 0 30px; border: 0; border-radius: 0;
-  clip-path: polygon(10px 0, calc(100% - 10px) 0, 100% 10px, 100% calc(100% - 10px), calc(100% - 10px) 100%, 10px 100%, 0 calc(100% - 10px), 0 10px);
-  background: var(--b); color: var(--t); font: 700 1.08rem/1 var(--serif); letter-spacing: .02em; text-decoration: none; cursor: pointer; -webkit-tap-highlight-color: transparent;
-  transition: transform .1s ease-out, color .25s; }
-.btn::before { content: ''; position: absolute; inset: 0; z-index: -1; background: radial-gradient(90% 130% at 50% 115%, rgba(var(--glow), .65), transparent 70%); opacity: 0; transition: opacity .35s var(--ease); }
-.btn:hover::before, .btn:focus-visible::before { opacity: 1; }
-.btn:active { transform: scale(.97); }
-.btn.line { --b: color-mix(in srgb, var(--ink) 11%, transparent); --t: var(--ink); }
-.btn.light { --b: #F2EEE4; --t: #1B1F1C; }
-.btn.ghost { --b: rgba(16, 20, 18, .5); --t: #fff; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
-.btn.wa { --b: var(--wa); --t: #fff; }
+/* ---------- Pulsanti: targhe di calcare scolpite ----------
+   Il pulsante è lo spigolo smussato (luce dall'alto: bordo superiore chiaro, inferiore scuro);
+   ::before è la faccia della lastra, rientrata di 3px, con grana, venature, pori e segni di subbia;
+   ::after è la luce del lampione (passaggio del mouse) e l'anello ambra del focus.
+   Ogni variante cambia solo i suoi colori (--face, --hi, --lo, --ink, --cut-hi, --cut-lo). */
+:root {
+  --stone-grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='d'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  1.7 0 0 0 -.6'/%3E%3C/filter%3E%3Cfilter id='l'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.7' numOctaves='2' seed='7' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 .95  0 1.7 0 0 -.62'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23d)' opacity='.2'/%3E%3Crect width='160' height='160' filter='url(%23l)' opacity='.14'/%3E%3C/svg%3E");
+  --stone-veins: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='320' height='320'%3E%3Cfilter id='m'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.012 .045' numOctaves='3' seed='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .1  0 0 0 0 .09  0 0 0 0 .06  1.4 0 0 0 -.55'/%3E%3C/filter%3E%3Cfilter id='w'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.02 .06' numOctaves='2' seed='11' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1  0 0 0 0 .98  0 0 0 0 .92  0 1.4 0 0 -.58'/%3E%3C/filter%3E%3Crect width='320' height='320' filter='url(%23m)' opacity='.22'/%3E%3Crect width='320' height='320' filter='url(%23w)' opacity='.16'/%3E%3C/svg%3E");
+  --stone-pores: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='p'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.55' numOctaves='1' seed='5' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  1 0 0 0 0'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='discrete' tableValues='0 0 0 0 0 0 0 0 0 0 0 .9'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23p)' opacity='.45'/%3E%3C/svg%3E");
+  --chisel: repeating-linear-gradient(112deg, rgba(0,0,0,.05) 0 1px, transparent 1px 6px);
+  /* profilo con qualche scheggiatura; la faccia ha gli stessi smussi, più piccoli */
+  --plaque: polygon(9px 0, 31% 0, 33% 1.2px, 35.5% 0, calc(100% - 9px) 0, 100% 9px, 100% 57%, calc(100% - 1.4px) 60%, 100% 63%, 100% calc(100% - 9px), calc(100% - 9px) 100%, 74% 100%, 71.5% calc(100% - 1.6px), 69% 100%, 9px 100%, 0 calc(100% - 9px), 0 40%, 1.3px 37.5%, 0 35%, 0 9px);
+  --plaque-face: polygon(7px 0, calc(100% - 7px) 0, 100% 7px, 100% calc(100% - 7px), calc(100% - 7px) 100%, 7px 100%, 0 calc(100% - 7px), 0 7px);
+}
+/* primaria: pietra scura con la patina verde dei pini */
+.btn {
+  --face: #34473A; --hi: #8FA391; --lo: #121A15; --ink: #F4E8CB; --cut-hi: rgba(255, 255, 255, .16); --cut-lo: rgba(0, 0, 0, .6);
+}
+.btn { position: relative; isolation: isolate; display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 52px; padding: 0 30px; border: 0; border-radius: 0;
+  clip-path: var(--plaque); background: linear-gradient(to bottom, var(--hi), color-mix(in srgb, var(--hi) 40%, var(--lo)) 48%, var(--lo));
+  color: var(--ink); font: 700 1.08rem/1.1 var(--serif); letter-spacing: .03em; text-align: center; text-decoration: none; cursor: pointer; -webkit-tap-highlight-color: transparent;
+  text-shadow: 0 1px 0 var(--cut-hi), 0 -1px 0 var(--cut-lo); /* lettere incise: luce sul bordo basso, ombra su quello alto */
+  transition: transform .26s cubic-bezier(.2, .9, .3, 1), color .3s; }
+.btn::before { content: ''; position: absolute; inset: 3px; z-index: -2; clip-path: var(--plaque-face);
+  background: var(--stone-pores), var(--stone-grain), var(--stone-veins), var(--chisel),
+    linear-gradient(to bottom, color-mix(in srgb, var(--face) 88%, #fff), var(--face) 45%, color-mix(in srgb, var(--face) 84%, #000));
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, .25); transition: box-shadow .26s cubic-bezier(.2, .9, .3, 1); }
+.btn::after { content: ''; position: absolute; inset: 3px; z-index: -1; clip-path: var(--plaque-face); opacity: 0; pointer-events: none;
+  background: radial-gradient(110% 150% at 50% 125%, rgba(var(--glow), .7), rgba(var(--glow), .18) 55%, transparent 75%); transition: opacity .35s var(--ease); }
+.btn:hover::after { opacity: 1; }
+/* premuta: la lastra rientra nel muro. Risponde subito alla pressione, torna con una molla senza rimbalzo */
+.btn:active { transform: translateY(1.5px) scale(.985); transition-duration: .06s; background: linear-gradient(to bottom, var(--lo), color-mix(in srgb, var(--hi) 30%, var(--lo)) 55%, var(--hi)); }
+.btn:active::before { box-shadow: inset 0 3px 7px rgba(0, 0, 0, .5); transition-duration: .06s; }
+/* focus da tastiera: un anello ambra dentro la targa (il clip-path taglierebbe un outline esterno) */
+.btn:focus-visible { outline: none; }
+.btn:focus-visible::after { opacity: 1; box-shadow: inset 0 0 0 2px var(--lamp), inset 0 0 16px rgba(var(--glow), .55); }
+/* calcare chiaro */
+.btn.light {
+  --face: #E4DDCB; --hi: #FFFCF2; --lo: #8E8676; --ink: #3A362E; --cut-hi: rgba(255, 255, 255, .85); --cut-lo: rgba(0, 0, 0, .1);
+}
+/* pietra scurita sopra le foto */
+.btn.ghost { --face: rgba(24, 28, 26, .72); --hi: rgba(200, 205, 198, .55); --lo: rgba(0, 0, 0, .7); --ink: #F6EFE0; --cut-hi: rgba(255, 255, 255, .12); --cut-lo: rgba(0, 0, 0, .7); }
+/* pietra chiara a filo del muro */
+.btn.line { --face: color-mix(in srgb, var(--calc-2) 85%, var(--rock)); --hi: color-mix(in srgb, var(--calc) 70%, #fff); --lo: color-mix(in srgb, var(--rock) 70%, #000); --ink: var(--ink); --cut-hi: rgba(255, 255, 255, .5); --cut-lo: rgba(0, 0, 0, .1); }
+/* WhatsApp: pietra smaltata di verde, sempre riconoscibile */
+.btn.wa { --face: #1E7046; --hi: #7FC39C; --lo: #0B3220; --ink: #FFFFFF; --cut-hi: rgba(255, 255, 255, .14); --cut-lo: rgba(0, 0, 0, .55); }
+/* di notte la pietra è più fredda e le lettere prendono la luce ambra dei lampioni */
+:root[data-time='night'] .btn:not(.light):not(.wa) { --face: #26332B; --hi: #6E8072; --lo: #0A0F0C; --ink: #F4D9A4; }
+:root[data-time='night'] .btn:not(.light):not(.wa) { text-shadow: 0 1px 0 var(--cut-hi), 0 -1px 0 var(--cut-lo), 0 0 12px rgba(var(--glow), .35); }
+:root[data-time='night'] .btn.light { --face: #CFC6B1; --hi: #EFE7D3; --lo: #5F5848; }
 .btns { display: flex; flex-wrap: wrap; gap: 12px; }
 .link { font-weight: 600; text-decoration: none; background: linear-gradient(currentColor, currentColor) 0 100% / 100% 1.5px no-repeat; padding-bottom: 3px; transition: background-size .35s var(--ease); }
 .link:hover { background-size: 40% 1.5px; }
@@ -113,9 +151,8 @@ p { margin: 0 0 1em; text-wrap: pretty; }
 /* Header trasparente sopra la foto d'apertura (home, solo desktop) */
 @media (min-width: 701px) {
   .site-header.over { position: fixed; left: 0; right: 0; background: transparent; border-color: transparent; color: #fff; backdrop-filter: none; -webkit-backdrop-filter: none; }
-  .site-header.over .nav .btn { --b: #F2EEE4; --t: #1B1F1C; }
+  .site-header.over:not(.scrolled) .nav .btn { --face: #E4DDCB; --hi: #FFFCF2; --lo: #8E8676; --ink: #3A362E; --cut-hi: rgba(255, 255, 255, .85); --cut-lo: rgba(0, 0, 0, .1); text-shadow: 0 1px 0 var(--cut-hi), 0 -1px 0 var(--cut-lo); }
   .site-header.over.scrolled { background: var(--header-bg); color: var(--ink); border-color: var(--stone); backdrop-filter: saturate(1.4) blur(14px); -webkit-backdrop-filter: saturate(1.4) blur(14px); }
-  .site-header.over.scrolled .nav .btn { --b: var(--pine); --t: #F6EBD2; }
 }
 .menu-btn { display: none; margin-left: auto; width: 48px; height: 48px; border: 0; background: none; color: inherit; cursor: pointer; padding: 12px; }
 .menu-btn span { display: block; height: 1.5px; background: currentColor; margin: 6px 0; }
@@ -162,8 +199,9 @@ p { margin: 0 0 1em; text-wrap: pretty; }
   .hero h1 { font-size: clamp(3.1rem, 15vw, 4.2rem); text-shadow: none; margin-bottom: 18px; }
   .hero .eyebrow { color: var(--muted); }
   .hero p { margin-bottom: 26px; }
-  .hero .btn.light { --b: var(--pine); --t: #F6EBD2; }
-  .hero .btn.ghost { --b: color-mix(in srgb, var(--ink) 11%, transparent); --t: var(--ink); backdrop-filter: none; }
+  .hero .btn.light { --face: #34473A; --hi: #8FA391; --lo: #121A15; --ink: #F4E8CB; --cut-hi: rgba(255, 255, 255, .16); --cut-lo: rgba(0, 0, 0, .6); }
+  :root[data-time='night'] .hero .btn.light { --face: #26332B; --hi: #6E8072; --lo: #0A0F0C; --ink: #F4D9A4; } /* su telefono qui la targa è scura anche di notte */
+  .hero .btn.ghost { --face: color-mix(in srgb, var(--calc-2) 85%, var(--rock)); --hi: color-mix(in srgb, var(--calc) 70%, #fff); --lo: color-mix(in srgb, var(--rock) 70%, #000); --ink: var(--ink); --cut-hi: rgba(255, 255, 255, .5); --cut-lo: rgba(0, 0, 0, .1); }
 }
 
 /* ---------- Sezioni con foto a tutta pagina (bordi sfumati nel calcare) ---------- */
