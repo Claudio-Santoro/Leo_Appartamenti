@@ -1,18 +1,56 @@
 ---
+// Scheda appartamento: intestazione + striscia di tutte le foto, scorrevole col dito, il trackpad o le frecce.
 import { Image } from 'astro:assets';
 import { url, ui } from '../i18n.js';
 import { photos } from '../images.js';
-interface Props { a: any; lang: 'it' | 'en'; n: string; full?: boolean }
-const { a, lang, n, full = false } = Astro.props;
+interface Props { a: any; lang: 'it' | 'en'; full?: boolean }
+const { a, lang, full = false } = Astro.props;
 const t = ui[lang];
-const cover = photos(a.id, lang, a.nome)[0];
+const list = photos(a.id, lang, a.nome);
+const href = url('apts', lang, a.id);
+const L = lang === 'it' ? { photos: `Foto di ${a.nome}`, prev: 'Foto precedente', next: 'Foto successiva' } : { photos: `Photos of ${a.nome}`, prev: 'Previous photo', next: 'Next photo' };
 ---
-<a class="apt" href={url("apts", lang, a.id)} data-reveal="text">
-  <div class="frame"><Image class="photo" src={cover.src} alt={cover.alt} widths={[480, 800, 1200]} sizes="(max-width: 900px) 100vw, 33vw" /></div>
-  <div class="body">
-    <div class="meta"><span class="num">{n}</span><h3>{a.nome}</h3></div>
-    <p class="facts">{a.mq} m² · {a.ospiti} {t.guests}{a.camino && ` · ${t.fireplace.toLowerCase()}`}</p>
-    {full && <p>{a.breve[lang]}</p>}
-    <span class="link">{t.details} {a.nome}</span>
+<article class="apt">
+  <div class="wrap apt-head">
+    <h3><a href={href}>{a.nome}</a></h3>
+    <div>
+      <p class="facts">{a.mq} m² · {a.ospiti} {t.guests}{a.camino && ` · ${t.fireplace.toLowerCase()}`}</p>
+      {full && <p>{a.breve[lang]}</p>}
+      <a class="link" href={href}>{t.details} {a.nome}</a>
+    </div>
   </div>
-</a>
+  <div class="strip" tabindex="0" role="region" aria-label={L.photos}>
+    {list.map((p, i) => (
+      <Image src={p.src} alt={p.alt} widths={[480, 800, 1200]} sizes="(max-width: 700px) 170vw, 50vw" loading={i < 2 ? 'eager' : 'lazy'} />
+    ))}
+  </div>
+  <div class="wrap strip-ctl">
+    <span class="count" aria-hidden="true"><b>1</b> / {list.length}</span>
+    <button type="button" class="prev" aria-label={L.prev}>←</button>
+    <button type="button" class="next" aria-label={L.next}>→</button>
+  </div>
+</article>
+
+<script>
+  // ponytail: lo scorrimento è CSS scroll-snap; qui solo frecce e contatore.
+  document.querySelectorAll<HTMLElement>('.apt').forEach((apt) => {
+    const strip = apt.querySelector<HTMLElement>('.strip')!;
+    const count = apt.querySelector('.count b')!;
+    const imgs = [...strip.querySelectorAll('img')];
+    const current = () => {
+      const x = strip.scrollLeft + parseFloat(getComputedStyle(strip).scrollPaddingLeft || '0');
+      return imgs.reduce((best, img, i) => (Math.abs(img.offsetLeft - x) < Math.abs(imgs[best].offsetLeft - x) ? i : best), 0);
+    };
+    const go = (d: number) => {
+      const i = Math.max(0, Math.min(imgs.length - 1, current() + d));
+      strip.scrollTo({ left: imgs[i].offsetLeft - parseFloat(getComputedStyle(strip).scrollPaddingLeft || '0') });
+    };
+    apt.querySelector('.prev')!.addEventListener('click', () => go(-1));
+    apt.querySelector('.next')!.addEventListener('click', () => go(1));
+    strip.addEventListener('scroll', () => { count.textContent = String(current() + 1); }, { passive: true });
+    // Quando la striscia arriva sullo schermo carichiamo tutte le sue foto: scorrendo non resta mai un riquadro vuoto.
+    new IntersectionObserver(([e], io) => {
+      if (e.isIntersecting) { imgs.forEach((img) => (img.loading = 'eager')); io.disconnect(); }
+    }, { rootMargin: '300px 0px' }).observe(strip);
+  });
+</script>

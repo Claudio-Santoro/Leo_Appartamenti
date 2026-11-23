@@ -10,7 +10,6 @@ import { img } from '../images.js';
 interface Props { lang: 'it' | 'en' }
 const { lang } = Astro.props;
 const t = ui[lang];
-const roman = ['I', 'II', 'III'];
 const score = lang === 'it' ? sito.booking.voto : sito.booking.voto.replace(',', '.');
 const T = {
   it: {
@@ -19,23 +18,19 @@ const T = {
     h1: ['Erice,', 'sopra le nuvole.'],
     sub: 'Tre appartamenti appena fuori dalle mura, con il patio che guarda Trapani e il mare. Arrivi in auto fino alla porta, ti accogliamo noi.',
     discover: 'Gli appartamenti',
-    heroAlt: 'Erice, il borgo di pietra sospeso sopra il mare e le nuvole',
-    vistaN: 'I — La vista', vistaH: 'Da Erice: Trapani, il mare, le Egadi.',
+    heroAlt: 'Erice, il borgo di pietra sospeso sopra il mare e le nuvole', vistaH: 'Da Erice: Trapani, il mare, le Egadi.',
     vistaP: 'Dal patio guardi Trapani e il mare: è la cosa che i nostri ospiti ricordano di più. Al tramonto le saline si accendono di rosa e le isole compaiono una dietro l’altra.',
-    vistaAlt: 'Il panorama dall’alto di Erice verso Trapani e il mare',
-    aptsN: 'II — Le case', aptsH: 'Venere, Elimo e Balio.',
-    aptsP: 'Tre appartamenti vicini, tutti con cucina, aria condizionata, riscaldamento e Wi-Fi. Per i gruppi si prenotano insieme: fino a 15 persone.',
-    fogN: 'III — Il borgo', fogH: 'Quando sale la nebbia.',
+    vistaAlt: 'Il panorama dall’alto di Erice verso Trapani e il mare', aptsH: 'Venere, Elimo e Balio.',
+    aptsP: 'Tre appartamenti vicini, tutti con cucina, aria condizionata, riscaldamento e Wi-Fi. Per i gruppi si prenotano insieme: fino a 15 persone.', fogH: 'Quando sale la nebbia.',
     fogP: 'Capita spesso, anche d’estate: il Castello di Venere sparisce e riappare tra le nuvole. Erice cambia faccia in pochi minuti, ed è bellissima così.',
-    fogAlt: 'Erice avvolta dalla nebbia',
-    borgoN: 'IV — A piedi da casa', borgoH: 'Tutto il borgo, a pochi passi.',
+    fogAlt: 'Erice avvolta dalla nebbia', borgoH: 'Tutto il borgo, a pochi passi.',
     borgoP: 'Siamo appena fuori dalle mura: in pochi minuti sei nel centro medievale, tra chiese, vicoli di pietra e pasticcerie.',
-    walk: [['Porta Trapani', 'circa 250 m'], ['Real Duomo', 'circa 200 m'], ['Castello di Venere', 'circa 600 m'], ['Funivia per Trapani', 'a pochi minuti']],
-    borgoAlt: ['Il Castello di Venere', 'Porta Trapani', 'Il rosone del Real Duomo'],
-    revN: 'V — Gli ospiti', revOn: `su Booking.com · ${sito.booking.recensioni} recensioni`,
+    walk: [['Real Duomo', 'circa 200 m'], ['Porta Trapani', 'circa 250 m'], ['Castello di Venere', 'circa 600 m'], ['Funivia per Trapani', 'a pochi minuti']],
+    home: 'Da casa',
+    borgoAlt: ['Il rosone del Real Duomo', 'Porta Trapani', 'Il Castello di Venere', 'La funivia sopra la pianura di Trapani'],
+    clearAlt: 'La strada per il Castello di Venere in una giornata limpida', revOn: `su Booking.com · ${sito.booking.recensioni} recensioni`,
     revThemes: ['La vista dal patio', 'Proprietari disponibili e gentili', 'Comodo, ma tranquillo', 'Appartamenti puliti e spaziosi'],
-    revLink: 'Leggi le recensioni',
-    bookN: 'VI — Prenota diretto', bookH: 'Scrivici, ti rispondiamo noi.',
+    revLink: 'Leggi le recensioni', bookH: 'Scrivici, ti rispondiamo noi.',
     book: ['Tariffa riservata a chi prenota dal sito', 'Check-in flessibile su richiesta', 'Parli con chi ti accoglie', 'Nessun costo di prenotazione'],
   },
   en: {
@@ -44,23 +39,19 @@ const T = {
     h1: ['Erice,', 'above the clouds.'],
     sub: 'Three apartments just outside the old walls, with a patio looking out over Trapani and the sea. Drive right up to the door — we’ll be there to welcome you.',
     discover: 'The apartments',
-    heroAlt: 'Erice, the stone village hanging above the sea and the clouds',
-    vistaN: 'I — The view', vistaH: 'From Erice: Trapani, the sea, the Egadi.',
+    heroAlt: 'Erice, the stone village hanging above the sea and the clouds', vistaH: 'From Erice: Trapani, the sea, the Egadi.',
     vistaP: 'From the patio you look out over Trapani and the sea: it’s what our guests remember most. At sunset the salt pans glow pink and the islands appear one behind the other.',
-    vistaAlt: 'The view from high up in Erice towards Trapani and the sea',
-    aptsN: 'II — The homes', aptsH: 'Venere, Elimo and Balio.',
-    aptsP: 'Three neighbouring apartments, all with kitchen, air conditioning, heating and Wi-Fi. Groups can book them together: up to 15 people.',
-    fogN: 'III — The village', fogH: 'When the fog rolls in.',
+    vistaAlt: 'The view from high up in Erice towards Trapani and the sea', aptsH: 'Venere, Elimo and Balio.',
+    aptsP: 'Three neighbouring apartments, all with kitchen, air conditioning, heating and Wi-Fi. Groups can book them together: up to 15 people.', fogH: 'When the fog rolls in.',
     fogP: 'It happens often, even in summer: the Castle of Venus vanishes and reappears among the clouds. Erice changes its face in minutes, and it’s beautiful that way.',
-    fogAlt: 'Erice wrapped in fog',
-    borgoN: 'IV — On foot from home', borgoH: 'The whole village, a few steps away.',
+    fogAlt: 'Erice wrapped in fog', borgoH: 'The whole village, a few steps away.',
     borgoP: 'We are just outside the walls: in a few minutes you are in the medieval centre, among churches, stone lanes and pastry shops.',
-    walk: [['Porta Trapani', 'about 250 m'], ['Cathedral', 'about 200 m'], ['Castle of Venus', 'about 600 m'], ['Cable car to Trapani', 'a few minutes']],
-    borgoAlt: ['The Castle of Venus', 'Porta Trapani', 'The rose window of the cathedral'],
-    revN: 'V — Our guests', revOn: `on Booking.com · ${sito.booking.recensioni} reviews`,
+    walk: [['Cathedral', 'about 200 m'], ['Porta Trapani', 'about 250 m'], ['Castle of Venus', 'about 600 m'], ['Cable car to Trapani', 'a few minutes']],
+    home: 'From home',
+    borgoAlt: ['The rose window of the cathedral', 'Porta Trapani', 'The Castle of Venus', 'The cable car above the Trapani plain'],
+    clearAlt: 'The road to the Castle of Venus on a clear day', revOn: `on Booking.com · ${sito.booking.recensioni} reviews`,
     revThemes: ['The view from the patio', 'Helpful, friendly hosts', 'Convenient, yet quiet', 'Clean, spacious apartments'],
-    revLink: 'Read the reviews',
-    bookN: 'VI — Book direct', bookH: 'Write to us, we’ll reply.',
+    revLink: 'Read the reviews', bookH: 'Write to us, we’ll reply.',
     book: ['Special rate when you book on our website', 'Flexible check-in on request', 'Talk directly to your hosts', 'No booking fees'],
   },
 }[lang];
@@ -75,7 +66,7 @@ const ld = {
 <Base lang={lang} page="home" title={T.title} description={T.desc} over>
   <script slot="head" type="application/ld+json" set:html={JSON.stringify(ld)} />
 
-  <section class="hero">
+  <section class="hero" data-enter>
     <ArtImage desktop={img('borgo/belvedere-nuvole')} mobile={img('borgo/m-vicolo-cofano')} alt={T.heroAlt} class="bg" eager />
     <div class="wrap">
       <div class="enter">
@@ -92,64 +83,65 @@ const ld = {
   <section class="photo-sec left">
     <div class="media"><ArtImage desktop={img('borgo/vista-trapani-egadi')} mobile={img('borgo/m-vista-pianura')} alt={T.vistaAlt} class="bg parallax" /></div>
     <div class="wrap">
-      <div class="txt" data-reveal="text">
-        <span class="num">{T.vistaN}</span>
+      <div class="txt">
         <h2>{T.vistaH}</h2>
         <p>{T.vistaP}</p>
       </div>
     </div>
   </section>
 
-  <section class="section">
-    <div class="wrap">
-      <div class="head" data-reveal="text">
-        <div><span class="num">{T.aptsN}</span><h2>{T.aptsH}</h2></div>
-        <p>{T.aptsP}</p>
-      </div>
+  <section class="section" id="appartamenti">
+    <div class="wrap head">
+      <h2>{T.aptsH}</h2>
+      <p>{T.aptsP}</p>
     </div>
     <div class="apts">
-      {apts.map((a, i) => <ApartmentCard a={a} lang={lang} n={roman[i]} full />)}
+      {apts.map((a) => <ApartmentCard a={a} lang={lang} full />)}
     </div>
   </section>
 
-  <section class="photo-sec center">
-    <div class="media"><ArtImage desktop={img('borgo/castello-nebbia')} mobile={img('borgo/m-nebbia-vicolo')} alt={T.fogAlt} class="bg kenburns" /></div>
+  <section class="photo-sec fog">
+    <div class="media">
+      <ArtImage desktop={img('borgo/castello-venere-2')} alt={T.clearAlt} class="bg" sizes="(max-width: 700px) 250vw, 100vw" />
+      <ArtImage desktop={img('borgo/castello-nebbia')} alt={T.fogAlt} class="bg fog-in" sizes="(max-width: 700px) 250vw, 100vw" />
+    </div>
     <div class="wrap">
-      <div class="txt" data-reveal="text">
-        <span class="num">{T.fogN}</span>
+      <div class="txt">
         <h2>{T.fogH}</h2>
         <p>{T.fogP}</p>
       </div>
     </div>
   </section>
 
-  <section class="section" id="borgo">
-    <div class="wrap split">
-      <div class="borgo">
-        <Image src={img('borgo/castello-venere')} alt={T.borgoAlt[0]} widths={[600, 1000]} sizes="(max-width: 900px) 92vw, 34vw" class="soft" data-reveal />
-        <Image src={img('borgo/m-porta-trapani')} alt={T.borgoAlt[1]} widths={[400, 700]} sizes="(max-width: 900px) 45vw, 22vw" class="soft" data-reveal />
-        <Image src={img('borgo/duomo-rosone')} alt={T.borgoAlt[2]} widths={[400, 700]} sizes="(max-width: 900px) 45vw, 22vw" class="soft" data-reveal />
-      </div>
-      <div data-reveal="text">
-        <span class="num">{T.borgoN}</span>
+  <section class="section walk" id="borgo">
+    <div class="wrap">
+      <div class="head">
         <h2>{T.borgoH}</h2>
-        <p class="lead">{T.borgoP}</p>
-        <ul class="facts-list">{T.walk.map(([a, b]) => <li><span>{a}</span><span>{b}</span></li>)}</ul>
-        <p style="margin-top:28px"><a class="link" href={url('arrive', lang)}>{t.nav.arrive}</a></p>
+        <p>{T.borgoP}</p>
       </div>
+      <ol class="route">
+        <li class="start"><span class="dot"></span><span class="name">{T.home}</span><span class="dist">Viale Conte Pepoli</span></li>
+        {T.walk.map(([name, dist], i) => (
+          <li>
+            <div class="window"><Image src={img(['borgo/duomo-rosone', 'borgo/m-porta-trapani', 'borgo/m-castello-venere', 'borgo/funivia'][i])} alt={T.borgoAlt[i]} widths={[360, 600, 900]} sizes="(max-width: 800px) 60vw, 34vw" /></div>
+            <span class="dot"></span>
+            <span class="dist">{dist}</span>
+            <span class="name">{name}</span>
+          </li>
+        ))}
+      </ol>
+      <p class="walk-more"><a class="link" href={url('arrive', lang)}>{t.nav.arrive}</a></p>
     </div>
   </section>
 
   <section class="trust">
-    <div class="alt" style="background:var(--calc-2)" data-reveal="text">
-      <span class="num">{T.revN}</span>
+    <div class="alt" style="background:var(--calc-2)">
       <div class="score">{score}</div>
       <p class="muted">{T.revOn}</p>
       <ul class="ticks" style="margin:28px 0">{T.revThemes.map((r) => <li>{r}</li>)}</ul>
       <a class="link" href={sito.booking.url} rel="noopener" target="_blank">{T.revLink} ↗</a>
     </div>
-    <div class="dark" data-reveal="text">
-      <span class="num">{T.bookN}</span>
+    <div class="dark">
       <h2>{T.bookH}</h2>
       <ul class="ticks" style="margin:28px 0 40px">{T.book.map((r) => <li>{r}</li>)}</ul>
       <div class="btns">

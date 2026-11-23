@@ -6,7 +6,6 @@ import { url, ui } from '../i18n.js';
 interface Props { lang: 'it' | 'en' }
 const { lang } = Astro.props;
 const t = ui[lang];
-const roman = ['I', 'II', 'III'];
 const yes = lang === 'it' ? 'Sì' : 'Yes';
 const T = {
   it: { title: 'Gli appartamenti · LEO Appartamenti Erice', desc: 'Venere, Elimo e Balio: tre appartamenti a Erice da 4 a 7 persone. Confrontali e scegli quello giusto per te.', eyebrow: 'Tre case, una vista', h1: 'Gli appartamenti', lead: 'Venere è il più grande, con camino e cortile; Elimo e Balio sono pensati per coppie e piccole famiglie. Per i gruppi si prenotano insieme.', compareN: 'Il confronto', compare: 'Quale fa per te?', size: 'Superficie', guests: 'Ospiti', layout: 'Caratteristiche', all: 'In tutti', allList: 'Cucina, aria condizionata e riscaldamento, Wi-Fi gratuito, TV, lavatrice, patio, bagno con doccia. Animali su richiesta.' },
@@ -30,13 +29,13 @@ const rows: [string, (a: any) => string][] = [
 
   <section class="section tight">
     <div class="apts">
-      {apts.map((a, i) => <ApartmentCard a={a} lang={lang} n={roman[i]} full />)}
+      {apts.map((a) => <ApartmentCard a={a} lang={lang} full />)}
     </div>
   </section>
 
   <section class="section alt">
     <div class="wrap">
-      <div class="head" data-reveal="text"><div><span class="num">{T.compareN}</span><h2>{T.compare}</h2></div></div>
+      <div class="head"><div><span class="num">{T.compareN}</span><h2>{T.compare}</h2></div></div>
       <div class="table-wrap">
         <table class="compare">
           <thead><tr><td></td>{apts.map((a) => <th scope="col"><a href={url('apts', lang, a.id)}>{a.nome}</a></th>)}</tr></thead>

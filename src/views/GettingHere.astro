@@ -53,7 +53,7 @@ const T = {
     <div class="wrap split top">
       <div class="prose">
         {T.blocks.map(([h, p], i) => (
-          <div data-reveal="text"><span class="num" style="margin-top:1.6em">{roman[i]}</span><h2 style="margin-top:0">{h}</h2><p set:html={p} /></div>
+          <div><span class="num" style="margin-top:1.6em">{roman[i]}</span><h2 style="margin-top:0">{h}</h2><p set:html={p} /></div>
         ))}
         <p class="note" style="margin-top:40px">{T.tip}</p>
       </div>
