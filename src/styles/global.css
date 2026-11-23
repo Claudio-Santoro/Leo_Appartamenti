@@ -604,6 +604,13 @@ html.time-reveal::view-transition-new(root) { animation: reveal .7s var(--ease) 
   .js [data-reveal] { opacity: 1; filter: none; transform: none; }
 }
 @media (max-width: 700px) { .hero .fog-canvas, .hero .fog-css { height: 56svh; min-height: 380px; bottom: auto; } }
+/* Notte su telefono: l'apertura mostra il vicolo al crepuscolo con il lampione acceso */
+.hero .night-bg { display: none; }
+@media (max-width: 700px) {
+  :root[data-time='night'] .hero .night-bg { display: block; position: absolute; left: 0; top: 0; width: 100%; height: 56svh; min-height: 380px; max-width: none;
+    object-fit: cover; object-position: 54% 50%; animation: unveil 1.2s var(--ease) both;
+    -webkit-mask-image: linear-gradient(to bottom, #000 0, #000 70%, transparent 100%); mask-image: linear-gradient(to bottom, #000 0, #000 70%, transparent 100%); }
+}
 @media (max-width: 700px) { .photo-sec .fog-canvas, .photo-sec .fog-css { height: 76svh; min-height: 460px; bottom: auto; } }
 /* Un'ombra morbida solo dietro le parole dell'apertura: la nebbia resta piena, il testo leggibile */
 @media (min-width: 701px) {

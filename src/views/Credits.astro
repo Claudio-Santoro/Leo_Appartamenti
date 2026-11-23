@@ -6,8 +6,8 @@ import { img } from '../images.js';
 interface Props { lang: 'it' | 'en' }
 const { lang } = Astro.props;
 const T = {
-  it: { title: 'Crediti fotografici', lead: 'Le foto di Erice e dei dintorni vengono da Wikimedia Commons e sono usate secondo le loro licenze libere (ridimensionate per il web). Le foto degli appartamenti sono dei proprietari.', by: 'Foto di', source: 'fonte' },
-  en: { title: 'Photo credits', lead: 'The photos of Erice and its surroundings come from Wikimedia Commons and are used under their free licences (resized for the web). The photos of the apartments belong to the owners.', by: 'Photo by', source: 'source' },
+  it: { title: 'Crediti fotografici', lead: 'Le foto di Erice e dei dintorni vengono da Wikimedia Commons e sono usate secondo le loro licenze libere (ridimensionate per il web). Le foto degli appartamenti e quella del vicolo di Erice di notte, nell’apertura su telefono, sono dei proprietari.', by: 'Foto di', source: 'fonte' },
+  en: { title: 'Photo credits', lead: 'The photos of Erice and its surroundings come from Wikimedia Commons and are used under their free licences (resized for the web). The photos of the apartments, and the night view of an alley in Erice shown at the top of the page on phones, belong to the owners.', by: 'Photo by', source: 'source' },
 }[lang];
 ---
 <Base lang={lang} page="credits" title={`${T.title} · LEO Appartamenti`} description={T.lead}>

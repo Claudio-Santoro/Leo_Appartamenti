@@ -20,7 +20,8 @@ const T = {
     sub: 'Tre appartamenti appena fuori dalle mura, con il patio che guarda Trapani e il mare. Arrivi in auto fino alla porta, ti accogliamo noi.',
     discover: 'Gli appartamenti',
     trail: ['Erice', 'La vista', 'Le case', 'La nebbia', 'Il borgo', 'Gli ospiti'], trailLabel: 'Il sentiero della pagina',
-    heroAlt: 'Erice, il borgo di pietra sospeso sopra il mare e le nuvole', vistaH: 'Da Erice: Trapani, il mare, le Egadi.',
+    heroAlt: 'Erice, il borgo di pietra sospeso sopra il mare e le nuvole',
+    nightAlt: 'Un vicolo di Erice al crepuscolo, con un lampione acceso', vistaH: 'Da Erice: Trapani, il mare, le Egadi.',
     vistaP: 'Dal patio guardi Trapani e il mare: è la cosa che i nostri ospiti ricordano di più. Al tramonto le saline si accendono di rosa e le isole compaiono una dietro l’altra.',
     vistaAlt: 'Il panorama dall’alto di Erice verso Trapani e il mare', aptsH: 'Venere, Elimo e Balio.',
     aptsP: 'Tre appartamenti vicini, tutti con cucina, aria condizionata, riscaldamento e Wi-Fi. Per i gruppi si prenotano insieme: fino a 15 persone.', fogH: 'Quando sale la nebbia.',
@@ -43,7 +44,8 @@ const T = {
     sub: 'Three apartments just outside the old walls, with a patio looking out over Trapani and the sea. Drive right up to the door — we’ll be there to welcome you.',
     discover: 'The apartments',
     trail: ['Erice', 'The view', 'The homes', 'The fog', 'The village', 'Our guests'], trailLabel: 'Page trail',
-    heroAlt: 'Erice, the stone village hanging above the sea and the clouds', vistaH: 'From Erice: Trapani, the sea, the Egadi.',
+    heroAlt: 'Erice, the stone village hanging above the sea and the clouds',
+    nightAlt: 'An alley in Erice at dusk, with a street lamp lit', vistaH: 'From Erice: Trapani, the sea, the Egadi.',
     vistaP: 'From the patio you look out over Trapani and the sea: it’s what our guests remember most. At sunset the salt pans glow pink and the islands appear one behind the other.',
     vistaAlt: 'The view from high up in Erice towards Trapani and the sea', aptsH: 'Venere, Elimo and Balio.',
     aptsP: 'Three neighbouring apartments, all with kitchen, air conditioning, heating and Wi-Fi. Groups can book them together: up to 15 people.', fogH: 'When the fog rolls in.',
@@ -85,6 +87,8 @@ const ld = {
 
   <section class="hero" id="inizio" data-enter>
     <ArtImage desktop={img('borgo/belvedere-nuvole')} mobile={img('borgo/m-vicolo-cofano')} alt={T.heroAlt} class="bg" eager />
+    {/* Di notte, su telefono, l'apertura passa a questa foto (CSS). Se non si vede non viene scaricata (lazy + display:none). */}
+    <Image src={img('borgo/m-notte-vicolo')} alt={T.nightAlt} widths={[800, 1400, 2000, 2400]} sizes="(max-width: 700px) 190vw, 1px" class="night-bg" loading="lazy" decoding="async" />
     <Fog density={0.95} />
     <div class="lamp-halo" aria-hidden="true"></div>
     <div class="wrap">
@@ -188,21 +192,26 @@ const ld = {
 
   <script>
     // Il lampione vero della foto d'apertura: di notte un alone caldo sul suo vetro.
-    // ponytail: coordinate misurate a mano sulla foto belvedere-nuvole (1920x1440); se cambia la foto, vanno rimisurate.
-    const LAMP = { x: 1324 / 1920, y: 547 / 1440 };
+    // ponytail: coordinate misurate a mano sulle foto; se cambia una foto, vanno rimisurate.
+    // Desktop: belvedere-nuvole (1920x1440, centrata). Telefono di notte: m-notte-vicolo (2400x1600, object-position 54% 50%).
+    const LAMPS = { desktop: { w: 1920, h: 1440, x: 1324 / 1920, y: 547 / 1440, px: 0.5, py: 0.5 }, phone: { w: 2400, h: 1600, x: 0.545, y: 0.422, px: 0.54, py: 0.5 } };
     const hero = document.querySelector<HTMLElement>('.hero')!;
     const photo = hero.querySelector<HTMLImageElement>('.bg')!;
+    const night = hero.querySelector<HTMLImageElement>('.night-bg')!;
     const halo = hero.querySelector<HTMLElement>('.lamp-halo')!;
     const placeHalo = () => {
       const desktop = innerWidth > 700;
-      halo.hidden = !desktop;
-      if (!desktop) return;
-      const W = hero.clientWidth, H = hero.clientHeight, k = Math.max(W / 1920, H / 1440);
-      halo.style.left = `${(W - 1920 * k) / 2 + LAMP.x * 1920 * k}px`;
-      halo.style.top = `${(H - 1440 * k) / 2 + LAMP.y * 1440 * k}px`;
-      halo.style.scale = String(Math.max(0.6, k * 1.2));
+      const L = desktop ? LAMPS.desktop : LAMPS.phone;
+      const W = hero.clientWidth, H = desktop ? hero.clientHeight : night.clientHeight;
+      halo.hidden = !H;
+      if (!H) return;
+      const k = Math.max(W / L.w, H / L.h);
+      halo.style.left = `${(W - L.w * k) * L.px + L.x * L.w * k}px`;
+      halo.style.top = `${(H - L.h * k) * L.py + L.y * L.h * k}px`;
+      halo.style.scale = String(desktop ? Math.max(0.6, k * 1.2) : 0.62);
     };
-    placeHalo(); addEventListener('resize', placeHalo); photo.addEventListener('load', placeHalo);
+    placeHalo(); addEventListener('resize', placeHalo); photo.addEventListener('load', placeHalo); night.addEventListener('load', placeHalo);
+    new MutationObserver(placeHalo).observe(document.documentElement, { attributes: true, attributeFilter: ['data-time'] });
 
     // Le tappe del borgo: al clic sull'arco la foto intera, senza ritaglio.
     const zoom = document.querySelector<HTMLDialogElement>('#borgo-zoom')!;
