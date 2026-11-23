@@ -12,6 +12,7 @@
     "@astrojs/sitemap": "^3.7.6",
     "@fontsource-variable/eb-garamond": "^5.3.0",
     "@fontsource/almendra": "^5.3.0",
-    "astro": "^7.4.13"
+    "astro": "^7.4.13",
+    "three": "0.187.0"
   }
 }

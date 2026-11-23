@@ -176,7 +176,9 @@ p { margin: 0 0 1em; text-wrap: pretty; }
 /* ---------- Barra fissa su smartphone ---------- */
 .mbar { display: none; }
 @media (max-width: 700px) {
-  .mbar { display: flex; gap: 8px; position: fixed; left: 12px; right: 12px; bottom: calc(max(12px, env(safe-area-inset-bottom)) + var(--badge-offset, 0px)); z-index: 25; padding: 6px; border-radius: 999px; background: var(--header-bg); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); box-shadow: 0 10px 30px rgba(30, 26, 21, .2); transform: translateY(150%); transition: transform .45s var(--ease); }
+  .mbar { display: flex; gap: 8px; position: fixed; left: 12px; right: 12px; bottom: calc(max(12px, env(safe-area-inset-bottom)) + var(--badge-offset, 0px)); z-index: 25; transform: translateY(150%);
+    /* niente fondo: solo le due targhe, con un'ombra che segue la loro forma smussata (box-shadow verrebbe tagliata dal clip-path) */
+    filter: drop-shadow(0 6px 10px rgba(0, 0, 0, .38)) drop-shadow(0 1px 2px rgba(0, 0, 0, .45)); transition: transform .45s var(--ease); }
   .mbar.show { transform: none; }
   .mbar .btn { flex: 1; min-height: 48px; padding: 0 12px; }
   body.has-bar .site-footer { padding-bottom: calc(110px + var(--badge-offset, 0px)); }
@@ -605,7 +607,8 @@ html.time-reveal::view-transition-new(root) { animation: reveal .7s var(--ease) 
 @media (max-width: 700px) { .photo-sec .fog-canvas, .photo-sec .fog-css { height: 76svh; min-height: 460px; bottom: auto; } }
 /* Un'ombra morbida solo dietro le parole dell'apertura: la nebbia resta piena, il testo leggibile */
 @media (min-width: 701px) {
-  .hero .wrap::before { content: ''; position: absolute; left: 0; bottom: 0; z-index: -1; width: min(1100px, 85%); height: 80%; pointer-events: none;
-    background: radial-gradient(ellipse 70% 60% at 18% 78%, rgba(12, 14, 13, .58), rgba(12, 14, 13, .25) 55%, transparent 80%); }
+  /* parte dal bordo dello schermo, non dal margine del testo: niente bordo netto sopra la nebbia */
+  .hero .wrap::before { content: ''; position: absolute; left: calc((100% - 100vw) / 2); bottom: 0; z-index: -1; width: 100vw; height: 80%; pointer-events: none;
+    background: radial-gradient(ellipse 55% 65% at 14% 80%, rgba(12, 14, 13, .58), rgba(12, 14, 13, .25) 55%, transparent 80%); }
   .hero .wrap { isolation: isolate; }
 }
