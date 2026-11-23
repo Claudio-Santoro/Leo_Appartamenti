@@ -630,7 +630,11 @@ html.time-reveal::view-transition-new(root) { animation: reveal .7s var(--ease) 
 .fog-canvas, .fog-css { -webkit-mask-image: linear-gradient(to bottom, #000 62%, transparent 100%); mask-image: linear-gradient(to bottom, #000 62%, transparent 100%); }
 @media (min-width: 701px) {
   .hero .fog-canvas, .hero .fog-css { -webkit-mask-image: linear-gradient(to bottom, #000 78%, transparent 100%); mask-image: linear-gradient(to bottom, #000 78%, transparent 100%); }
-  :root[data-time='night'] .hero { background: none; } /* sotto c'è la grana del body: un colore pieno farebbe una riga */
+  /* l'apertura finisce nel fondo della pagina (con la sua grana), non su un colore pieno: niente riga.
+     Di giorno la sfumatura parte sotto i pulsanti, perché il testo bianco sta in basso e vuole il fondo scuro */
+  .hero { background: none; }
+  .hero::after { background: linear-gradient(180deg, rgba(20,17,13,.62) 0%, rgba(20,17,13,0) 26%, rgba(20,17,13,0) 42%, rgba(20,17,13,.8) 74%, rgba(20,17,13,0) 100%); }
+  .hero .bg { -webkit-mask-image: linear-gradient(to bottom, #000 82%, transparent 100%); mask-image: linear-gradient(to bottom, #000 82%, transparent 100%); }
   :root[data-time='night'] .hero::after { background: linear-gradient(180deg, rgba(18,22,20,.62) 0%, rgba(18,22,20,0) 26%, rgba(18,22,20,0) 42%, rgba(18,22,20,.8) 78%, rgba(18,22,20,0) 100%); } /* finisce nel fondo della pagina */
   :root[data-time='night'] .hero .bg { -webkit-mask-image: linear-gradient(to bottom, #000 70%, transparent 100%); mask-image: linear-gradient(to bottom, #000 70%, transparent 100%); }
 }
