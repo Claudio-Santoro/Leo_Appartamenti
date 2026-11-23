@@ -1,7 +1,9 @@
 ---
-import '@fontsource-variable/bodoni-moda/opsz.css';
-import '@fontsource-variable/bodoni-moda/opsz-italic.css';
-import '@fontsource-variable/jost';
+import '@fontsource/almendra/latin-400.css';
+import '@fontsource/almendra/latin-700.css';
+import '@fontsource/almendra/latin-400-italic.css';
+import '@fontsource-variable/eb-garamond/wght.css';
+import '@fontsource-variable/eb-garamond/wght-italic.css';
 import '../styles/global.css';
 import { url, ui } from '../i18n.js';
 import sito from '../data/sito.json';
@@ -31,7 +33,7 @@ const wa = `https://wa.me/${sito.whatsapp}`;
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>{title}</title>
     <meta name="description" content={description} />
-    <meta name="theme-color" content="#EEE7DB" />
+    <meta name="theme-color" content="#E8E6E0" />
     {noindex && <meta name="robots" content="noindex" />}
     <link rel="canonical" href={abs(lang)} />
     <link rel="alternate" hreflang="it" href={abs('it')} />
@@ -42,7 +44,19 @@ const wa = `https://wa.me/${sito.whatsapp}`;
     <meta property="og:type" content="website" />
     <meta property="og:locale" content={lang === 'it' ? 'it_IT' : 'en_GB'} />
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 40'%3E%3Cpath d='M2 16A14 14 0 0 1 30 16V40H2Z' fill='%231E1A15'/%3E%3Ctext x='16' y='33' font-size='18' text-anchor='middle' fill='%23EEE7DB' font-family='Georgia'%3EL%3C/text%3E%3C/svg%3E" />
-    <script is:inline>document.documentElement.classList.add('js')</script>
+    <script is:inline>
+      // Giorno o notte, deciso prima che la pagina si disegni: ?notte / ?giorno, poi la scelta salvata, poi l'ora locale.
+      (() => {
+        const d = document.documentElement; d.classList.add('js');
+        let m = null;
+        try {
+          const q = new URLSearchParams(location.search);
+          m = q.has('notte') || q.has('night') ? 'night' : q.has('giorno') || q.has('day') ? 'day' : localStorage.getItem('leo-time');
+        } catch (e) {}
+        if (m !== 'night' && m !== 'day') { const h = new Date().getHours(); m = h >= 20 || h < 7 ? 'night' : 'day'; }
+        d.dataset.time = m;
+      })();
+    </script>
     <slot name="head" />
   </head>
   <body class={bar ? 'has-bar' : undefined}>
@@ -55,6 +69,9 @@ const wa = `https://wa.me/${sito.whatsapp}`;
           <a href={url(page, other, id)} hreflang={other} lang={other}>{other.toUpperCase()}</a>
           <a class="btn" href={url('avail', lang)}>{t.nav.book}</a>
         </nav>
+        <button class="time-btn" type="button" aria-pressed="false" aria-label={t.lamps} title={t.lamps}>
+          <svg viewBox="0 0 26 32" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"><path d="M13 1v4M8 5h10l2 4H6z" /><path class="glass" d="M7 9h12l-1.5 13h-9z" /><path d="M8 22h10l-2 4h-6zM13 26v5" /></g><g class="ray" stroke="var(--lamp)" stroke-width="1.5" stroke-linecap="round"><path d="M3 15H0M26 15h-3M4 7 1.5 4.5M22 7l2.5-2.5" /></g></svg>
+        </button>
         <button class="menu-btn" type="button" aria-expanded="false" aria-controls="menu-panel" aria-label={t.menu}><span></span><span></span></button>
       </div>
     </header>
@@ -83,7 +100,9 @@ const wa = `https://wa.me/${sito.whatsapp}`;
       </div>
     )}
 
-    <footer class="site-footer">
+    <div class="lantern" aria-hidden="true"></div>
+
+    <footer class="site-footer merli selciato">
       <div class="wrap">
         <div class="cols">
           <div>
@@ -151,6 +170,51 @@ const wa = `https://wa.me/${sito.whatsapp}`;
       panel.querySelector('.close')!.addEventListener('click', () => setMenu(false));
       panel.querySelectorAll('nav a').forEach((a) => a.addEventListener('click', () => setMenu(false)));
       addEventListener('keydown', (e) => { if (e.key === 'Escape' && panel.classList.contains('open')) setMenu(false); });
+
+      // Lanterna: accende e spegne i lampioni. Il nuovo colore si allarga a cerchio dalla lanterna premuta.
+      const root = document.documentElement;
+      const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const timeBtn = document.querySelector<HTMLButtonElement>('.time-btn')!;
+      const themeMeta = document.querySelector('meta[name="theme-color"]')!;
+      const syncTime = () => {
+        const night = root.dataset.time === 'night';
+        timeBtn.setAttribute('aria-pressed', String(night));
+        themeMeta.setAttribute('content', night ? '#121614' : '#E8E6E0');
+      };
+      syncTime();
+      timeBtn.addEventListener('click', () => {
+        const next = root.dataset.time === 'night' ? 'day' : 'night';
+        const apply = () => { root.dataset.time = next; syncTime(); };
+        try { localStorage.setItem('leo-time', next); } catch (e) {}
+        const b = timeBtn.getBoundingClientRect();
+        root.style.setProperty('--rx', `${b.left + b.width / 2}px`);
+        root.style.setProperty('--ry', `${b.top + b.height / 2}px`);
+        if (!still && 'startViewTransition' in document) {
+          root.classList.add('time-reveal');
+          (document as any).startViewTransition(apply).finished.finally(() => root.classList.remove('time-reveal'));
+        } else {
+          root.classList.add('time-shift'); apply(); setTimeout(() => root.classList.remove('time-shift'), 700);
+        }
+      });
+
+      // Una lanterna segue il mouse; sulle foto [data-lantern] la luce cade dove passa. Mai su touch.
+      const lantern = document.querySelector<HTMLElement>('.lantern')!;
+      if (!still && matchMedia('(hover: hover) and (pointer: fine)').matches) {
+        let gx = innerWidth / 2, gy = innerHeight / 2, x = gx, y = gy, raf = 0;
+        const step = () => {
+          x += (gx - x) * 0.18; y += (gy - y) * 0.18;
+          lantern.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+          raf = Math.abs(gx - x) + Math.abs(gy - y) > 0.5 ? requestAnimationFrame(step) : 0;
+        };
+        addEventListener('pointermove', (e) => {
+          if (e.pointerType !== 'mouse') return;
+          gx = e.clientX; gy = e.clientY; lantern.classList.add('on');
+          if (!raf) raf = requestAnimationFrame(step);
+          const lit = (e.target as Element).closest?.<HTMLElement>('[data-lantern]');
+          if (lit) { const r = lit.getBoundingClientRect(); lit.style.setProperty('--lx', `${e.clientX - r.left}px`); lit.style.setProperty('--ly', `${e.clientY - r.top}px`); }
+        }, { passive: true });
+        document.addEventListener('pointerleave', () => lantern.classList.remove('on'));
+      }
 
       // Le foto e i testi marcati data-reveal si scoprono quando entrano nello schermo.
       const io = new IntersectionObserver((entries) => {

@@ -26,6 +26,7 @@ export const ui = {
     fireplace: 'Camino',
     footer: { address: 'Indirizzo', contacts: 'Contatti', explore: 'Esplora', codes: 'Codici identificativi', privacy: 'Privacy e cookie', terms: 'Condizioni di soggiorno', credits: 'Crediti fotografici', photos: 'Foto di Erice: Wikimedia Commons, con licenze libere.' },
     menu: 'Menu', close: 'Chiudi', skip: 'Vai al contenuto',
+    lamps: 'Accendi i lampioni (modalità notte)',
   },
   en: {
     nav: { apts: 'Apartments', erice: 'Erice', arrive: 'Getting here', faq: 'FAQ', book: 'Availability' },
@@ -39,5 +40,6 @@ export const ui = {
     fireplace: 'Fireplace',
     footer: { address: 'Address', contacts: 'Contacts', explore: 'Explore', codes: 'Registration codes', privacy: 'Privacy & cookies', terms: 'Terms of stay', credits: 'Photo credits', photos: 'Photos of Erice: Wikimedia Commons, freely licensed.' },
     menu: 'Menu', close: 'Close', skip: 'Skip to content',
+    lamps: 'Light the street lamps (night mode)',
   },
 };

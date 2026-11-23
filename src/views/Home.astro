@@ -1,8 +1,9 @@
 ---
-import { Image } from 'astro:assets';
+import { Image, getImage } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import ArtImage from '../components/ArtImage.astro';
 import ApartmentCard from '../components/ApartmentCard.astro';
+import Fog from '../components/Fog.astro';
 import apts from '../data/appartamenti.json';
 import sito from '../data/sito.json';
 import { url, ui } from '../i18n.js';
@@ -18,6 +19,7 @@ const T = {
     h1: ['Erice,', 'sopra le nuvole.'],
     sub: 'Tre appartamenti appena fuori dalle mura, con il patio che guarda Trapani e il mare. Arrivi in auto fino alla porta, ti accogliamo noi.',
     discover: 'Gli appartamenti',
+    trail: ['Erice', 'La vista', 'Le case', 'La nebbia', 'Il borgo', 'Gli ospiti'], trailLabel: 'Il sentiero della pagina',
     heroAlt: 'Erice, il borgo di pietra sospeso sopra il mare e le nuvole', vistaH: 'Da Erice: Trapani, il mare, le Egadi.',
     vistaP: 'Dal patio guardi Trapani e il mare: è la cosa che i nostri ospiti ricordano di più. Al tramonto le saline si accendono di rosa e le isole compaiono una dietro l’altra.',
     vistaAlt: 'Il panorama dall’alto di Erice verso Trapani e il mare', aptsH: 'Venere, Elimo e Balio.',
@@ -27,7 +29,8 @@ const T = {
     borgoP: 'Siamo appena fuori dalle mura: in pochi minuti sei nel centro medievale, tra chiese, vicoli di pietra e pasticcerie.',
     walk: [['Real Duomo', 'circa 200 m'], ['Porta Trapani', 'circa 250 m'], ['Castello di Venere', 'circa 600 m'], ['Funivia per Trapani', 'a pochi minuti']],
     home: 'Da casa',
-    borgoAlt: ['Il rosone del Real Duomo', 'Porta Trapani', 'Il Castello di Venere', 'La funivia sopra la pianura di Trapani'],
+    borgoAlt: ['La Chiesa Madre di Erice con la sua torre campanaria', 'Porta Trapani', 'Il Castello di Venere sulla rupe', 'La funivia sopra la pianura di Trapani'],
+    zoom: 'Ingrandisci la foto', close: 'Chiudi', prev: 'Foto precedente', next: 'Foto successiva',
     clearAlt: 'La strada per il Castello di Venere in una giornata limpida', revOn: `su Booking.com · ${sito.booking.recensioni} recensioni`,
     revThemes: ['La vista dal patio', 'Proprietari disponibili e gentili', 'Comodo, ma tranquillo', 'Appartamenti puliti e spaziosi'],
     revLink: 'Leggi le recensioni', bookH: 'Scrivici, ti rispondiamo noi.',
@@ -39,6 +42,7 @@ const T = {
     h1: ['Erice,', 'above the clouds.'],
     sub: 'Three apartments just outside the old walls, with a patio looking out over Trapani and the sea. Drive right up to the door — we’ll be there to welcome you.',
     discover: 'The apartments',
+    trail: ['Erice', 'The view', 'The homes', 'The fog', 'The village', 'Our guests'], trailLabel: 'Page trail',
     heroAlt: 'Erice, the stone village hanging above the sea and the clouds', vistaH: 'From Erice: Trapani, the sea, the Egadi.',
     vistaP: 'From the patio you look out over Trapani and the sea: it’s what our guests remember most. At sunset the salt pans glow pink and the islands appear one behind the other.',
     vistaAlt: 'The view from high up in Erice towards Trapani and the sea', aptsH: 'Venere, Elimo and Balio.',
@@ -48,13 +52,22 @@ const T = {
     borgoP: 'We are just outside the walls: in a few minutes you are in the medieval centre, among churches, stone lanes and pastry shops.',
     walk: [['Cathedral', 'about 200 m'], ['Porta Trapani', 'about 250 m'], ['Castle of Venus', 'about 600 m'], ['Cable car to Trapani', 'a few minutes']],
     home: 'From home',
-    borgoAlt: ['The rose window of the cathedral', 'Porta Trapani', 'The Castle of Venus', 'The cable car above the Trapani plain'],
+    borgoAlt: ['The Chiesa Madre of Erice and its bell tower', 'Porta Trapani', 'The Castle of Venus on its cliff', 'The cable car above the Trapani plain'],
+    zoom: 'Enlarge photo', close: 'Close', prev: 'Previous photo', next: 'Next photo',
     clearAlt: 'The road to the Castle of Venus on a clear day', revOn: `on Booking.com · ${sito.booking.recensioni} reviews`,
     revThemes: ['The view from the patio', 'Helpful, friendly hosts', 'Convenient, yet quiet', 'Clean, spacious apartments'],
     revLink: 'Read the reviews', bookH: 'Write to us, we’ll reply.',
     book: ['Special rate when you book on our website', 'Flexible check-in on request', 'Talk directly to your hosts', 'No booking fees'],
   },
 }[lang];
+// Le tappe del borgo: foto e inquadratura dentro l'arco (object-position). Al clic si apre la foto intera.
+const stops = [
+  { file: 'borgo/m-duomo', pos: '45% 40%', tall: true },
+  { file: 'borgo/m-porta-trapani', pos: '50% 50%', tall: true },
+  { file: 'borgo/castello-venere', pos: '21% 50%', tall: false },
+  { file: 'borgo/funivia', pos: '50% 50%', tall: true },
+];
+const stopFull = await Promise.all(stops.map((st) => getImage({ src: img(st.file), width: 1600, format: 'webp' })));
 const ld = {
   '@context': 'https://schema.org', '@type': 'LodgingBusiness', name: sito.nome, url: new URL(url('home', lang), Astro.site).href,
   address: { '@type': 'PostalAddress', streetAddress: 'Viale Conte Pepoli 17', postalCode: '91016', addressLocality: 'Erice', addressRegion: 'TP', addressCountry: 'IT' },
@@ -66,8 +79,14 @@ const ld = {
 <Base lang={lang} page="home" title={T.title} description={T.desc} over>
   <script slot="head" type="application/ld+json" set:html={JSON.stringify(ld)} />
 
-  <section class="hero" data-enter>
+  <nav class="sentiero" aria-label={T.trailLabel}>
+    <ol>{['inizio', 'vista', 'appartamenti', 'nebbia', 'borgo', 'ospiti'].map((id, i) => <li><a href={`#${id}`}><span>{T.trail[i]}</span></a></li>)}</ol>
+  </nav>
+
+  <section class="hero" id="inizio" data-enter>
     <ArtImage desktop={img('borgo/belvedere-nuvole')} mobile={img('borgo/m-vicolo-cofano')} alt={T.heroAlt} class="bg" eager />
+    <Fog density={0.95} />
+    <div class="lamp-halo" aria-hidden="true"></div>
     <div class="wrap">
       <div class="enter">
         <h1>{T.h1[0]}<br />{T.h1[1]}</h1>
@@ -80,7 +99,7 @@ const ld = {
     </div>
   </section>
 
-  <section class="photo-sec left">
+  <section class="photo-sec left" id="vista">
     <div class="media"><ArtImage desktop={img('borgo/vista-trapani-egadi')} mobile={img('borgo/m-vista-pianura')} alt={T.vistaAlt} class="bg parallax" /></div>
     <div class="wrap">
       <div class="txt">
@@ -100,11 +119,12 @@ const ld = {
     </div>
   </section>
 
-  <section class="photo-sec fog">
+  <section class="photo-sec fog" id="nebbia">
     <div class="media">
       <ArtImage desktop={img('borgo/castello-venere-2')} alt={T.clearAlt} class="bg" sizes="(max-width: 700px) 250vw, 100vw" />
       <ArtImage desktop={img('borgo/castello-nebbia')} alt={T.fogAlt} class="bg fog-in" sizes="(max-width: 700px) 250vw, 100vw" />
     </div>
+    <Fog density={1.25} />
     <div class="wrap">
       <div class="txt">
         <h2>{T.fogH}</h2>
@@ -113,17 +133,20 @@ const ld = {
     </div>
   </section>
 
-  <section class="section walk" id="borgo">
+  <section class="section walk merli selciato" id="borgo">
     <div class="wrap">
       <div class="head">
         <h2>{T.borgoH}</h2>
         <p>{T.borgoP}</p>
       </div>
+      <p class="route-from"><span class="dot"></span>{T.home} · Viale Conte Pepoli</p>
       <ol class="route">
         <li class="start"><span class="dot"></span><span class="name">{T.home}</span><span class="dist">Viale Conte Pepoli</span></li>
         {T.walk.map(([name, dist], i) => (
           <li>
-            <div class="window"><Image src={img(['borgo/duomo-rosone', 'borgo/m-porta-trapani', 'borgo/m-castello-venere', 'borgo/funivia'][i])} alt={T.borgoAlt[i]} widths={[360, 600, 900]} sizes="(max-width: 800px) 60vw, 34vw" /></div>
+            <button type="button" class:list={['window', { tall: stops[i].tall }]} data-lantern data-full={stopFull[i].src} aria-label={`${T.zoom}: ${name}`}>
+              <Image src={img(stops[i].file)} alt={T.borgoAlt[i]} widths={[400, 700, 1000]} sizes="(max-width: 800px) 70vw, 30vw" style={`object-position:${stops[i].pos}`} />
+            </button>
             <span class="dot"></span>
             <span class="dist">{dist}</span>
             <span class="name">{name}</span>
@@ -131,12 +154,24 @@ const ld = {
         ))}
       </ol>
       <p class="walk-more"><a class="link" href={url('arrive', lang)}>{t.nav.arrive}</a></p>
+      <dialog class="lightbox" id="borgo-zoom">
+        <img alt="" />
+        <button type="button" class="close" aria-label={T.close}>×</button>
+        <button type="button" class="prev" aria-label={T.prev}>‹</button>
+        <button type="button" class="next" aria-label={T.next}>›</button>
+      </dialog>
     </div>
   </section>
 
-  <section class="trust">
+  <section class="trust merli" id="ospiti">
     <div class="alt" style="background:var(--calc-2)">
-      <div class="score">{score}</div>
+      <div class="score-wrap">
+        <svg class="rosone" viewBox="-100 -100 200 200" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2.2">
+          <circle r="96" /><circle r="86" /><circle r="22" /><circle r="12" />
+          {Array.from({ length: 12 }, (_, i) => <g transform={`rotate(${i * 30})`}><circle cy="-54" r="28" /><path d="M0 -22V-86" /><circle cy="-91" r="3.5" /></g>)}
+        </g></svg>
+        <div class="score">{score}</div>
+      </div>
       <p class="muted">{T.revOn}</p>
       <ul class="ticks" style="margin:28px 0">{T.revThemes.map((r) => <li>{r}</li>)}</ul>
       <a class="link" href={sito.booking.url} rel="noopener" target="_blank">{T.revLink} ↗</a>
@@ -150,4 +185,47 @@ const ld = {
       </div>
     </div>
   </section>
+
+  <script>
+    // Il lampione vero della foto d'apertura: di notte un alone caldo sul suo vetro.
+    // ponytail: coordinate misurate a mano sulla foto belvedere-nuvole (1920x1440); se cambia la foto, vanno rimisurate.
+    const LAMP = { x: 1324 / 1920, y: 547 / 1440 };
+    const hero = document.querySelector<HTMLElement>('.hero')!;
+    const photo = hero.querySelector<HTMLImageElement>('.bg')!;
+    const halo = hero.querySelector<HTMLElement>('.lamp-halo')!;
+    const placeHalo = () => {
+      const desktop = innerWidth > 700;
+      halo.hidden = !desktop;
+      if (!desktop) return;
+      const W = hero.clientWidth, H = hero.clientHeight, k = Math.max(W / 1920, H / 1440);
+      halo.style.left = `${(W - 1920 * k) / 2 + LAMP.x * 1920 * k}px`;
+      halo.style.top = `${(H - 1440 * k) / 2 + LAMP.y * 1440 * k}px`;
+      halo.style.scale = String(Math.max(0.6, k * 1.2));
+    };
+    placeHalo(); addEventListener('resize', placeHalo); photo.addEventListener('load', placeHalo);
+
+    // Le tappe del borgo: al clic sull'arco la foto intera, senza ritaglio.
+    const zoom = document.querySelector<HTMLDialogElement>('#borgo-zoom')!;
+    const windows = [...document.querySelectorAll<HTMLButtonElement>('.route .window')];
+    const zimg = zoom.querySelector('img')!;
+    let zi = 0;
+    const showStop = (n: number) => {
+      zi = (n + windows.length) % windows.length;
+      zimg.src = windows[zi].dataset.full!;
+      zimg.alt = windows[zi].querySelector('img')!.alt;
+    };
+    windows.forEach((w, n) => w.addEventListener('click', () => { showStop(n); zoom.showModal(); }));
+    zoom.querySelector('.close')!.addEventListener('click', () => zoom.close());
+    zoom.querySelector('.prev')!.addEventListener('click', () => showStop(zi - 1));
+    zoom.querySelector('.next')!.addEventListener('click', () => showStop(zi + 1));
+    zoom.addEventListener('click', (e) => { if (e.target === zoom) zoom.close(); });
+    zoom.addEventListener('keydown', (e) => { if (e.key === 'ArrowLeft') showStop(zi - 1); if (e.key === 'ArrowRight') showStop(zi + 1); });
+
+    // Il sentiero laterale segna la tappa in cui ti trovi.
+    const links = [...document.querySelectorAll<HTMLAnchorElement>('.sentiero a')];
+    const io = new IntersectionObserver((entries) => {
+      for (const e of entries) if (e.isIntersecting) links.forEach((a) => a.setAttribute('aria-current', String(a.hash === `#${e.target.id}`)));
+    }, { rootMargin: '-45% 0px -45% 0px' });
+    links.forEach((a) => { const sec = document.querySelector(a.hash); if (sec) io.observe(sec); });
+  </script>
 </Base>
