@@ -19,9 +19,9 @@ float fbm(vec2 p){ float v = 0.0, a = 0.5; for (int i = 0; i < 4; i++){ v += a*n
 void main(){
   vec2 uv = gl_FragCoord.xy / r;
   vec2 p = uv * vec2(r.x/r.y, 1.0) * 2.4;
-  vec2 q = vec2(fbm(p + vec2(t*0.020, t*0.006)), fbm(p + vec2(5.2, 1.3) - t*0.012));
-  float f = fbm(p + 1.8*q + vec2(-t*0.035, t*0.010));
-  float d = smoothstep(0.38, 0.92, f) * dens;
+  vec2 q = vec2(fbm(p + vec2(t*0.045, t*0.014)), fbm(p + vec2(5.2, 1.3) - t*0.03));
+  float f = fbm(p + 1.8*q + vec2(-t*0.08, t*0.022));
+  float d = min(1.0, smoothstep(0.38, 0.92, f) * dens * mix(1.0, 1.5, night)); // di notte più fitta
   d *= 0.45 + 0.75*(1.0 - uv.y);                      // più densa in basso: la nebbia sale dalla valle
   vec2 dm = (uv - m) * vec2(r.x/r.y, 1.0);
   float hole = smoothstep(0.04, 0.32, length(dm));     // il varco attorno al cursore

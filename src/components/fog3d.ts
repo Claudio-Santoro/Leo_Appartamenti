@@ -13,13 +13,14 @@ attribute vec3 aBase; attribute vec2 aScale; attribute float aRot; attribute flo
 uniform float uTime; uniform float uRange; uniform float uFit;
 varying vec2 vUv; varying float vAlpha; varying float vDepth; varying float vSeed;
 void main() {
-  vUv = uv; vAlpha = aAlpha; vSeed = aSeed;
+  vUv = uv; vSeed = aSeed;
+  vAlpha = aAlpha * (0.65 + 0.35 * sin(uTime * 0.25 + aSeed * 40.0)); // ogni banco si addensa e si dirada: respira
   // ogni banco avanza verso la camera e, uscito davanti, ricomincia in fondo
-  float z = -1000.0 + mod(aBase.z + uTime * (9.0 + 6.0 * aSeed), uRange);
-  float x = aBase.x + sin(uTime * 0.04 + aSeed * 6.283) * 60.0 + uTime * 4.0 * (aSeed - 0.35);
+  float z = -1000.0 + mod(aBase.z + uTime * (16.0 + 12.0 * aSeed), uRange);
+  float x = aBase.x + sin(uTime * 0.09 + aSeed * 6.283) * 90.0 + uTime * 10.0 * (aSeed - 0.35);
   x = (mod(x + 1300.0, 2600.0) - 1300.0) * uFit;                 // il vento li porta di lato, senza esaurirli
-  float y = aBase.y + sin(uTime * 0.03 + aSeed * 11.0) * 18.0 + uTime * 0.0;
-  float a = aRot + uTime * 0.015 * (aSeed - 0.5);
+  float y = aBase.y + sin(uTime * 0.07 + aSeed * 11.0) * 32.0;
+  float a = aRot + uTime * 0.04 * (aSeed - 0.5);
   // su schermo verticale (uFit < 1) i banchi si rimpiccioliscono in proporzione: restano larghi e bassi
   vec2 p = mat2(cos(a), -sin(a), sin(a), cos(a)) * (position.xy * aScale * mix(1.0, uFit, 0.85));
   vec4 mv = modelViewMatrix * vec4(vec3(x, y, z) + vec3(p, 0.0), 1.0);
@@ -34,7 +35,7 @@ uniform vec3 uDay; uniform vec3 uDusk;
 varying vec2 vUv; varying float vAlpha; varying float vDepth; varying float vSeed;
 void main() {
   vec4 t = vSeed < 0.33 ? texture2D(uTex0, vUv) : vSeed < 0.66 ? texture2D(uTex1, vUv) : texture2D(uTex2, vUv);
-  float a = t.a * vAlpha * uDensity;
+  float a = t.a * vAlpha * uDensity * mix(1.0, 1.55, uNight); // di notte la nebbia è più fitta
   a *= smoothstep(25.0, 160.0, vDepth) * (1.0 - smoothstep(760.0, 1000.0, vDepth)); // compare in fondo, svanisce addosso
   vec2 uv = gl_FragCoord.xy / uRes;
   float asp = uRes.x / uRes.y;
@@ -48,6 +49,7 @@ void main() {
   float dl = length((uv - uLamp) * vec2(asp, 1.0));
   col = mix(col, vec3(1.0, 0.74, 0.38), uNight * (1.0 - smoothstep(0.0, 0.42, dl)) * 0.9);  // il lampione
   col = mix(col, vec3(1.0, 0.8, 0.5), uNight * uHole * (1.0 - smoothstep(0.0, 0.3, d)) * 0.45); // la lanterna
+  a = min(a, 1.0);
   gl_FragColor = vec4(col * a, a);
 }`;
 
