@@ -216,18 +216,12 @@ p { margin: 0 0 1em; text-wrap: pretty; }
 .photo-sec h2 { text-shadow: 0 2px 24px rgba(0,0,0,.25); }
 .photo-sec p { font-size: 1.2rem; line-height: 1.6; }
 .photo-sec .num { color: var(--cotto-light); }
-/* Nebbia: la foto limpida sotto, quella con la nebbia sopra; la nebbia "sale" mentre la sezione scorre */
-.fog .media picture + picture .bg { position: absolute; inset: 0; }
 /* Il testo sta in alto, sul cielo chiaro (azzurro o nebbia): inchiostro scuro, nessun pannello */
 .photo-sec.fog { align-items: start; color: var(--ink); }
 .fog h2 { text-shadow: none; }
 @media (min-width: 701px) {
   .fog .wrap { padding-top: calc(var(--header-h) + 9vh); }
   .fog .txt { max-width: 30rem; margin-left: auto; } /* a destra, dove c'è solo cielo */
-}
-@supports (animation-timeline: view()) {
-  @keyframes fog-in { from { opacity: 0; filter: blur(6px); } to { opacity: 1; filter: blur(0); } }
-  .fog-in { animation: fog-in linear both; animation-timeline: view(); animation-range: entry 70% cover 55%; }
 }
 /* Testo scuro su un pannello di calcare velato, sempre leggibile */
 .photo-sec.center { justify-items: center; text-align: center; }
@@ -646,3 +640,5 @@ html.time-reveal::view-transition-new(root) { animation: reveal .7s var(--ease) 
 
 /* Il voto di notte prende la luce dei lampioni: il verde pino sul fondo scuro non si leggeva */
 :root[data-time='night'] .trust .score { color: var(--cotto-light); text-shadow: 0 0 28px rgba(var(--glow), .25); }
+/* Il mare di notte: meno buio delle altre foto, perché le Egadi all'orizzonte si vedano (il testo ha la sua velatura a sinistra) */
+:root[data-time='night'] #vista .bg { filter: brightness(.72) saturate(.8) contrast(1.08); }

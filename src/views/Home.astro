@@ -32,7 +32,7 @@ const T = {
     home: 'Da casa',
     borgoAlt: ['La Chiesa Madre di Erice con la sua torre campanaria', 'Porta Trapani', 'Il Castello di Venere sulla rupe', 'La funivia sopra la pianura di Trapani'],
     zoom: 'Ingrandisci la foto', close: 'Chiudi', prev: 'Foto precedente', next: 'Foto successiva',
-    clearAlt: 'La strada per il Castello di Venere in una giornata limpida', revOn: `su Booking.com · ${sito.booking.recensioni} recensioni`,
+    revOn: `su Booking.com · ${sito.booking.recensioni} recensioni`,
     revThemes: ['La vista dal patio', 'Proprietari disponibili e gentili', 'Comodo, ma tranquillo', 'Appartamenti puliti e spaziosi'],
     revLink: 'Leggi le recensioni',
     arriveQ: 'Come si arriva fin quassù?', arriveP: 'In auto fino alla porta, siamo fuori dalla zona a traffico limitato e c’è parcheggio. Oppure in funivia da Trapani: dieci minuti sopra il mare, e scendi a pochi passi da noi.', arriveCta: 'Auto, funivia, bus e aeroporti', bookH: 'Scrivici, ti rispondiamo noi.',
@@ -57,7 +57,7 @@ const T = {
     home: 'From home',
     borgoAlt: ['The Chiesa Madre of Erice and its bell tower', 'Porta Trapani', 'The Castle of Venus on its cliff', 'The cable car above the Trapani plain'],
     zoom: 'Enlarge photo', close: 'Close', prev: 'Previous photo', next: 'Next photo',
-    clearAlt: 'The road to the Castle of Venus on a clear day', revOn: `on Booking.com · ${sito.booking.recensioni} reviews`,
+    revOn: `on Booking.com · ${sito.booking.recensioni} reviews`,
     revThemes: ['The view from the patio', 'Helpful, friendly hosts', 'Convenient, yet quiet', 'Clean, spacious apartments'],
     revLink: 'Read the reviews',
     arriveQ: 'How do you get up here?', arriveP: 'By car right to the door: we are outside the restricted traffic zone and there is parking. Or by cable car from Trapani: ten minutes above the sea, and you step off a few minutes from us.', arriveCta: 'Car, cable car, bus and airports', bookH: 'Write to us, we’ll reply.',
@@ -127,8 +127,7 @@ const ld = {
 
   <section class="photo-sec fog" id="nebbia">
     <div class="media">
-      <ArtImage desktop={img('borgo/castello-venere-2')} alt={T.clearAlt} class="bg" sizes="(max-width: 700px) 250vw, 100vw" />
-      <ArtImage desktop={img('borgo/castello-nebbia')} alt={T.fogAlt} class="bg fog-in" sizes="(max-width: 700px) 250vw, 100vw" />
+      <ArtImage desktop={img('borgo/castello-nebbia')} alt={T.fogAlt} class="bg" sizes="(max-width: 700px) 250vw, 100vw" />
     </div>
     <Fog density={1.25} />
     <div class="wrap">
