@@ -9,3 +9,6 @@ dist/
 .claude/skills/
 .taste-skill/
 skills-lock.json
+
+# profili Chrome temporanei lasciati da Lighthouse
+C:*
