@@ -108,7 +108,7 @@ const ld = {
   <section class="photo-sec left" id="vista">
     <div class="media"><ArtImage desktop={img('borgo/vista-trapani-egadi')} alt={T.vistaAlt} class="bg parallax" sizes="(max-width: 700px) 250vw, 100vw" /></div>
     <div class="wrap">
-      <div class="txt">
+      <div class="txt" data-reveal>
         <h2>{T.vistaH}</h2>
         <p>{T.vistaP}</p>
       </div>
@@ -116,7 +116,7 @@ const ld = {
   </section>
 
   <section class="section" id="appartamenti">
-    <div class="wrap head">
+    <div class="wrap head" data-reveal>
       <h2>{T.aptsH}</h2>
       <p>{T.aptsP}</p>
     </div>
@@ -131,7 +131,7 @@ const ld = {
     </div>
     <Fog density={1.25} />
     <div class="wrap">
-      <div class="txt">
+      <div class="txt" data-reveal>
         <h2>{T.fogH}</h2>
         <p>{T.fogP}</p>
       </div>
@@ -140,15 +140,15 @@ const ld = {
 
   <section class="section walk merli selciato" id="borgo">
     <div class="wrap">
-      <div class="head">
+      <div class="head" data-reveal>
         <h2>{T.borgoH}</h2>
         <p>{T.borgoP}</p>
       </div>
       <p class="route-from"><span class="dot"></span>{T.home} · Viale Conte Pepoli</p>
       <ol class="route">
-        <li class="start"><span class="dot"></span><span class="name">{T.home}</span><span class="dist">Viale Conte Pepoli</span></li>
+        <li class="start" data-reveal><span class="dot"></span><span class="name">{T.home}</span><span class="dist">Viale Conte Pepoli</span></li>
         {T.walk.map(([name, dist], i) => (
-          <li>
+          <li data-reveal style={`--d:${(i + 1) * .12}s`}>
             <button type="button" class:list={['window', { tall: stops[i].tall }]} data-lantern data-full={stopFull[i].src} aria-label={`${T.zoom}: ${name}`}>
               <Image src={img(stops[i].file)} alt={T.borgoAlt[i]} widths={[400, 700, 1000]} sizes="(max-width: 800px) 70vw, 30vw" style={`object-position:${stops[i].pos}`} />
             </button>
@@ -158,7 +158,7 @@ const ld = {
           </li>
         ))}
       </ol>
-      <div class="walk-more">
+      <div class="walk-more" data-reveal>
         <h3>{T.arriveQ}</h3>
         <p>{T.arriveP}</p>
         <a class="btn line" href={url('arrive', lang)}>{T.arriveCta} →</a>
@@ -173,7 +173,7 @@ const ld = {
   </section>
 
   <section class="trust merli" id="ospiti">
-    <div class="alt" style="background:var(--calc-2)">
+    <div class="alt" style="background:var(--calc-2)" data-reveal>
       <div class="score-wrap">
         <svg class="rosone" viewBox="-100 -100 200 200" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2.2">
           <circle r="96" /><circle r="86" /><circle r="22" /><circle r="12" />
@@ -185,7 +185,7 @@ const ld = {
       <ul class="ticks" style="margin:28px 0">{T.revThemes.map((r) => <li>{r}</li>)}</ul>
       <a class="link" href={sito.booking.url} rel="noopener" target="_blank">{T.revLink} ↗</a>
     </div>
-    <div class="dark">
+    <div class="dark" data-reveal style="--d:.15s">
       <h2>{T.bookH}</h2>
       <ul class="ticks" style="margin:28px 0 40px">{T.book.map((r) => <li>{r}</li>)}</ul>
       <div class="btns">

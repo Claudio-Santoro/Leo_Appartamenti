@@ -478,7 +478,7 @@ table.compare { width: 100%; border-collapse: collapse; }
 .hero .bg { animation: unveil 1.8s var(--ease) both; }
 
 /* Foto che si scoprono come nebbia che si dirada, quando entrano nello schermo */
-.js [data-reveal] { opacity: 0; filter: blur(12px); transform: translateY(24px) scale(1.02); transition: opacity 1.1s var(--ease), filter 1.2s var(--ease), transform 1.2s var(--ease); }
+.js [data-reveal] { opacity: 0; filter: blur(12px); transform: translateY(24px) scale(1.02); transition: opacity 1.1s var(--ease), filter 1.2s var(--ease), transform 1.2s var(--ease); transition-delay: var(--d, 0s); }
 .js [data-reveal].in { opacity: 1; filter: blur(0); transform: none; }
 
 /* Parallasse leggera e lento zoom, legati allo scorrimento (dove supportato) */

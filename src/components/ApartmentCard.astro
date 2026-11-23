@@ -12,7 +12,7 @@ const imgs = await Promise.all(list.map((p) => getImage({ src: p.src, widths: [4
 const L = lang === 'it' ? { photos: `Foto di ${a.nome}`, prev: 'Foto precedente', next: 'Foto successiva' } : { photos: `Photos of ${a.nome}`, prev: 'Previous photo', next: 'Next photo' };
 ---
 <article class="apt">
-  <div class="wrap apt-head">
+  <div class="wrap apt-head" data-reveal>
     <h3><a href={href}>{a.nome}</a></h3>
     <div>
       <p class="facts">{a.mq} m² · {a.ospiti} {t.guests}{a.camino && ` · ${t.fireplace.toLowerCase()}`}</p>
@@ -20,7 +20,7 @@ const L = lang === 'it' ? { photos: `Foto di ${a.nome}`, prev: 'Foto precedente'
       <a class="link" href={href}>{t.details} {a.nome}</a>
     </div>
   </div>
-  <div class="strip" tabindex="0" role="region" aria-label={L.photos}>
+  <div class="strip" data-reveal style="--d:.12s" tabindex="0" role="region" aria-label={L.photos}>
     {list.map((p, i) => (
       // La foto parte solo quando la striscia si avvicina (vedi script): all'apertura la banda resta all'immagine principale.
       <img data-src={imgs[i].src} data-srcset={imgs[i].srcSet.attribute} sizes="(max-width: 700px) 150vw, 50vw" alt={p.alt}
