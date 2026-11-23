@@ -642,3 +642,5 @@ html.time-reveal::view-transition-new(root) { animation: reveal .7s var(--ease) 
 :root[data-time='night'] .trust .score { color: var(--cotto-light); text-shadow: 0 0 28px rgba(var(--glow), .25); }
 /* Il mare di notte: meno buio delle altre foto, perché le Egadi all'orizzonte si vedano (il testo ha la sua velatura a sinistra) */
 :root[data-time='night'] #vista .bg { filter: brightness(.72) saturate(.8) contrast(1.08); }
+/* Su telefono la stessa foto del desktop, inquadrata sulle Egadi; senza parallasse, che taglierebbe l'orizzonte */
+@media (max-width: 700px) { #vista .bg { animation: none; transform: none; object-position: 72% 0; } }
