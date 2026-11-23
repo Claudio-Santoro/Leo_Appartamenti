@@ -15,12 +15,13 @@ varying vec2 vUv; varying float vAlpha; varying float vDepth; varying float vSee
 void main() {
   vUv = uv; vSeed = aSeed;
   vAlpha = aAlpha * (0.65 + 0.35 * sin(uTime * 0.25 + aSeed * 40.0)); // ogni banco si addensa e si dirada: respira
-  // ogni banco avanza verso la camera e, uscito davanti, ricomincia in fondo
-  float z = -1000.0 + mod(aBase.z + uTime * (16.0 + 12.0 * aSeed), uRange);
-  float x = aBase.x + sin(uTime * 0.09 + aSeed * 6.283) * 90.0 + uTime * 10.0 * (aSeed - 0.35);
-  x = (mod(x + 1300.0, 2600.0) - 1300.0) * uFit;                 // il vento li porta di lato, senza esaurirli
+  // foschia portata dal vento: tutti i banchi scorrono nello stesso verso, a velocità diverse
+  // (i vicini sembrano più veloci: parallasse); avanzano appena verso la camera
+  float z = -1000.0 + mod(aBase.z + uTime * (4.0 + 4.0 * aSeed), uRange);
+  float x = aBase.x + uTime * (24.0 + 26.0 * aSeed) + sin(uTime * 0.09 + aSeed * 6.283) * 40.0;
+  x = (mod(x + 1300.0, 2600.0) - 1300.0) * uFit;                 // uscito da un lato rientra dall'altro
   float y = aBase.y + sin(uTime * 0.07 + aSeed * 11.0) * 32.0;
-  float a = aRot + uTime * 0.04 * (aSeed - 0.5);
+  float a = aRot + 0.04 * sin(uTime * 0.05 + aSeed * 9.0); // appena inclinate, restano orizzontali
   // su schermo verticale (uFit < 1) i banchi si rimpiccioliscono in proporzione: restano larghi e bassi
   vec2 p = mat2(cos(a), -sin(a), sin(a), cos(a)) * (position.xy * aScale * mix(1.0, uFit, 0.85));
   vec4 mv = modelViewMatrix * vec4(vec3(x, y, z) + vec3(p, 0.0), 1.0);
@@ -96,8 +97,8 @@ export function startFog3d(host: HTMLElement, density = 1) {
     base[i * 3] = (rnd() - 0.5) * 2600;
     base[i * 3 + 1] = -460 + Math.pow(rnd(), 1.7) * 560;   // più banchi in basso
     base[i * 3 + 2] = rnd() * 975;
-    const w = 420 + rnd() * 520; scale[i * 2] = w; scale[i * 2 + 1] = w * (0.42 + rnd() * 0.2); // banchi larghi e bassi
-    rot[i] = (rnd() - 0.5) * 0.5; alpha[i] = 0.32 + rnd() * 0.4; seed[i] = rnd();
+    const w = 420 + rnd() * 520; scale[i * 2] = w; scale[i * 2 + 1] = w * (0.26 + rnd() * 0.16); // strisce larghe e basse: foschia
+    rot[i] = (rnd() - 0.5) * 0.12; alpha[i] = 0.32 + rnd() * 0.4; seed[i] = rnd();
   }
   const geo = new InstancedBufferGeometry().copy(new PlaneGeometry(1, 1) as any);
   geo.instanceCount = N;
