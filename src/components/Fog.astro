@@ -34,17 +34,19 @@ void main(){
   const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const coarse = matchMedia('(pointer: coarse)').matches;
 
-  // Su desktop con scheda grafica la nebbia è in three.js (fog3d.ts, caricato solo qui); altrove resta questo shader 2D.
+  // La nebbia è in three.js (fog3d.ts, caricato solo dopo il caricamento della pagina); questo shader 2D è il ripiego.
   const isSoftware = () => {
     const g = document.createElement('canvas').getContext('webgl');
     const d = g?.getExtension('WEBGL_debug_renderer_info');
     return !g || /swiftshader|llvmpipe|software/i.test(d ? g.getParameter(d.UNMASKED_RENDERER_WEBGL) : '');
   };
-  const desktop3d = !still && matchMedia('(min-width: 901px)').matches && !matchMedia('(pointer: coarse)').matches && (!isSoftware() || location.search.includes('nebbia'));
+  // three.js ovunque ci sia una scheda grafica; resta lo shader 2D senza GPU, con "riduci movimento" o con "risparmio dati".
+  const saveData = (navigator as any).connection?.saveData === true;
+  const use3d = !still && !saveData && (!isSoftware() || location.search.includes('nebbia'));
 
   document.querySelectorAll<HTMLCanvasElement>('canvas.fog-canvas').forEach((cv) => {
     const host = cv.parentElement!;
-    if (desktop3d) {
+    if (use3d) {
       const go = () => import('./fog3d').then((m) => { m.startFog3d(host, Number(cv.dataset.density || 1)); cv.remove(); })
         .catch(() => host.classList.add('no-gl'));
       const idle = (window as any).requestIdleCallback ?? ((f: () => void) => setTimeout(f, 300));

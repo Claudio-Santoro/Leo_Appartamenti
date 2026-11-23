@@ -1,4 +1,4 @@
-// Nebbia in profondità con three.js, solo desktop (la carica Fog.astro con import()).
+// Nebbia in profondità con three.js, su desktop e su telefono (la carica Fog.astro con import(), dopo il caricamento).
 // Banchi di nebbia a strati: sprite con texture di rumore morbido, a profondità diverse, che scivolano
 // verso la camera e salgono dalla valle. Il movimento è tutto nello shader: JS aggiorna solo pochi uniform.
 // Il cursore apre un varco (più largo nei banchi vicini) che si richiude piano; di notte la nebbia
@@ -10,17 +10,18 @@ import {
 
 const VERT = /* glsl */ `
 attribute vec3 aBase; attribute vec2 aScale; attribute float aRot; attribute float aAlpha; attribute float aSeed;
-uniform float uTime; uniform float uRange;
+uniform float uTime; uniform float uRange; uniform float uFit;
 varying vec2 vUv; varying float vAlpha; varying float vDepth; varying float vSeed;
 void main() {
   vUv = uv; vAlpha = aAlpha; vSeed = aSeed;
   // ogni banco avanza verso la camera e, uscito davanti, ricomincia in fondo
   float z = -1000.0 + mod(aBase.z + uTime * (9.0 + 6.0 * aSeed), uRange);
   float x = aBase.x + sin(uTime * 0.04 + aSeed * 6.283) * 60.0 + uTime * 4.0 * (aSeed - 0.35);
-  x = mod(x + 1300.0, 2600.0) - 1300.0;                          // il vento li porta di lato, senza esaurirli
+  x = (mod(x + 1300.0, 2600.0) - 1300.0) * uFit;                 // il vento li porta di lato, senza esaurirli
   float y = aBase.y + sin(uTime * 0.03 + aSeed * 11.0) * 18.0 + uTime * 0.0;
   float a = aRot + uTime * 0.015 * (aSeed - 0.5);
-  vec2 p = mat2(cos(a), -sin(a), sin(a), cos(a)) * (position.xy * aScale);
+  // su schermo verticale (uFit < 1) i banchi si rimpiccioliscono in proporzione: restano larghi e bassi
+  vec2 p = mat2(cos(a), -sin(a), sin(a), cos(a)) * (position.xy * aScale * mix(1.0, uFit, 0.85));
   vec4 mv = modelViewMatrix * vec4(vec3(x, y, z) + vec3(p, 0.0), 1.0);
   vDepth = -mv.z;
   gl_Position = projectionMatrix * mv;
@@ -75,17 +76,19 @@ function puff(seed: number) {
 }
 
 export function startFog3d(host: HTMLElement, density = 1) {
+  const coarse = matchMedia('(pointer: coarse)').matches;
   const renderer = new WebGLRenderer({ alpha: true, antialias: false, premultipliedAlpha: true, powerPreference: 'low-power' });
   renderer.setClearColor(0x000000, 0);
   const cv = renderer.domElement;
   cv.className = 'fog-canvas'; cv.setAttribute('aria-hidden', 'true');
+  cv.dataset.fog = '3d';
   host.insertBefore(cv, host.querySelector('.fog-canvas') ?? null);
 
   const scene = new Scene();
   const camera = new PerspectiveCamera(52, 1, 1, 1200);
 
   // ponytail: 110 banchi bastano a coprire l'inquadratura; più banchi = più costo di riempimento.
-  const N = 110, base = new Float32Array(N * 3), scale = new Float32Array(N * 2), rot = new Float32Array(N), alpha = new Float32Array(N), seed = new Float32Array(N);
+  const N = coarse ? 75 : 110, base = new Float32Array(N * 3), scale = new Float32Array(N * 2), rot = new Float32Array(N), alpha = new Float32Array(N), seed = new Float32Array(N);
   let s = 7; const rnd = () => ((s = (s * 16807) % 2147483647) / 2147483647);
   for (let i = 0; i < N; i++) {
     base[i * 3] = (rnd() - 0.5) * 2600;
@@ -103,7 +106,7 @@ export function startFog3d(host: HTMLElement, density = 1) {
   geo.setAttribute('aSeed', new InstancedBufferAttribute(seed, 1));
 
   const U = {
-    uTime: { value: 0 }, uRange: { value: 975 }, uRes: { value: new Vector2(1, 1) },
+    uTime: { value: 0 }, uRange: { value: 975 }, uFit: { value: 1 }, uRes: { value: new Vector2(1, 1) },
     uMouse: { value: new Vector2(-2, -2) }, uHole: { value: 0 }, uNight: { value: 0 }, uLamp: { value: new Vector2(-2, -2) },
     uDensity: { value: density }, uDay: { value: new Color(0.95, 0.95, 0.93) }, uDusk: { value: new Color(0.42, 0.46, 0.52) },
     uTex0: { value: puff(11) }, uTex1: { value: puff(29) }, uTex2: { value: puff(47) },
@@ -112,20 +115,24 @@ export function startFog3d(host: HTMLElement, density = 1) {
   const mesh = new Mesh(geo, mat); mesh.frustumCulled = false; scene.add(mesh);
 
   // La nebbia è morbida: la disegniamo a bassa risoluzione e la allarga il browser.
-  let ratio = 0.5;
+  // Le misure sono quelle del canvas, non della sezione: su telefono la nebbia copre solo la foto (CSS).
+  let ratio = coarse ? 0.45 : 0.5;
   const halo = host.querySelector<HTMLElement>('.lamp-halo'); // c'è solo nell'apertura
   const size = () => {
-    const w = host.clientWidth, h = host.clientHeight;
+    const w = cv.clientWidth, h = cv.clientHeight;
+    if (!w || !h) return;
     renderer.setPixelRatio(ratio); renderer.setSize(w, h, false);
-    cv.style.width = '100%'; cv.style.height = '100%';
     camera.aspect = w / h; camera.updateProjectionMatrix();
+    U.uFit.value = Math.min(1, Math.max(0.42, camera.aspect / 1.6));
     renderer.getDrawingBufferSize(U.uRes.value);
     if (halo && !halo.hidden) {
-      const hb = host.getBoundingClientRect(), lb = halo.getBoundingClientRect();
+      const hb = cv.getBoundingClientRect(), lb = halo.getBoundingClientRect();
       U.uLamp.value.set((lb.left + lb.width / 2 - hb.left) / hb.width, 1 - (lb.top + lb.height / 2 - hb.top) / hb.height);
     } else U.uLamp.value.set(-2, -2);
   };
-  size(); new ResizeObserver(size).observe(host);
+  size(); new ResizeObserver(size).observe(cv);
+  // il lampione cambia posto quando cambia l'ora (su telefono di notte c'è un'altra foto)
+  new MutationObserver(() => setTimeout(size, 50)).observe(document.documentElement, { attributes: true, attributeFilter: ['data-time'] });
 
   const root = document.documentElement;
   let nightGoal = root.dataset.time === 'night' ? 1 : 0; U.uNight.value = nightGoal;
@@ -134,16 +141,17 @@ export function startFog3d(host: HTMLElement, density = 1) {
   // Varco e parallasse seguono il mouse con ritardo, come nebbia che si sposta e si richiude.
   const goal = { x: 0.5, y: 0.5, hole: 0 }, pos = { x: 0.5, y: 0.5 };
   host.addEventListener('pointermove', (e) => {
-    const b = host.getBoundingClientRect();
+    const b = cv.getBoundingClientRect();
     goal.x = (e.clientX - b.left) / b.width; goal.y = 1 - (e.clientY - b.top) / b.height; goal.hole = 1;
   });
   host.addEventListener('pointerleave', () => { goal.hole = 0; });
 
-  let raf = 0, visible = false, last = performance.now(), slow = 0, frames = 0;
+  let raf = 0, visible = false, last = performance.now(), slow = 0, frames = 0, skip = coarse;
   const t0 = last - 30000; // parte già "a regime", con i banchi distribuiti
   const loop = (now: number) => {
     raf = requestAnimationFrame(loop);
     const dt = now - last; last = now;
+    if (skip && frames++ % 2) return; // su telefono basta mezzo frame rate: la nebbia è lenta
     pos.x += (goal.x - pos.x) * 0.05; pos.y += (goal.y - pos.y) * 0.05;
     U.uHole.value += (goal.hole - U.uHole.value) * 0.03;
     U.uNight.value += (nightGoal - U.uNight.value) * 0.04;
@@ -151,8 +159,8 @@ export function startFog3d(host: HTMLElement, density = 1) {
     camera.position.x = (pos.x - 0.5) * 60; camera.position.y = (pos.y - 0.5) * 30; // parallasse: i banchi vicini si spostano di più
     U.uTime.value = (now - t0) / 1000;
     renderer.render(scene, camera);
-    if (frames++ > 5 && dt > 30) slow++;
-    if (slow > 30 && ratio > 0.26) { ratio *= 0.75; slow = 0; size(); } // fotogrammi lenti: meno pixel
+    if (frames++ > 5 && dt > (skip ? 60 : 30)) slow++;
+    if (slow > 30 && ratio > 0.22) { ratio *= 0.75; slow = 0; skip = true; size(); } // fotogrammi lenti: meno pixel
   };
   const sync = () => { cancelAnimationFrame(raf); if (visible && !document.hidden) { last = performance.now(); raf = requestAnimationFrame(loop); } };
   new IntersectionObserver(([e]) => { visible = e.isIntersecting; sync(); }).observe(host);
