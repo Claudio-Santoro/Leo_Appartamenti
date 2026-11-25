@@ -4,6 +4,7 @@
 const MAX = { nome: 120, email: 200, telefono: 40, messaggio: 4000 };
 const THANKS = { it: '/grazie/', en: '/en/thanks/' };
 const isDate = (s) => /^\d{4}-\d{2}-\d{2}$/.test(s) && !Number.isNaN(Date.parse(s));
+const it = (s) => s.split('-').reverse().join('/'); // 2027-03-01 → 01/03/2027
 
 // Dai campi del modulo all'email, oppure null se manca o non torna qualcosa.
 export function componi(form) {
@@ -14,10 +15,10 @@ export function componi(form) {
   const apts = form.getAll('appartamenti').map((a) => String(a).slice(0, 20)).slice(0, 5).join(', ') || 'nessuna preferenza';
   return {
     reply_to: email,
-    subject: `Richiesta dal sito: ${nome}, ${arrivo} → ${partenza}`,
+    subject: `Richiesta dal sito: ${nome}, ${it(arrivo)} → ${it(partenza)}`,
     text: [
       `Nome: ${nome}`, `Email: ${email}`, `Telefono: ${get('telefono') || '-'}`, `Appartamenti: ${apts}`,
-      `Arrivo: ${arrivo}`, `Partenza: ${partenza}`, `Adulti: ${get('adulti') || '-'}`, `Bambini: ${get('bambini') || '0'}`,
+      `Arrivo: ${it(arrivo)}`, `Partenza: ${it(partenza)}`, `Adulti: ${get('adulti') || '-'}`, `Bambini: ${get('bambini') || '0'}`,
       `Animale: ${get('animale') || 'no'}`, `Lingua: ${get('lingua') || 'it'}`, '', get('messaggio') || '(nessun messaggio)',
     ].join('\n'),
   };

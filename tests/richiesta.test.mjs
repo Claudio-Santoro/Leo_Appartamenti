@@ -19,6 +19,7 @@ test('richiesta valida: email al gestore con reply_to, poi pagina di ringraziame
   assert.equal(r.status, 303); assert.equal(new URL(r.headers.get('location')).pathname, '/grazie/');
   assert.equal(calls.length, 1);
   assert.equal(calls[0].body.to, env.MAIL_TO); assert.equal(calls[0].body.reply_to, ok.email); assert.match(calls[0].body.text, /Anna Rossi/);
+  assert.match(calls[0].body.subject, /01\/05\/2027 → 04\/05\/2027/); assert.match(calls[0].body.text, /Arrivo: 01\/05\/2027\nPartenza: 04\/05\/2027/);
   assert.equal(new URL((await post({ ...ok, lingua: 'en' })).headers.get('location')).pathname, '/en/thanks/');
   const j = await post(ok, env, { accept: 'application/json' });
   assert.equal(j.status, 200); assert.deepEqual(await j.json(), { ok: true });
