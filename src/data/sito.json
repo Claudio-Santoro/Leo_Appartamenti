@@ -14,18 +14,18 @@
     "aggiornato": "2026-11",
     "url": "https://www.booking.com/hotel/it/leo-appartamenti-con-vista-panoramica.it.html",
     "scelte": [
-      { "nome": "Matteo", "paese": { "it": "Italia", "en": "Italy" }, "testo": {
+      { "nome": "Matteo", "voto": 9, "data": "2026-10-18", "paese": { "it": "Italia", "en": "Italy" }, "testo": {
         "it": "La gentilezza di Angela è sicuramente la cosa più bella. La casa è in un’ottima posizione, pulita, spaziosa e confortevole.",
         "en": "Angela’s kindness is definitely the best thing. The house is in a great location, clean, spacious and comfortable." } },
-      { "nome": "Trojanowski", "paese": { "it": "Polonia", "en": "Poland" }, "testo": {
-        "it": "Il soggiorno è stato davvero una bellissima esperienza! Il proprietario è una persona molto gentile, simpatica e sempre disponibile ad aiutare. L’appartamento è accogliente, piacevole e molto pulito. […]",
-        "en": "The stay was a truly wonderful experience! The owner is very kind, friendly and always ready to help. The apartment is welcoming, pleasant and very clean. […]" } },
-      { "nome": "Marco", "paese": { "it": "Italia", "en": "Italy" }, "testo": {
-        "it": "Soggiornato 2 notti nell’appartamento a piano terra, comodo e completo di tutto, anche il giardino dove ci sono tavoli e sedie per trascorrere del tempo all’aperto e al fresco. Super disponibile la signora Angela per qualsiasi esigenza.",
-        "en": "Stayed 2 nights in the ground-floor apartment, comfortable and with everything you need, plus the garden with tables and chairs to spend time outdoors in the cool. Angela was extremely helpful with anything we needed." } },
-      { "nome": "Lombardo", "paese": { "it": "Italia", "en": "Italy" }, "testo": {
+      { "nome": "Trojanowski", "voto": 10, "data": "2026-10-06", "paese": { "it": "Polonia", "en": "Poland" }, "testo": {
+        "it": "Il soggiorno è stato davvero una bellissima esperienza! Il proprietario è una persona molto gentile, simpatica e sempre disponibile ad aiutare. L’appartamento è accogliente, piacevole e molto pulito. Ci siamo trovati davvero bene e lo consiglio a tutti!",
+        "en": "The stay was a truly wonderful experience! The owner is very kind, friendly and always ready to help. The apartment is welcoming, pleasant and very clean. We really enjoyed our stay and I recommend it to everyone!" } },
+      { "nome": "Lombardo", "voto": 10, "data": "2026-09-20", "paese": { "it": "Italia", "en": "Italy" }, "testo": {
         "it": "Struttura molto pulita e servita di tutto, la posizione è ottima per poter visitare Erice con tutte le comodità. Padrona di casa gentile e disponibile.",
-        "en": "Very clean and fully equipped, in a great location for visiting Erice with every convenience. The hostess is kind and helpful." } }
+        "en": "Very clean and fully equipped, in a great location for visiting Erice with every convenience. The hostess is kind and helpful." } },
+      { "nome": "Marco", "voto": 10, "data": "2026-09-07", "paese": { "it": "Italia", "en": "Italy" }, "testo": {
+        "it": "Soggiornato 2 notti nell’appartamento a piano terra, comodo e completo di tutto, anche il giardino dove ci sono tavoli e sedie per trascorrere del tempo all’aperto e al fresco. Super disponibile la signora Angela per qualsiasi esigenza.",
+        "en": "Stayed 2 nights in the ground-floor apartment, comfortable and with everything you need, plus the garden with tables and chairs to spend time outdoors in the cool. Angela was extremely helpful with anything we needed." } }
     ]
   },
   "checkin": "15:00–23:30",

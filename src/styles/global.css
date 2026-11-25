@@ -299,7 +299,9 @@ p { margin: 0 0 1em; text-wrap: pretty; }
 @media (min-width: 1200px) { .quotes { grid-template-columns: 1fr 1fr; } }
 .quotes figure { margin: 0; padding-top: 16px; border-top: 1px solid var(--stone); }
 .quotes blockquote { margin: 0 0 10px; font-size: 1.05rem; line-height: 1.5; text-wrap: pretty; }
-.quotes figcaption { color: var(--muted); font-style: italic; }
+.quotes figcaption { color: var(--muted); font-style: italic; font-size: 1.05rem; line-height: 1.45; }
+.quotes figcaption b { display: block; font: 700 1.5rem/1.2 var(--serif); color: var(--pine-2); }
+:root[data-time='night'] .quotes figcaption b { color: var(--cotto-light); }
 .dark { background: var(--deep); color: var(--on-deep); }
 .dark .num { color: var(--cotto-light); }
 .dark .muted, .dark .lead { color: var(--on-deep-2); }

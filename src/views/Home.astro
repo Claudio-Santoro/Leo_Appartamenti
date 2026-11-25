@@ -13,6 +13,7 @@ interface Props { lang: 'it' | 'en' }
 const { lang } = Astro.props;
 const t = ui[lang];
 const score = lang === 'it' ? sito.booking.voto : sito.booking.voto.replace(',', '.');
+const month = (d: string) => new Intl.DateTimeFormat(lang, { month: 'long', year: 'numeric', timeZone: 'UTC' }).format(new Date(d));
 const T = {
   it: {
     title: 'LEO Appartamenti · Appartamenti con vista a Erice',
@@ -213,7 +214,7 @@ const ld = {
         <div class="score">{score}</div>
       </div>
       <p class="muted">{T.revOn}</p>
-      <div class="quotes">{sito.booking.scelte.map((r) => <figure><blockquote>{lang === 'it' ? `«${r.testo.it}»` : `“${r.testo.en}”`}</blockquote><figcaption>{r.nome}, {r.paese[lang]}</figcaption></figure>)}</div>
+      <div class="quotes">{sito.booking.scelte.map((r) => <figure><blockquote>{lang === 'it' ? `«${r.testo.it}»` : `“${r.testo.en}”`}</blockquote><figcaption><b>{r.voto}/10</b> {r.nome}, {r.paese[lang]} · {month(r.data)}</figcaption></figure>)}</div>
       <p class="muted small">{T.revNote}</p>
       <a class="link" href={sito.booking.url} rel="noopener" target="_blank">{T.revLink} ↗</a>
     </div>
