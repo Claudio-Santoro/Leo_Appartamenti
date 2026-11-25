@@ -27,3 +27,5 @@ Le foto degli appartamenti (src/assets/venere, elimo, balio) e src/assets/erice 
 | borgo/m-nebbia-vicolo.jpg | Norbert Nagel, Mörfelden-Walldorf, Germany | [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/) | [Commons](https://commons.wikimedia.org/wiki/File:Erice_Sicily_Italy_16.jpg) |
 | borgo/m-nebbia-vicolo-2.jpg | Norbert Nagel, Mörfelden-Walldorf, Germany | [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/) | [Commons](https://commons.wikimedia.org/wiki/File:Erice_Sicily_Italy_17.jpg) |
 | borgo/m-porta-trapani.jpg | Berthold Werner | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/) | [Commons](https://commons.wikimedia.org/wiki/File:Erice_Porta_Trapani_BW_2025-04-30_13-33-56.jpg) |
+| borgo/m-castello.jpg | Dmitry Romanoff | [Pexels License](https://www.pexels.com/license/) | [Pexels](https://www.pexels.com/photo/35843304/) |
+| borgo/m-castello-notte.jpg | rielaborazione notturna digitale della foto di Dmitry Romanoff qui sopra | – | – |

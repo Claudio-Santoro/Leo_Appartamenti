@@ -10,13 +10,14 @@ interface Props {
   class?: string;
   eager?: boolean;
   sizes?: string;
+  mobileSizes?: string;
 }
-const { desktop, mobile, alt, class: cls, eager = false, sizes = '100vw' } = Astro.props;
+const { desktop, mobile, alt, class: cls, eager = false, sizes = '100vw', mobileSizes = '100vw' } = Astro.props;
 const d = await getImage({ src: desktop, widths: [960, 1440, 1920], format: 'webp', quality: 72 });
 const m = mobile ? await getImage({ src: mobile, widths: [480, 800, 1170], format: 'webp', quality: 72 }) : null;
 ---
 <picture>
-  {m && <source media="(max-width: 700px)" srcset={m.srcSet.attribute} sizes="100vw" type="image/webp" />}
+  {m && <source media="(max-width: 700px)" srcset={m.srcSet.attribute} sizes={mobileSizes} type="image/webp" />}
   <source srcset={d.srcSet.attribute} sizes={sizes} type="image/webp" />
   <img src={d.src} alt={alt} class={cls} width={desktop.width} height={desktop.height}
     loading={eager ? 'eager' : 'lazy'} fetchpriority={eager ? 'high' : 'low'} decoding="async" />

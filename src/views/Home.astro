@@ -23,10 +23,10 @@ const T = {
     heroAlt: 'Erice, il borgo di pietra sospeso sopra il mare e le nuvole',
     nightAlt: 'Un vicolo di Erice al crepuscolo, con un lampione acceso', vistaH: 'Da Erice: Trapani, il mare, le Egadi.',
     vistaP: 'Dal patio guardi Trapani e il mare: è la cosa che i nostri ospiti ricordano di più. Al tramonto le saline si accendono di rosa e le isole compaiono una dietro l’altra.',
-    vistaAlt: 'Una strada di Erice affacciata sulle saline, sul mare e sulle Egadi', vistaNightAlt: 'La strada di Erice al tramonto, con un lampione acceso e le Egadi all’orizzonte', aptsH: 'Venere, Elimo e Balio.',
+    vistaAlt: 'Il panorama dall’alto di Erice verso Trapani e il mare', aptsH: 'Venere, Elimo e Balio.',
     aptsP: 'Tre appartamenti vicini, tutti con cucina, aria condizionata, riscaldamento e Wi-Fi. Per i gruppi si prenotano insieme: fino a 15 persone.', fogH: 'Quando sale la nebbia.',
     fogP: 'Capita spesso, anche d’estate: il Castello di Venere sparisce e riappare tra le nuvole. Erice cambia faccia in pochi minuti, ed è bellissima così.',
-    fogAlt: 'Erice avvolta dalla nebbia', fogNightAlt: 'Il Castello di Venere all’imbrunire, con le finestre illuminate', borgoH: 'Tutto il borgo, a pochi passi.',
+    fogAlt: 'Il Castello di Venere a Erice, nella nebbia', fogNightAlt: 'Il Castello di Venere di notte, illuminato dai lampioni', borgoH: 'Tutto il borgo, a pochi passi.',
     borgoP: 'Siamo appena fuori dalle mura: in pochi minuti sei nel centro medievale, tra chiese, vicoli di pietra e pasticcerie.',
     walk: [['Real Duomo', 'circa 200 m'], ['Porta Trapani', 'circa 250 m'], ['Castello di Venere', 'circa 600 m'], ['Funivia per Trapani', 'a pochi minuti']],
     home: 'Da casa',
@@ -48,10 +48,10 @@ const T = {
     heroAlt: 'Erice, the stone village hanging above the sea and the clouds',
     nightAlt: 'An alley in Erice at dusk, with a street lamp lit', vistaH: 'From Erice: Trapani, the sea, the Egadi.',
     vistaP: 'From the patio you look out over Trapani and the sea: it’s what our guests remember most. At sunset the salt pans glow pink and the islands appear one behind the other.',
-    vistaAlt: 'A road in Erice overlooking the salt pans, the sea and the Egadi Islands', vistaNightAlt: 'The road in Erice at sunset, with a street lamp lit and the Egadi Islands on the horizon', aptsH: 'Venere, Elimo and Balio.',
+    vistaAlt: 'The view from high up in Erice towards Trapani and the sea', aptsH: 'Venere, Elimo and Balio.',
     aptsP: 'Three neighbouring apartments, all with kitchen, air conditioning, heating and Wi-Fi. Groups can book them together: up to 15 people.', fogH: 'When the fog rolls in.',
     fogP: 'It happens often, even in summer: the Castle of Venus vanishes and reappears among the clouds. Erice changes its face in minutes, and it’s beautiful that way.',
-    fogAlt: 'Erice wrapped in fog', fogNightAlt: 'The Castle of Venus at nightfall, its windows lit', borgoH: 'The whole village, a few steps away.',
+    fogAlt: 'The Castle of Venus in Erice, in the fog', fogNightAlt: 'The Castle of Venus at night, lit by street lamps', borgoH: 'The whole village, a few steps away.',
     borgoP: 'We are just outside the walls: in a few minutes you are in the medieval centre, among churches, stone lanes and pastry shops.',
     walk: [['Cathedral', 'about 200 m'], ['Porta Trapani', 'about 250 m'], ['Castle of Venus', 'about 600 m'], ['Cable car to Trapani', 'a few minutes']],
     home: 'From home',
@@ -71,9 +71,9 @@ const stops = [
   { file: 'borgo/castello-venere', pos: '21% 50%', tall: false },
   { file: 'borgo/funivia', pos: '50% 50%', tall: true },
 ];
-// Le luci accese nella foto del Castello di notte: x, y in pixel sulla foto (840x438), larghezza dell'alone in % della foto.
+// Le luci nella foto notturna del Castello (telefono): x, y in pixel sulla foto (896x1200), larghezza dell'alone in % della foto.
 // La prima è quella che scalda la nebbia (fog3d.ts). Se cambia la foto, vanno rimisurate.
-const lights = [[265.5, 104, 15], [223, 105.5, 11], [362, 107, 11], [267.5, 166, 9], [542.5, 285, 11]];
+const lights = [[385, 463, 20], [186, 507, 20], [463, 499, 17], [551, 508, 17]];
 const stopFull = await Promise.all(stops.map((st) => getImage({ src: img(st.file), width: 1600, format: 'webp' })));
 const ld = {
   '@context': 'https://schema.org', '@type': 'LodgingBusiness', name: sito.nome, url: new URL(url('home', lang), Astro.site).href,
@@ -109,10 +109,7 @@ const ld = {
   </section>
 
   <section class="photo-sec left" id="vista">
-    <div class="media"><ArtImage desktop={img('erice/strada-egadi')} alt={T.vistaAlt} class="bg parallax" sizes="(max-width: 700px) 250vw, 100vw" />
-      {/* Di notte un'altra foto: se non si vede non viene scaricata (lazy + display:none), e così quella di giorno. */}
-      <Image src={img('erice/strada-tramonto')} alt={T.vistaNightAlt} quality={85} class="night parallax" loading="lazy" decoding="async" />
-    </div>
+    <div class="media"><ArtImage desktop={img('borgo/vista-trapani-egadi')} mobile={img('erice/strada-tramonto')} mobileSizes="125vw" alt={T.vistaAlt} class="bg parallax" /></div>
     <div class="wrap">
       <div class="txt" data-reveal>
         <h2>{T.vistaH}</h2>
@@ -133,12 +130,11 @@ const ld = {
 
   <section class="photo-sec fog" id="nebbia">
     <div class="media">
-      <ArtImage desktop={img('borgo/castello-nebbia')} alt={T.fogAlt} class="bg" sizes="(max-width: 700px) 250vw, 100vw" />
+      <ArtImage desktop={img('borgo/castello-nebbia')} mobile={img('borgo/m-castello')} mobileSizes="125vw" alt={T.fogAlt} class="bg" />
+      {/* Su telefono, di notte, un'altra foto. Se non si vede non viene scaricata (lazy + display:none). */}
       <div class="night">
-        <div class="scene">
-          <Image src={img('erice/castello-notte')} alt={T.fogNightAlt} quality={85} loading="lazy" decoding="async" />
-          {lights.map(([x, y, size], i) => <span class="lamp-halo" aria-hidden="true" style={`left:${x / 8.4}%;top:${y / 4.38}%;width:${size}%;animation-delay:${-i * 1.7}s`} />)}
-        </div>
+        <Image src={img('borgo/m-castello-notte')} alt={T.fogNightAlt} quality={85} loading="lazy" decoding="async" />
+        {lights.map(([x, y, size], i) => <span class="lamp-halo" aria-hidden="true" style={`left:${x / 8.96}%;top:${y / 12}%;width:${size}%;animation-delay:${-i * 1.7}s`} />)}
       </div>
     </div>
     <Fog density={1.25} />
