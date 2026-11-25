@@ -115,8 +115,6 @@ p { margin: 0 0 1em; text-wrap: pretty; }
 .btn.light {
   --face: #E4DDCB; --hi: #FFFCF2; --lo: #8E8676; --ink: #3A362E; --cut-hi: rgba(255, 255, 255, .85); --cut-lo: rgba(0, 0, 0, .1);
 }
-/* pietra scurita sopra le foto */
-.btn.ghost { --face: rgba(24, 28, 26, .72); --hi: rgba(200, 205, 198, .55); --lo: rgba(0, 0, 0, .7); --ink: #F6EFE0; --cut-hi: rgba(255, 255, 255, .12); --cut-lo: rgba(0, 0, 0, .7); }
 /* pietra chiara a filo del muro */
 .btn.line { --face: color-mix(in srgb, var(--calc-2) 85%, var(--rock)); --hi: color-mix(in srgb, var(--calc) 70%, #fff); --lo: color-mix(in srgb, var(--rock) 70%, #000); --ink: var(--ink); --cut-hi: rgba(255, 255, 255, .5); --cut-lo: rgba(0, 0, 0, .1); }
 /* WhatsApp: pietra smaltata di verde, sempre riconoscibile */
@@ -201,7 +199,6 @@ p { margin: 0 0 1em; text-wrap: pretty; }
   .hero p { margin-bottom: 26px; }
   .hero .btn.light { --face: #34473A; --hi: #8FA391; --lo: #121A15; --ink: #F4E8CB; --cut-hi: rgba(255, 255, 255, .16); --cut-lo: rgba(0, 0, 0, .6); }
   :root[data-time='night'] .hero .btn.light { --face: #26332B; --hi: #6E8072; --lo: #0A0F0C; --ink: #F4D9A4; } /* su telefono qui la targa è scura anche di notte */
-  .hero .btn.ghost { --face: color-mix(in srgb, var(--calc-2) 85%, var(--rock)); --hi: color-mix(in srgb, var(--calc) 70%, #fff); --lo: color-mix(in srgb, var(--rock) 70%, #000); --ink: var(--ink); --cut-hi: rgba(255, 255, 255, .5); --cut-lo: rgba(0, 0, 0, .1); }
 }
 
 /* ---------- Sezioni con foto a tutta pagina (bordi sfumati nel calcare) ---------- */

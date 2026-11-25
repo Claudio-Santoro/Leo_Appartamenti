@@ -41,7 +41,7 @@ const T = {
     },
     zoom: 'Ingrandisci la foto', close: 'Chiudi', prev: 'Foto precedente', next: 'Foto successiva',
     revOn: `su Booking.com · ${sito.booking.recensioni} recensioni`,
-    revNote: 'Alcune recensioni scelte da Booking.com.', revLink: 'Leggi tutte le recensioni',
+    revH: 'Recensioni', revNote: 'Alcune recensioni scelte da Booking.com.', revLink: 'Leggi tutte le recensioni',
     arriveQ: 'Come si arriva fin quassù?', arriveP: 'In auto fino alla porta, siamo fuori dalla zona a traffico limitato e c’è parcheggio. Oppure in funivia da Trapani: dieci minuti sopra il mare, e scendi a pochi passi da noi.', arriveCta: 'Auto, funivia, bus e aeroporti', bookH: 'Scrivici, ti rispondiamo noi.',
     book: ['Tariffa riservata a chi prenota dal sito', 'Check-in flessibile su richiesta', 'Parli con chi ti accoglie', 'Nessun costo di prenotazione'],
   },
@@ -71,7 +71,7 @@ const T = {
     },
     zoom: 'Enlarge photo', close: 'Close', prev: 'Previous photo', next: 'Next photo',
     revOn: `on Booking.com · ${sito.booking.recensioni} reviews`,
-    revNote: 'A selection of reviews from Booking.com, translated by us.', revLink: 'Read all reviews',
+    revH: 'Reviews', revNote: 'A selection of reviews from Booking.com, translated by us.', revLink: 'Read all reviews',
     arriveQ: 'How do you get up here?', arriveP: 'By car right to the door: we are outside the restricted traffic zone and there is parking. Or by cable car from Trapani: ten minutes above the sea, and you step off a few minutes from us.', arriveCta: 'Car, cable car, bus and airports', bookH: 'Write to us, we’ll reply.',
     book: ['Special rate when you book on our website', 'Flexible check-in on request', 'Talk directly to your hosts', 'No booking fees'],
   },
@@ -133,7 +133,7 @@ const ld = {
         <p>{T.sub}</p>
         <div class="btns">
           <a class="btn light" href={url('avail', lang)}>{t.checkAvail}</a>
-          <a class="btn ghost" href={url('apts', lang)}>{T.discover}</a>
+          <a class="btn light" href={url('apts', lang)}>{T.discover}</a>
         </div>
       </div>
     </div>
@@ -206,6 +206,7 @@ const ld = {
 
   <section class="trust merli" id="ospiti">
     <div class="alt" style="background:var(--calc-2)" data-reveal>
+      <h2>{T.revH}</h2>
       <div class="score-wrap">
         <svg class="rosone" viewBox="-100 -100 200 200" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2.2">
           <circle r="96" /><circle r="86" /><circle r="22" /><circle r="12" />
