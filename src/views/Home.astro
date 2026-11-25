@@ -38,7 +38,7 @@ const T = {
       giardino: 'Un giardino di Erice con i tetti del borgo', mura: 'Le mura del Castello di Venere sopra la valle', torretta: 'La Torretta Pepoli vista dall’alto', torrettaCastello: 'La Torretta Pepoli sotto il Castello di Venere',
       muraNotte: 'Le mura del Castello di Venere di notte, con un lampione acceso', balio: 'Il Castello di Venere e le torri del Balio all’imbrunire, con le luci accese',
     },
-    pause: 'Ferma le foto', play: 'Fai scorrere le foto',
+    pause: 'Ferma le foto', play: 'Riprendi le foto',
     zoom: 'Ingrandisci la foto', close: 'Chiudi', prev: 'Foto precedente', next: 'Foto successiva',
     revOn: `su Booking.com · ${sito.booking.recensioni} recensioni`,
     revThemes: ['La vista dal patio', 'Proprietari disponibili e gentili', 'Comodo, ma tranquillo', 'Appartamenti puliti e spaziosi'],
@@ -86,7 +86,7 @@ const stops = [
   { file: 'borgo/castello-venere', pos: '21% 50%', tall: false },
   { file: 'borgo/funivia', pos: '50% 50%', tall: true },
 ];
-// Le foto che scorrono in apertura e nella nebbia. Le luci (x, y sulla foto) sono misurate a mano: se cambia una foto, vanno rimisurate.
+// Le foto che si alternano in apertura e nella nebbia. Le luci (x, y sulla foto) sono misurate a mano: se cambia una foto, vanno rimisurate.
 // La prima luce di ogni foto è quella che scalda la nebbia (fog3d.ts).
 const muraNotte = { on: 'pn', src: img('borgo/m-mura-castello-notte'), alt: T.alts.muraNotte, lights: [[0.6685, 0.243, 46]] };
 const heroSlides = [

@@ -11,7 +11,7 @@ import {
 const VERT = /* glsl */ `
 attribute vec3 aBase; attribute vec2 aScale; attribute float aRot; attribute float aAlpha; attribute float aSeed;
 uniform float uTime; uniform float uRange; uniform float uFit;
-varying vec2 vUv; varying float vAlpha; varying float vDepth; varying float vSeed;
+varying vec2 vUv; varying float vAlpha; varying float vDepth; varying float vSeed; varying float vFar;
 void main() {
   vUv = uv; vSeed = aSeed;
   vAlpha = aAlpha * (0.65 + 0.35 * sin(uTime * 0.25 + aSeed * 40.0)); // ogni banco si addensa e si dirada: respira
@@ -20,10 +20,12 @@ void main() {
   float z = -1000.0 + mod(aBase.z + uTime * (4.0 + 4.0 * aSeed), uRange);
   float x = aBase.x + uTime * (50.0 + 52.0 * aSeed) + sin(uTime * 0.09 + aSeed * 6.283) * 40.0;
   x = (mod(x + 1300.0, 2600.0) - 1300.0) * uFit;                 // uscito da un lato rientra dall'altro
-  float y = aBase.y + sin(uTime * 0.07 + aSeed * 11.0) * 32.0;
+  // piano in prospettiva: i banchi lontani stanno in alto nella foto, piccoli, schiacciati e (per la prospettiva) più lenti
+  float far = smoothstep(120.0, 900.0, -z); vFar = far;
+  float y = aBase.y + far * 430.0 + sin(uTime * 0.07 + aSeed * 11.0) * 32.0 * (1.0 - 0.6 * far);
   float a = aRot + 0.04 * sin(uTime * 0.05 + aSeed * 9.0); // appena inclinate, restano orizzontali
   // su schermo verticale (uFit < 1) i banchi si rimpiccioliscono in proporzione: restano larghi e bassi
-  vec2 p = mat2(cos(a), -sin(a), sin(a), cos(a)) * (position.xy * aScale * mix(1.0, uFit, 0.85));
+  vec2 p = mat2(cos(a), -sin(a), sin(a), cos(a)) * (position.xy * aScale * vec2(1.0 + 0.7 * far, 1.0 - 0.12 * far) * mix(1.0, uFit, 0.5));
   vec4 mv = modelViewMatrix * vec4(vec3(x, y, z) + vec3(p, 0.0), 1.0);
   vDepth = -mv.z;
   gl_Position = projectionMatrix * mv;
@@ -32,25 +34,27 @@ void main() {
 const FRAG = /* glsl */ `
 uniform sampler2D uTex0; uniform sampler2D uTex1; uniform sampler2D uTex2;
 uniform vec2 uRes; uniform vec2 uMouse; uniform float uHole; uniform float uNight; uniform vec2 uLamp; uniform float uLampOn; uniform float uDensity;
-uniform vec3 uDay; uniform vec3 uDusk;
-varying vec2 vUv; varying float vAlpha; varying float vDepth; varying float vSeed;
+uniform vec3 uDay; uniform vec3 uDusk; uniform float uPulse;
+varying vec2 vUv; varying float vAlpha; varying float vDepth; varying float vSeed; varying float vFar;
 void main() {
   vec4 t = vSeed < 0.33 ? texture2D(uTex0, vUv) : vSeed < 0.66 ? texture2D(uTex1, vUv) : texture2D(uTex2, vUv);
-  float a = t.a * vAlpha * uDensity * mix(1.0, 1.55, uNight); // di notte la nebbia è più fitta
-  a *= smoothstep(25.0, 160.0, vDepth) * (1.0 - smoothstep(760.0, 1000.0, vDepth)); // compare in fondo, svanisce addosso
+  float a = t.a * vAlpha * uDensity * mix(1.0, 1.18, uNight); // di notte la nebbia è un po' più fitta
+  a *= smoothstep(25.0, 160.0, vDepth) * (1.0 - smoothstep(900.0, 1000.0, vDepth)); // compare in fondo, svanisce addosso
   vec2 uv = gl_FragCoord.xy / uRes;
   float asp = uRes.x / uRes.y;
-  a *= 0.3 + 0.9 * (1.0 - smoothstep(0.1, 0.9, uv.y));                // più densa in basso: sale dalla valle
+  a *= 0.62 + 0.55 * (1.0 - smoothstep(0.1, 0.75, uv.y));              // più densa in basso, ma arriva fino in cima: lontana
+  a *= 1.0 + 0.45 * uPulse * smoothstep(0.25, 0.7, uv.y);              // si addensa mentre la foto cambia (in alto, lontano dal testo)
   float near = 1.0 - smoothstep(120.0, 650.0, vDepth);
   float d = length((uv - uMouse) * vec2(asp, 1.0));
   float hole = smoothstep(0.04, 0.22 + 0.14 * near, d);
   a *= mix(1.0, hole, uHole * (0.35 + 0.65 * near));                    // il varco: i banchi vicini si aprono di più
   vec3 col = mix(uDay, uDusk, uNight);
   col *= 0.84 + 0.2 * vUv.y;                                            // un filo d'ombra sotto ogni banco: volume
+  col = mix(col, mix(vec3(0.86, 0.89, 0.93), vec3(0.34, 0.39, 0.47), uNight), 0.55 * vFar); // prospettiva aerea: lontano è più azzurra e piatta
   float dl = length((uv - uLamp) * vec2(asp, 1.0));
   col = mix(col, vec3(1.0, 0.74, 0.38), uNight * uLampOn * (1.0 - smoothstep(0.0, 0.42, dl)) * 0.9);  // il lampione
   col = mix(col, vec3(1.0, 0.8, 0.5), uNight * uHole * (1.0 - smoothstep(0.0, 0.3, d)) * 0.45); // la lanterna
-  a = min(a, 1.0);
+  a = (1.0 - exp(-1.25 * a * (0.5 + a))) * 0.84; // i banchi si sommano morbidi: nessuna macchia piena
   gl_FragColor = vec4(col * a, a);
 }`;
 
@@ -95,7 +99,7 @@ export function startFog3d(host: HTMLElement, density = 1) {
   let s = 7; const rnd = () => ((s = (s * 16807) % 2147483647) / 2147483647);
   for (let i = 0; i < N; i++) {
     base[i * 3] = (rnd() - 0.5) * 2600;
-    base[i * 3 + 1] = -460 + Math.pow(rnd(), 1.7) * 560;   // più banchi in basso
+    base[i * 3 + 1] = -460 + Math.pow(rnd(), 1.35) * 560;  // più banchi in basso
     base[i * 3 + 2] = rnd() * 975;
     const w = 420 + rnd() * 520; scale[i * 2] = w; scale[i * 2 + 1] = w * (0.26 + rnd() * 0.16); // strisce larghe e basse: foschia
     rot[i] = (rnd() - 0.5) * 0.12; alpha[i] = 0.32 + rnd() * 0.4; seed[i] = rnd();
@@ -110,7 +114,7 @@ export function startFog3d(host: HTMLElement, density = 1) {
 
   const U = {
     uTime: { value: 0 }, uRange: { value: 975 }, uFit: { value: 1 }, uRes: { value: new Vector2(1, 1) },
-    uMouse: { value: new Vector2(-2, -2) }, uHole: { value: 0 }, uNight: { value: 0 }, uLamp: { value: new Vector2(-2, -2) }, uLampOn: { value: 0 },
+    uMouse: { value: new Vector2(-2, -2) }, uHole: { value: 0 }, uNight: { value: 0 }, uLamp: { value: new Vector2(-2, -2) }, uLampOn: { value: 0 }, uPulse: { value: 0 },
     uDensity: { value: density }, uDay: { value: new Color(0.95, 0.95, 0.93) }, uDusk: { value: new Color(0.42, 0.46, 0.52) },
     uTex0: { value: puff(11) }, uTex1: { value: puff(29) }, uTex2: { value: puff(47) },
   };
@@ -121,15 +125,15 @@ export function startFog3d(host: HTMLElement, density = 1) {
   // Le misure sono quelle del canvas, non della sezione: su telefono la nebbia copre solo la foto (CSS).
   let ratio = coarse ? 0.45 : 0.5;
   // La luce che scalda la nebbia: il primo alone della foto che si vede. Durante lo scorrimento si spegne, poi si riaccende sulla foto nuova.
-  let lampGoal = 0;
+  let lampGoal = 0, pulseGoal = 0;
   const lamp = () => {
     const l = host.querySelector('.slide.on .lamp-halo')?.getBoundingClientRect(), b = cv.getBoundingClientRect();
     lampGoal = l?.width && b.width ? 1 : 0;
     if (lampGoal) U.uLamp.value.set((l!.left + l!.width / 2 - b.left) / b.width, 1 - (l!.top + l!.height / 2 - b.top) / b.height);
     else U.uLamp.value.set(-2, -2);
   };
-  host.addEventListener('slidestart', () => { lampGoal = 0; });
-  host.addEventListener('slideend', lamp);
+  host.addEventListener('slidestart', () => { lampGoal = 0; pulseGoal = 1; });
+  host.addEventListener('slideend', () => { pulseGoal = 0; lamp(); });
   const size = () => {
     const w = cv.clientWidth, h = cv.clientHeight;
     if (!w || !h) return;
@@ -161,6 +165,7 @@ export function startFog3d(host: HTMLElement, density = 1) {
     if (skip && frames++ % 2) return; // su telefono basta mezzo frame rate: la nebbia è lenta
     pos.x += (goal.x - pos.x) * 0.05; pos.y += (goal.y - pos.y) * 0.05;
     U.uHole.value += (goal.hole - U.uHole.value) * 0.03;
+    U.uPulse.value += (pulseGoal - U.uPulse.value) * 0.015;
     U.uLampOn.value += (lampGoal - U.uLampOn.value) * 0.06;
     U.uNight.value += (nightGoal - U.uNight.value) * 0.04;
     U.uMouse.value.set(pos.x, pos.y);

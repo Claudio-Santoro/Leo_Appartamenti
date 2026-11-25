@@ -18,11 +18,12 @@ float n(vec2 p){ vec2 i = floor(p), f = fract(p); f = f*f*(3.0-2.0*f);
 float fbm(vec2 p){ float v = 0.0, a = 0.5; for (int i = 0; i < 4; i++){ v += a*n(p); p = p*2.03 + vec2(1.7, 9.2); a *= 0.5; } return v; }
 void main(){
   vec2 uv = gl_FragCoord.xy / r;
-  vec2 p = uv * vec2(r.x/r.y, 1.7) * 2.4 - vec2(t*0.18, 0.0);  // schiacciata in strisce, scorre col vento
+  float z = 1.0 / (1.35 - uv.y);                         // prospettiva: in alto è lontana, quindi più fine e (sullo schermo) più lenta
+  vec2 p = vec2((uv.x - 0.5) * r.x/r.y * (0.6 + 0.75*z), z * 2.6) * 2.4 - vec2(t*0.18, 0.0);  // schiacciata in strisce, scorre col vento
   vec2 q = vec2(fbm(p + vec2(t*0.09, t*0.028)), fbm(p + vec2(5.2, 1.3) - t*0.06));
   float f = fbm(p + 1.8*q + vec2(-t*0.16, t*0.044));
   float d = min(1.0, smoothstep(0.38, 0.92, f) * dens * mix(1.0, 1.5, night)); // di notte più fitta
-  d *= 0.45 + 0.75*(1.0 - uv.y);                      // più densa in basso: la nebbia sale dalla valle
+  d *= 0.72 + 0.45*(1.0 - uv.y);                      // più densa in basso, ma arriva fino in cima
   vec2 dm = (uv - m) * vec2(r.x/r.y, 1.0);
   float hole = smoothstep(0.04, 0.32, length(dm));     // il varco attorno al cursore
   d *= mix(0.08, 1.0, hole);

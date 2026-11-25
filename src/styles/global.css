@@ -187,7 +187,7 @@ p { margin: 0 0 1em; text-wrap: pretty; }
 /* ---------- Apertura della home ---------- */
 .hero { position: relative; min-height: 100svh; color: #fff; display: grid; align-items: end; overflow: hidden; background: var(--deep); }
 .hero .slides { position: absolute; inset: 0; }
-.hero::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(20,17,13,.62) 0%, rgba(20,17,13,0) 26%, rgba(20,17,13,0) 42%, rgba(20,17,13,.8) 90%); pointer-events: none; }
+.hero::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(20,17,13,0) 42%, rgba(20,17,13,.8) 90%); pointer-events: none; }
 .hero .wrap { position: relative; z-index: 1; width: 100%; padding-bottom: clamp(56px, 9vh, 96px); }
 .hero h1 { font-size: clamp(3.4rem, 10vw, 9.4rem); line-height: .86; margin: 10px 0 26px; text-shadow: 0 2px 30px rgba(0,0,0,.3); }
 .hero p { font-size: clamp(1.1rem, 1.5vw, 1.3rem); max-width: 34ch; line-height: 1.5; margin-bottom: 32px; }
@@ -612,6 +612,8 @@ html.time-reveal::view-transition-new(root) { animation: reveal .7s var(--ease) 
     -webkit-mask-image: linear-gradient(to bottom, transparent, #000 30%, #000 74%, transparent); mask-image: linear-gradient(to bottom, transparent, #000 30%, #000 74%, transparent); } /* niente orli */
   :root[data-time='night'] .hero .wrap::before { opacity: .65; }
   .hero .wrap { isolation: isolate; }
+  /* il menu bianco sta in cima: la sua ombra va sopra la nebbia, che ora arriva fin lì */
+  .hero::before { content: ''; position: absolute; z-index: 2; left: 0; right: 0; top: 0; height: 26%; pointer-events: none; background: linear-gradient(180deg, rgba(18, 20, 18, .66), rgba(18, 20, 18, .36) 45%, transparent); }
 }
 
 /* ---------- Bordi sfumati: la nebbia e le foto si sciolgono nel fondo, mai un orlo dritto ---------- */
@@ -622,9 +624,9 @@ html.time-reveal::view-transition-new(root) { animation: reveal .7s var(--ease) 
   /* l'apertura finisce nel fondo della pagina (con la sua grana), non su un colore pieno: niente riga.
      Di giorno la sfumatura parte sotto i pulsanti, perché il testo bianco sta in basso e vuole il fondo scuro */
   .hero { background: none; }
-  .hero::after { background: linear-gradient(180deg, rgba(20,17,13,.62) 0%, rgba(20,17,13,0) 26%, rgba(20,17,13,0) 42%, rgba(20,17,13,.8) 74%, rgba(20,17,13,0) 100%); }
+  .hero::after { background: linear-gradient(180deg, rgba(20,17,13,0) 42%, rgba(20,17,13,.8) 74%, rgba(20,17,13,0) 100%); }
   .hero .slides { -webkit-mask-image: linear-gradient(to bottom, #000 82%, transparent 100%); mask-image: linear-gradient(to bottom, #000 82%, transparent 100%); }
-  :root[data-time='night'] .hero::after { background: linear-gradient(180deg, rgba(18,22,20,.62) 0%, rgba(18,22,20,0) 26%, rgba(18,22,20,0) 42%, rgba(18,22,20,.8) 78%, rgba(18,22,20,0) 100%); } /* finisce nel fondo della pagina */
+  :root[data-time='night'] .hero::after { background: linear-gradient(180deg, rgba(18,22,20,0) 42%, rgba(18,22,20,.8) 78%, rgba(18,22,20,0) 100%); } /* finisce nel fondo della pagina */
   :root[data-time='night'] .hero .slides { -webkit-mask-image: linear-gradient(to bottom, #000 70%, transparent 100%); mask-image: linear-gradient(to bottom, #000 70%, transparent 100%); }
 }
 @media (max-width: 700px) {
@@ -647,9 +649,9 @@ html.time-reveal::view-transition-new(root) { animation: reveal .7s var(--ease) 
   #vista .bg { animation: none; transform: none; object-position: 70% 50%; }
   :root[data-time='night'] #vista .bg { filter: brightness(.86); }
 }
-/* ---------- Foto a scorrimento (Slides.astro) ---------- */
+/* ---------- Foto in dissolvenza (Slides.astro) ---------- */
 .slides { overflow: hidden; }
-.slide { position: absolute; inset: 0; display: none; will-change: transform; }
+.slide { position: absolute; inset: 0; display: none; will-change: opacity; }
 .slides img { width: 100%; height: 100%; object-fit: cover; object-position: var(--pos, 50% 50%); filter: var(--filter, none); }
 @media (min-width: 701px) {
   :root:not([data-time='night']) .slide[data-first~='dd'], :root[data-time='night'] .slide[data-first~='dn'] { display: block; }
@@ -659,6 +661,11 @@ html.time-reveal::view-transition-new(root) { animation: reveal .7s var(--ease) 
 }
 :root .slides.live .slide:not(.on) { display: none; }
 .slides.live .slide.on { display: block; }
+/* La foschia che copre la foto mentre cambia: più piena in alto (lontano), a chiazze morbide */
+.mist { --m: 226, 229, 230; position: absolute; z-index: 2; inset: -6% -14%; opacity: 0; pointer-events: none; will-change: opacity, transform;
+  background: radial-gradient(45% 55% at 24% 38%, rgba(var(--m), .75), transparent 100%), radial-gradient(50% 60% at 74% 30%, rgba(var(--m), .7), transparent 100%), radial-gradient(60% 45% at 50% 82%, rgba(var(--m), .45), transparent 100%), linear-gradient(to bottom, rgba(var(--m), .78), rgba(var(--m), .58)); }
+@media (min-width: 701px) { .hero .mist { --m: 178, 185, 190; } } /* il titolo bianco sta sopra la foschia */
+:root[data-time='night'] .slides .mist { --m: 62, 69, 79; }
 .slides-btn { position: absolute; z-index: 3; right: var(--gutter); bottom: clamp(28px, 5vh, 56px); display: grid; place-items: center; width: 44px; height: 44px; padding: 0; border-radius: 50%; border: 1px solid rgba(255, 255, 255, .45); background: rgba(20, 17, 13, .6); color: #fff; cursor: pointer; transition: background-color .2s; }
 .slides-btn[hidden] { display: none; }
 .slides-btn:hover { background: var(--pine); }
