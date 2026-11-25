@@ -115,8 +115,6 @@ p { margin: 0 0 1em; text-wrap: pretty; }
 .btn.light {
   --face: #E4DDCB; --hi: #FFFCF2; --lo: #8E8676; --ink: #3A362E; --cut-hi: rgba(255, 255, 255, .85); --cut-lo: rgba(0, 0, 0, .1);
 }
-/* pietra chiara a filo del muro */
-.btn.line { --face: color-mix(in srgb, var(--calc-2) 85%, var(--rock)); --hi: color-mix(in srgb, var(--calc) 70%, #fff); --lo: color-mix(in srgb, var(--rock) 70%, #000); --ink: var(--ink); --cut-hi: rgba(255, 255, 255, .5); --cut-lo: rgba(0, 0, 0, .1); }
 /* WhatsApp: pietra smaltata di verde, sempre riconoscibile */
 .btn.wa { --face: #1E7046; --hi: #7FC39C; --lo: #0B3220; --ink: #FFFFFF; --cut-hi: rgba(255, 255, 255, .14); --cut-lo: rgba(0, 0, 0, .55); }
 /* di notte la pietra è più fredda e le lettere prendono la luce ambra dei lampioni */

@@ -42,7 +42,7 @@ const T = {
     zoom: 'Ingrandisci la foto', close: 'Chiudi', prev: 'Foto precedente', next: 'Foto successiva',
     revOn: `su Booking.com · ${sito.booking.recensioni} recensioni`,
     revH: 'Recensioni', revNote: 'Alcune recensioni scelte da Booking.com.', revLink: 'Leggi tutte le recensioni',
-    arriveQ: 'Come si arriva fin quassù?', arriveP: 'In auto fino alla porta, siamo fuori dalla zona a traffico limitato e c’è parcheggio. Oppure in funivia da Trapani: dieci minuti sopra il mare, e scendi a pochi passi da noi.', arriveCta: 'Auto, funivia, bus e aeroporti', bookH: 'Scrivici, ti rispondiamo noi.',
+    arriveQ: 'Come si arriva fin quassù?', arriveP: 'In auto fino alla porta, siamo fuori dalla zona a traffico limitato e c’è parcheggio. Oppure in funivia da Trapani: dieci minuti sopra il mare, e scendi a pochi passi da noi. Su richiesta organizziamo anche un transfer a pagamento da Trapani o dall’aeroporto.', arriveCta: 'Auto, funivia, bus e aeroporti', bookH: 'Scrivici, ti rispondiamo noi.',
     book: ['Tariffa riservata a chi prenota dal sito', 'Check-in flessibile su richiesta', 'Parli con chi ti accoglie', 'Nessun costo di prenotazione'],
   },
   en: {
@@ -72,7 +72,7 @@ const T = {
     zoom: 'Enlarge photo', close: 'Close', prev: 'Previous photo', next: 'Next photo',
     revOn: `on Booking.com · ${sito.booking.recensioni} reviews`,
     revH: 'Reviews', revNote: 'A selection of reviews from Booking.com, translated by us.', revLink: 'Read all reviews',
-    arriveQ: 'How do you get up here?', arriveP: 'By car right to the door: we are outside the restricted traffic zone and there is parking. Or by cable car from Trapani: ten minutes above the sea, and you step off a few minutes from us.', arriveCta: 'Car, cable car, bus and airports', bookH: 'Write to us, we’ll reply.',
+    arriveQ: 'How do you get up here?', arriveP: 'By car right to the door: we are outside the restricted traffic zone and there is parking. Or by cable car from Trapani: ten minutes above the sea, and you step off a few minutes from us. On request we can also arrange a paid transfer from Trapani or the airport.', arriveCta: 'Car, cable car, bus and airports', bookH: 'Write to us, we’ll reply.',
     book: ['Special rate when you book on our website', 'Flexible check-in on request', 'Talk directly to your hosts', 'No booking fees'],
   },
 }[lang];
@@ -193,7 +193,7 @@ const ld = {
       <div class="walk-more" data-reveal>
         <h3>{T.arriveQ}</h3>
         <p>{T.arriveP}</p>
-        <a class="btn line" href={url('arrive', lang)}>{T.arriveCta} →</a>
+        <a class="btn" href={url('arrive', lang)}>{T.arriveCta} →</a>
       </div>
       <dialog class="lightbox" id="borgo-zoom">
         <img alt="" />
