@@ -29,3 +29,14 @@ Le foto degli appartamenti (src/assets/venere, elimo, balio) e src/assets/erice 
 | borgo/m-porta-trapani.jpg | Berthold Werner | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/) | [Commons](https://commons.wikimedia.org/wiki/File:Erice_Porta_Trapani_BW_2025-04-30_13-33-56.jpg) |
 | borgo/m-castello.jpg | Dmitry Romanoff | [Pexels License](https://www.pexels.com/license/) | [Pexels](https://www.pexels.com/photo/35843304/) |
 | borgo/m-castello-notte.jpg | rielaborazione notturna digitale della foto di Dmitry Romanoff qui sopra | – | – |
+| borgo/m-mura-castello.jpg | lemapuche breton | [Pexels License](https://www.pexels.com/license/) | [Pexels](https://www.pexels.com/photo/37407802/) |
+| borgo/m-torretta-castello.jpg | lemapuche breton | [Pexels License](https://www.pexels.com/license/) | [Pexels](https://www.pexels.com/photo/37407808/) |
+| borgo/m-torretta-pepoli.jpg | Mario Gómez | [Pexels License](https://www.pexels.com/license/) | [Pexels](https://www.pexels.com/photo/14440931/) |
+| borgo/san-giuliano-rami.jpg | Dmitry Romanoff | [Pexels License](https://www.pexels.com/license/) | [Pexels](https://www.pexels.com/photo/36338145/) |
+| borgo/m-mura-castello-notte.jpg | rielaborazione notturna digitale (firma C2PA di Google) della foto m-mura-castello.jpg | – | – |
+| borgo/balio-notte.jpg | **da chiarire** | **da chiarire** | fornita il 25/11/2026, fonte non nota |
+| borgo/san-giuliano.jpg | **da chiarire** | **da chiarire** | fornita il 25/11/2026, fonte non nota |
+| borgo/san-giuliano-tetti.jpg | **da chiarire** | **da chiarire** | fornita il 25/11/2026, fonte non nota |
+| borgo/cupola-san-giovanni.jpg | **da chiarire** | **da chiarire** | fornita il 25/11/2026, fonte non nota |
+| borgo/m-giardino.jpg | **da chiarire** | **da chiarire** | fornita il 25/11/2026, fonte non nota |
+| borgo/vista-tramonto.jpg | **da chiarire** | **da chiarire** | fornita il 25/11/2026, fonte non nota |

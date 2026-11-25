@@ -1,0 +1,115 @@
+---
+// Foto a scorrimento automatico dietro a una sezione. Ogni foto dice dove compare (on): d/p = desktop o telefono, d/n = giorno o notte.
+// Si vede sempre una sola sequenza; le foto delle altre restano display:none e lazy, quindi non vengono scaricate.
+// Senza JS, o con "riduci movimento", resta la prima foto della sequenza (CSS, data-first).
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import ArtImage from './ArtImage.astro';
+
+interface Slide {
+  on: string;              // es. 'dd dn pd'
+  src: ImageMetadata;
+  mobile?: ImageMetadata;  // solo per la foto che vale su entrambi gli schermi
+  alt: string;
+  pos?: string;            // object-position
+  sizes?: string;
+  dim?: boolean;           // foto di giorno, scurita di notte (classe bg)
+  filter?: string;
+  lights?: number[][];     // luci accese di notte: x, y (0-1 sulla foto), larghezza dell'alone in % della foto
+}
+interface Props { slides: Slide[]; class?: string; eager?: boolean; mobileSizes?: string; pause: string; play: string }
+const { slides, class: cls, eager = false, mobileSizes = '100vw', pause, play } = Astro.props;
+const seen = new Set<string>();
+const first = slides.map((s) => s.on.split(' ').filter((k) => !seen.has(k) && seen.add(k)).join(' '));
+---
+<div class:list={['slides', cls]}>
+  {slides.map((s, i) => (
+    <div class="slide" data-on={s.on} data-first={first[i] || undefined} style={`${s.pos ? `--pos:${s.pos};` : ''}${s.filter ? `--filter:${s.filter}` : ''}`}>
+      {s.mobile
+        ? <ArtImage desktop={s.src} mobile={s.mobile} mobileSizes={mobileSizes} alt={s.alt} class={s.dim ? 'bg' : undefined} eager={eager} />
+        : <Image src={s.src} alt={s.alt} widths={s.on[0] === 'd' ? [960, 1440, 1920] : [480, 800, 1280, 2400]} sizes={s.sizes ?? (s.on[0] === 'd' ? '100vw' : mobileSizes)} quality={76} loading="lazy" decoding="async" />}
+      {s.lights?.map(([x, y, w], n) => <span class="lamp-halo" aria-hidden="true" data-x={x} data-y={y} data-w={w} style={`animation-delay:${-n * 1.7}s`} />)}
+    </div>
+  ))}
+</div>
+<button type="button" class="slides-btn" hidden data-pause={pause} data-play={play} aria-label={pause}>
+  <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><path class="i-pause" d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z" /><path class="i-play" d="M8 5l11 7-11 7z" /></svg>
+</button>
+
+<script>
+  const HOLD = 6000, MOVE = 1400, LEAD = 2500; // sosta, scorrimento, anticipo con cui si carica la foto dopo
+  const root = document.documentElement;
+  const still = matchMedia('(prefers-reduced-motion: reduce)');
+  const phone = matchMedia('(max-width: 700px)');
+  const easing = getComputedStyle(root).getPropertyValue('--ease').trim() || 'ease';
+  const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+  document.querySelectorAll<HTMLElement>('.slides').forEach((box) => {
+    const host = box.closest('section')!;
+    const btn = host.querySelector<HTMLButtonElement>('.slides-btn')!;
+    const all = [...box.querySelectorAll<HTMLElement>('.slide')];
+    let seq: HTMLElement[] = [], i = 0, key = '', run = 0, timer = 0, busy = false, paused = false, visible = false, moves: Animation[] = [];
+    const tell = (name: string) => host.dispatchEvent(new Event(name)); // lo ascolta la nebbia (fog3d.ts) per la luce del lampione
+
+    // Gli aloni stanno sulle luci vere della foto, qualunque sia il ritaglio (object-fit: cover).
+    const place = () => {
+      for (const s of seq) {
+        const im = s.querySelector('img')!, halos = s.querySelectorAll<HTMLElement>('.lamp-halo');
+        const W = im.clientWidth, H = im.clientHeight, nw = im.naturalWidth, nh = im.naturalHeight;
+        if (!halos.length || !W || !nw) continue;
+        const k = Math.max(W / nw, H / nh), [px, py] = getComputedStyle(im).objectPosition.split(' ').map((v) => parseFloat(v) / 100);
+        halos.forEach((h) => {
+          h.style.left = `${(W - nw * k) * px + Number(h.dataset.x) * nw * k}px`;
+          h.style.top = `${(H - nh * k) * py + Number(h.dataset.y) * nh * k}px`;
+          h.style.width = `${nw * k * Number(h.dataset.w) / 100}px`;
+        });
+      }
+    };
+
+    const active = () => visible && !paused && !document.hidden && !still.matches && seq.length > 1;
+    const sync = () => {
+      clearTimeout(timer); run++; // un'attesa in corso non vale più
+      btn.hidden = seq.length < 2 || still.matches;
+      if (active() && !busy) timer = window.setTimeout(next, HOLD - LEAD);
+    };
+    const next = async () => {
+      const id = ++run, a = seq[i], b = seq[(i + 1) % seq.length], im = b.querySelector('img')!;
+      im.loading = 'eager';
+      const [ok] = await Promise.all([im.decode().then(() => true, () => false), sleep(LEAD)]);
+      if (id !== run) return;
+      if (!ok) { seq = seq.filter((s) => s !== b); i = seq.indexOf(a); sync(); return; } // foto non caricata: si salta
+      busy = true;
+      b.classList.add('on'); place(); tell('slidestart');
+      const opt = { duration: MOVE, easing };
+      moves = [a.animate([{ transform: 'none' }, { transform: 'translateX(-100%)' }], opt), b.animate([{ transform: 'translateX(100%)' }, { transform: 'none' }], opt)];
+      try { await Promise.all(moves.map((m) => m.finished)); } catch { return; } // annullata da reset()
+      a.classList.remove('on'); i = seq.indexOf(b); busy = false;
+      tell('slideend'); sync();
+    };
+    // Cambio di ora o di schermo: si riparte dalla prima foto della sequenza giusta.
+    const reset = () => {
+      const k = (phone.matches ? 'p' : 'd') + (root.dataset.time === 'night' ? 'n' : 'd');
+      if (k === key) return;
+      key = k; moves.forEach((m) => m.cancel()); moves = []; busy = false; i = 0;
+      seq = all.filter((s) => s.dataset.on!.split(' ').includes(k));
+      all.forEach((s) => s.classList.toggle('on', s === seq[0]));
+      box.classList.add('live');
+      place(); tell('slideend'); sync();
+    };
+
+    all.forEach((s) => s.querySelector('img')!.addEventListener('load', () => { place(); if (s === seq[i] && !busy) tell('slideend'); }));
+    btn.addEventListener('click', () => {
+      paused = !paused;
+      btn.classList.toggle('paused', paused);
+      btn.setAttribute('aria-label', paused ? btn.dataset.play! : btn.dataset.pause!);
+      sync();
+    });
+    new ResizeObserver(() => { place(); if (!busy) tell('slideend'); }).observe(box);
+    new MutationObserver(reset).observe(root, { attributes: true, attributeFilter: ['data-time'] });
+    new IntersectionObserver(([e]) => { visible = e.isIntersecting; sync(); }).observe(box);
+    phone.addEventListener('change', reset);
+    still.addEventListener('change', sync);
+    document.addEventListener('visibilitychange', sync);
+    reset();
+  });
+</script>

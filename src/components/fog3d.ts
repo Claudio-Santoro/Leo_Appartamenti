@@ -18,7 +18,7 @@ void main() {
   // foschia portata dal vento: tutti i banchi scorrono nello stesso verso, a velocità diverse
   // (i vicini sembrano più veloci: parallasse); avanzano appena verso la camera
   float z = -1000.0 + mod(aBase.z + uTime * (4.0 + 4.0 * aSeed), uRange);
-  float x = aBase.x + uTime * (24.0 + 26.0 * aSeed) + sin(uTime * 0.09 + aSeed * 6.283) * 40.0;
+  float x = aBase.x + uTime * (50.0 + 52.0 * aSeed) + sin(uTime * 0.09 + aSeed * 6.283) * 40.0;
   x = (mod(x + 1300.0, 2600.0) - 1300.0) * uFit;                 // uscito da un lato rientra dall'altro
   float y = aBase.y + sin(uTime * 0.07 + aSeed * 11.0) * 32.0;
   float a = aRot + 0.04 * sin(uTime * 0.05 + aSeed * 9.0); // appena inclinate, restano orizzontali
@@ -31,7 +31,7 @@ void main() {
 
 const FRAG = /* glsl */ `
 uniform sampler2D uTex0; uniform sampler2D uTex1; uniform sampler2D uTex2;
-uniform vec2 uRes; uniform vec2 uMouse; uniform float uHole; uniform float uNight; uniform vec2 uLamp; uniform float uDensity;
+uniform vec2 uRes; uniform vec2 uMouse; uniform float uHole; uniform float uNight; uniform vec2 uLamp; uniform float uLampOn; uniform float uDensity;
 uniform vec3 uDay; uniform vec3 uDusk;
 varying vec2 vUv; varying float vAlpha; varying float vDepth; varying float vSeed;
 void main() {
@@ -48,7 +48,7 @@ void main() {
   vec3 col = mix(uDay, uDusk, uNight);
   col *= 0.84 + 0.2 * vUv.y;                                            // un filo d'ombra sotto ogni banco: volume
   float dl = length((uv - uLamp) * vec2(asp, 1.0));
-  col = mix(col, vec3(1.0, 0.74, 0.38), uNight * (1.0 - smoothstep(0.0, 0.42, dl)) * 0.9);  // il lampione
+  col = mix(col, vec3(1.0, 0.74, 0.38), uNight * uLampOn * (1.0 - smoothstep(0.0, 0.42, dl)) * 0.9);  // il lampione
   col = mix(col, vec3(1.0, 0.8, 0.5), uNight * uHole * (1.0 - smoothstep(0.0, 0.3, d)) * 0.45); // la lanterna
   a = min(a, 1.0);
   gl_FragColor = vec4(col * a, a);
@@ -110,7 +110,7 @@ export function startFog3d(host: HTMLElement, density = 1) {
 
   const U = {
     uTime: { value: 0 }, uRange: { value: 975 }, uFit: { value: 1 }, uRes: { value: new Vector2(1, 1) },
-    uMouse: { value: new Vector2(-2, -2) }, uHole: { value: 0 }, uNight: { value: 0 }, uLamp: { value: new Vector2(-2, -2) },
+    uMouse: { value: new Vector2(-2, -2) }, uHole: { value: 0 }, uNight: { value: 0 }, uLamp: { value: new Vector2(-2, -2) }, uLampOn: { value: 0 },
     uDensity: { value: density }, uDay: { value: new Color(0.95, 0.95, 0.93) }, uDusk: { value: new Color(0.42, 0.46, 0.52) },
     uTex0: { value: puff(11) }, uTex1: { value: puff(29) }, uTex2: { value: puff(47) },
   };
@@ -120,7 +120,16 @@ export function startFog3d(host: HTMLElement, density = 1) {
   // La nebbia è morbida: la disegniamo a bassa risoluzione e la allarga il browser.
   // Le misure sono quelle del canvas, non della sezione: su telefono la nebbia copre solo la foto (CSS).
   let ratio = coarse ? 0.45 : 0.5;
-  const halo = host.querySelector<HTMLElement>('.lamp-halo'); // nell'apertura e, su telefono di notte, al Castello (il primo alone)
+  // La luce che scalda la nebbia: il primo alone della foto che si vede. Durante lo scorrimento si spegne, poi si riaccende sulla foto nuova.
+  let lampGoal = 0;
+  const lamp = () => {
+    const l = host.querySelector('.slide.on .lamp-halo')?.getBoundingClientRect(), b = cv.getBoundingClientRect();
+    lampGoal = l?.width && b.width ? 1 : 0;
+    if (lampGoal) U.uLamp.value.set((l!.left + l!.width / 2 - b.left) / b.width, 1 - (l!.top + l!.height / 2 - b.top) / b.height);
+    else U.uLamp.value.set(-2, -2);
+  };
+  host.addEventListener('slidestart', () => { lampGoal = 0; });
+  host.addEventListener('slideend', lamp);
   const size = () => {
     const w = cv.clientWidth, h = cv.clientHeight;
     if (!w || !h) return;
@@ -128,14 +137,9 @@ export function startFog3d(host: HTMLElement, density = 1) {
     camera.aspect = w / h; camera.updateProjectionMatrix();
     U.uFit.value = Math.min(1, Math.max(0.42, camera.aspect / 1.6));
     renderer.getDrawingBufferSize(U.uRes.value);
-    if (halo && !halo.hidden) {
-      const hb = cv.getBoundingClientRect(), lb = halo.getBoundingClientRect();
-      U.uLamp.value.set((lb.left + lb.width / 2 - hb.left) / hb.width, 1 - (lb.top + lb.height / 2 - hb.top) / hb.height);
-    } else U.uLamp.value.set(-2, -2);
+    lamp();
   };
   size(); new ResizeObserver(size).observe(cv);
-  // il lampione cambia posto quando cambia l'ora (su telefono di notte c'è un'altra foto)
-  new MutationObserver(() => setTimeout(size, 50)).observe(document.documentElement, { attributes: true, attributeFilter: ['data-time'] });
 
   const root = document.documentElement;
   let nightGoal = root.dataset.time === 'night' ? 1 : 0; U.uNight.value = nightGoal;
@@ -157,6 +161,7 @@ export function startFog3d(host: HTMLElement, density = 1) {
     if (skip && frames++ % 2) return; // su telefono basta mezzo frame rate: la nebbia è lenta
     pos.x += (goal.x - pos.x) * 0.05; pos.y += (goal.y - pos.y) * 0.05;
     U.uHole.value += (goal.hole - U.uHole.value) * 0.03;
+    U.uLampOn.value += (lampGoal - U.uLampOn.value) * 0.06;
     U.uNight.value += (nightGoal - U.uNight.value) * 0.04;
     U.uMouse.value.set(pos.x, pos.y);
     camera.position.x = (pos.x - 0.5) * 60; camera.position.y = (pos.y - 0.5) * 30; // parallasse: i banchi vicini si spostano di più

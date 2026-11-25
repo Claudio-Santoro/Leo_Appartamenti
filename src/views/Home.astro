@@ -3,6 +3,7 @@ import { Image, getImage } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import ArtImage from '../components/ArtImage.astro';
 import ApartmentCard from '../components/ApartmentCard.astro';
+import Slides from '../components/Slides.astro';
 import Fog from '../components/Fog.astro';
 import apts from '../data/appartamenti.json';
 import sito from '../data/sito.json';
@@ -23,7 +24,7 @@ const T = {
     heroAlt: 'Erice, il borgo di pietra sospeso sopra il mare e le nuvole',
     nightAlt: 'Un vicolo di Erice al crepuscolo, con un lampione acceso', vistaH: 'Da Erice: Trapani, il mare, le Egadi.',
     vistaP: 'Dal patio guardi Trapani e il mare: è la cosa che i nostri ospiti ricordano di più. Al tramonto le saline si accendono di rosa e le isole compaiono una dietro l’altra.',
-    vistaAlt: 'Il panorama dall’alto di Erice verso Trapani e il mare', aptsH: 'Venere, Elimo e Balio.',
+    vistaAlt: 'Tramonto sul mare e sulle Egadi da una strada di Erice', aptsH: 'Venere, Elimo e Balio.',
     aptsP: 'Tre appartamenti vicini, tutti con cucina, aria condizionata, riscaldamento e Wi-Fi. Per i gruppi si prenotano insieme: fino a 15 persone.', fogH: 'Quando sale la nebbia.',
     fogP: 'Capita spesso, anche d’estate: il Castello di Venere sparisce e riappare tra le nuvole. Erice cambia faccia in pochi minuti, ed è bellissima così.',
     fogAlt: 'Il Castello di Venere a Erice, nella nebbia', fogNightAlt: 'Il Castello di Venere di notte, illuminato dai lampioni', borgoH: 'Tutto il borgo, a pochi passi.',
@@ -31,6 +32,13 @@ const T = {
     walk: [['Real Duomo', 'circa 200 m'], ['Porta Trapani', 'circa 250 m'], ['Castello di Venere', 'circa 600 m'], ['Funivia per Trapani', 'a pochi minuti']],
     home: 'Da casa',
     borgoAlt: ['La Chiesa Madre di Erice con la sua torre campanaria', 'Porta Trapani', 'Il Castello di Venere sulla rupe', 'La funivia sopra la pianura di Trapani'],
+    alts: {
+      rami: 'Il campanile e la cupola di San Giuliano tra i rami', giuliano: 'La chiesa di San Giuliano a Erice', tetti: 'I tetti di Erice con la chiesa di San Giuliano', cupola: 'La cupola di San Giovanni Battista davanti al mare',
+      duomo: 'I tetti di Erice e la torre campanaria del Real Duomo sotto le nuvole', controluce: 'Il campanile di San Giuliano in controluce tra i rami, all’imbrunire',
+      giardino: 'Un giardino di Erice con i tetti del borgo', mura: 'Le mura del Castello di Venere sopra la valle', torretta: 'La Torretta Pepoli vista dall’alto', torrettaCastello: 'La Torretta Pepoli sotto il Castello di Venere',
+      muraNotte: 'Le mura del Castello di Venere di notte, con un lampione acceso', balio: 'Il Castello di Venere e le torri del Balio all’imbrunire, con le luci accese',
+    },
+    pause: 'Ferma le foto', play: 'Fai scorrere le foto',
     zoom: 'Ingrandisci la foto', close: 'Chiudi', prev: 'Foto precedente', next: 'Foto successiva',
     revOn: `su Booking.com · ${sito.booking.recensioni} recensioni`,
     revThemes: ['La vista dal patio', 'Proprietari disponibili e gentili', 'Comodo, ma tranquillo', 'Appartamenti puliti e spaziosi'],
@@ -48,7 +56,7 @@ const T = {
     heroAlt: 'Erice, the stone village hanging above the sea and the clouds',
     nightAlt: 'An alley in Erice at dusk, with a street lamp lit', vistaH: 'From Erice: Trapani, the sea, the Egadi.',
     vistaP: 'From the patio you look out over Trapani and the sea: it’s what our guests remember most. At sunset the salt pans glow pink and the islands appear one behind the other.',
-    vistaAlt: 'The view from high up in Erice towards Trapani and the sea', aptsH: 'Venere, Elimo and Balio.',
+    vistaAlt: 'Sunset over the sea and the Egadi Islands from a road in Erice', aptsH: 'Venere, Elimo and Balio.',
     aptsP: 'Three neighbouring apartments, all with kitchen, air conditioning, heating and Wi-Fi. Groups can book them together: up to 15 people.', fogH: 'When the fog rolls in.',
     fogP: 'It happens often, even in summer: the Castle of Venus vanishes and reappears among the clouds. Erice changes its face in minutes, and it’s beautiful that way.',
     fogAlt: 'The Castle of Venus in Erice, in the fog', fogNightAlt: 'The Castle of Venus at night, lit by street lamps', borgoH: 'The whole village, a few steps away.',
@@ -56,6 +64,13 @@ const T = {
     walk: [['Cathedral', 'about 200 m'], ['Porta Trapani', 'about 250 m'], ['Castle of Venus', 'about 600 m'], ['Cable car to Trapani', 'a few minutes']],
     home: 'From home',
     borgoAlt: ['The Chiesa Madre of Erice and its bell tower', 'Porta Trapani', 'The Castle of Venus on its cliff', 'The cable car above the Trapani plain'],
+    alts: {
+      rami: 'The bell tower and dome of San Giuliano through the branches', giuliano: 'The church of San Giuliano in Erice', tetti: 'The rooftops of Erice with the church of San Giuliano', cupola: 'The dome of San Giovanni Battista against the sea',
+      duomo: 'The rooftops of Erice and the bell tower of the Real Duomo under the clouds', controluce: 'The bell tower of San Giuliano in silhouette through the branches at nightfall',
+      giardino: 'A garden in Erice with the village rooftops', mura: 'The walls of the Castle of Venus above the valley', torretta: 'The Torretta Pepoli from above', torrettaCastello: 'The Torretta Pepoli below the Castle of Venus',
+      muraNotte: 'The walls of the Castle of Venus at night, with a street lamp lit', balio: 'The Castle of Venus and the Balio towers at nightfall, with the lights on',
+    },
+    pause: 'Pause the photos', play: 'Play the photos',
     zoom: 'Enlarge photo', close: 'Close', prev: 'Previous photo', next: 'Next photo',
     revOn: `on Booking.com · ${sito.booking.recensioni} reviews`,
     revThemes: ['The view from the patio', 'Helpful, friendly hosts', 'Convenient, yet quiet', 'Clean, spacious apartments'],
@@ -71,9 +86,31 @@ const stops = [
   { file: 'borgo/castello-venere', pos: '21% 50%', tall: false },
   { file: 'borgo/funivia', pos: '50% 50%', tall: true },
 ];
-// Le luci nella foto notturna del Castello (telefono): x, y in pixel sulla foto (896x1200), larghezza dell'alone in % della foto.
-// La prima è quella che scalda la nebbia (fog3d.ts). Se cambia la foto, vanno rimisurate.
-const lights = [[385, 463, 20], [186, 507, 20], [463, 499, 17], [551, 508, 17]];
+// Le foto che scorrono in apertura e nella nebbia. Le luci (x, y sulla foto) sono misurate a mano: se cambia una foto, vanno rimisurate.
+// La prima luce di ogni foto è quella che scalda la nebbia (fog3d.ts).
+const muraNotte = { on: 'pn', src: img('borgo/m-mura-castello-notte'), alt: T.alts.muraNotte, lights: [[0.6685, 0.243, 46]] };
+const heroSlides = [
+  { on: 'dd dn pd', src: img('borgo/belvedere-nuvole'), mobile: img('borgo/m-vicolo-cofano'), alt: T.heroAlt, dim: true, lights: [[0.6896, 0.3799, 26]] },
+  { on: 'pn', src: img('borgo/m-notte-vicolo'), alt: T.nightAlt, pos: '54% 50%', sizes: '190vw', lights: [[0.545, 0.422, 37]] },
+  { on: 'dd', src: img('borgo/san-giuliano-rami'), alt: T.alts.rami, pos: '50% 60%' },
+  { on: 'dd', src: img('borgo/san-giuliano'), alt: T.alts.giuliano, pos: '50% 12%' },
+  { on: 'dd', src: img('borgo/san-giuliano-tetti'), alt: T.alts.tetti, pos: '50% 50%' },
+  { on: 'dd', src: img('borgo/cupola-san-giovanni'), alt: T.alts.cupola, pos: '50% 40%' },
+  { on: 'dd', src: img('erice/tetti'), alt: T.alts.duomo, pos: '50% 40%' },
+  { on: 'dn', src: img('erice/tramonto'), alt: T.alts.controluce, pos: '50% 50%' },
+  { on: 'pd', src: img('borgo/m-giardino'), alt: T.alts.giardino, pos: '50% 15%' },
+  { on: 'pd', src: img('borgo/m-mura-castello'), alt: T.alts.mura, pos: '50% 30%' },
+  { on: 'pd', src: img('borgo/m-torretta-pepoli'), alt: T.alts.torretta, pos: '50% 85%' },
+  { ...muraNotte, pos: '50% 20%' },
+];
+const fogSlides = [
+  { on: 'dd dn pd', src: img('borgo/castello-nebbia'), mobile: img('borgo/m-castello'), alt: T.fogAlt, dim: true },
+  { on: 'dn', src: img('borgo/balio-notte'), alt: T.alts.balio, pos: '50% 45%', filter: 'brightness(.42) saturate(.95)', lights: [[0.81, 0.662, 13], [0.6586, 0.381, 9], [0.785, 0.38, 9], [0.493, 0.392, 8], [0.137, 0.548, 5]] },
+  { on: 'pn', src: img('borgo/m-castello-notte'), alt: T.fogNightAlt, pos: '25% 0%', lights: [[0.4297, 0.3858, 20], [0.2076, 0.4225, 20], [0.5167, 0.4158, 17], [0.615, 0.4233, 17]] },
+  { on: 'pd', src: img('borgo/m-mura-castello'), alt: T.alts.mura, pos: '75% 0%' },
+  { on: 'pd', src: img('borgo/m-torretta-castello'), alt: T.alts.torrettaCastello, pos: '60% 50%' },
+  { ...muraNotte, pos: '75% 0%' },
+];
 const stopFull = await Promise.all(stops.map((st) => getImage({ src: img(st.file), width: 1600, format: 'webp' })));
 const ld = {
   '@context': 'https://schema.org', '@type': 'LodgingBusiness', name: sito.nome, url: new URL(url('home', lang), Astro.site).href,
@@ -91,11 +128,8 @@ const ld = {
   </nav>
 
   <section class="hero" id="inizio" data-enter>
-    <ArtImage desktop={img('borgo/belvedere-nuvole')} mobile={img('borgo/m-vicolo-cofano')} alt={T.heroAlt} class="bg" eager />
-    {/* Di notte, su telefono, l'apertura passa a questa foto (CSS). Se non si vede non viene scaricata (lazy + display:none). */}
-    <Image src={img('borgo/m-notte-vicolo')} alt={T.nightAlt} widths={[800, 1400, 2000, 2400]} sizes="(max-width: 700px) 190vw, 1px" class="night-bg" loading="lazy" decoding="async" />
-    <Fog density={0.95} />
-    <div class="lamp-halo" aria-hidden="true"></div>
+    <Slides slides={heroSlides} eager pause={T.pause} play={T.play} />
+    <Fog density={1.45} />
     <div class="wrap">
       <div class="enter">
         <h1>{T.h1[0]}<br />{T.h1[1]}</h1>
@@ -109,7 +143,7 @@ const ld = {
   </section>
 
   <section class="photo-sec left" id="vista">
-    <div class="media"><ArtImage desktop={img('borgo/vista-trapani-egadi')} mobile={img('erice/strada-tramonto')} mobileSizes="125vw" alt={T.vistaAlt} class="bg parallax" /></div>
+    <div class="media"><ArtImage desktop={img('borgo/vista-tramonto')} mobile={img('erice/strada-tramonto')} mobileSizes="125vw" alt={T.vistaAlt} class="bg parallax" /></div>
     <div class="wrap">
       <div class="txt" data-reveal>
         <h2>{T.vistaH}</h2>
@@ -129,15 +163,8 @@ const ld = {
   </section>
 
   <section class="photo-sec fog" id="nebbia">
-    <div class="media">
-      <ArtImage desktop={img('borgo/castello-nebbia')} mobile={img('borgo/m-castello')} mobileSizes="125vw" alt={T.fogAlt} class="bg" />
-      {/* Su telefono, di notte, un'altra foto. Se non si vede non viene scaricata (lazy + display:none). */}
-      <div class="night">
-        <Image src={img('borgo/m-castello-notte')} alt={T.fogNightAlt} quality={85} loading="lazy" decoding="async" />
-        {lights.map(([x, y, size], i) => <span class="lamp-halo" aria-hidden="true" style={`left:${x / 8.96}%;top:${y / 12}%;width:${size}%;animation-delay:${-i * 1.7}s`} />)}
-      </div>
-    </div>
-    <Fog density={1.25} />
+    <Slides slides={fogSlides} class="media" mobileSizes="125vw" pause={T.pause} play={T.play} />
+    <Fog density={1.9} />
     <div class="wrap">
       <div class="txt" data-reveal>
         <h2>{T.fogH}</h2>
@@ -204,28 +231,6 @@ const ld = {
   </section>
 
   <script>
-    // Il lampione vero della foto d'apertura: di notte un alone caldo sul suo vetro.
-    // ponytail: coordinate misurate a mano sulle foto; se cambia una foto, vanno rimisurate.
-    // Desktop: belvedere-nuvole (1920x1440, centrata). Telefono di notte: m-notte-vicolo (2400x1600, object-position 54% 50%).
-    const LAMPS = { desktop: { w: 1920, h: 1440, x: 1324 / 1920, y: 547 / 1440, px: 0.5, py: 0.5 }, phone: { w: 2400, h: 1600, x: 0.545, y: 0.422, px: 0.54, py: 0.5 } };
-    const hero = document.querySelector<HTMLElement>('.hero')!;
-    const photo = hero.querySelector<HTMLImageElement>('.bg')!;
-    const night = hero.querySelector<HTMLImageElement>('.night-bg')!;
-    const halo = hero.querySelector<HTMLElement>('.lamp-halo')!;
-    const placeHalo = () => {
-      const desktop = innerWidth > 700;
-      const L = desktop ? LAMPS.desktop : LAMPS.phone;
-      const W = hero.clientWidth, H = desktop ? hero.clientHeight : night.clientHeight;
-      halo.hidden = !H;
-      if (!H) return;
-      const k = Math.max(W / L.w, H / L.h);
-      halo.style.left = `${(W - L.w * k) * L.px + L.x * L.w * k}px`;
-      halo.style.top = `${(H - L.h * k) * L.py + L.y * L.h * k}px`;
-      halo.style.scale = String(desktop ? Math.max(0.6, k * 1.2) : 0.62);
-    };
-    placeHalo(); addEventListener('resize', placeHalo); photo.addEventListener('load', placeHalo); night.addEventListener('load', placeHalo);
-    new MutationObserver(placeHalo).observe(document.documentElement, { attributes: true, attributeFilter: ['data-time'] });
-
     // Le tappe del borgo: al clic sull'arco la foto intera, senza ritaglio.
     const zoom = document.querySelector<HTMLDialogElement>('#borgo-zoom')!;
     const windows = [...document.querySelectorAll<HTMLButtonElement>('.route .window')];
