@@ -24,7 +24,7 @@
   --on-deep-2: #B7B1A3;
   --deep-line: #2E3430;
   --header-bg: rgba(232, 230, 224, .88);
-  --cal-free: #DCE6DA; --cal-booked: #E5D9CF; --cal-booked-ink: #7E6A5E; --cal-range: #C9D8E0; --cal-past: #85817A;
+  --cal-free: #DCE6DA; --cal-booked: #E5D9CF; --cal-booked-ink: #7E6A5E; --cal-range: #C9D8E0; --cal-past: #85817A; --cal-sel: var(--pine); --cal-sel-ink: #F6EBD2;
   --wa: #1E7A4C;
 
   /* Almendra (calligrafia medievale, leggibile) per i titoli, EB Garamond per il testo */
@@ -40,7 +40,7 @@
   --calc: #121614; --calc-2: #191E1B; --paper: #1D2320; --field: #232A26; --stone: #3B423D; --rock: #8E8C84;
   --ink: #ECE6D8; --muted: #BDB7A8; --cotto: #F0B851; --sea: #8FB8CF; --pine: #34523F; --pine-2: #44664F;
   --header-bg: rgba(18, 22, 20, .86);
-  --cal-free: #22322A; --cal-booked: #3A2E29; --cal-booked-ink: #C2A898; --cal-range: #1F3A47; --cal-past: #6E6B64;
+  --cal-free: #2F4739; --cal-booked: #40291F; --cal-booked-ink: #C2A08E; --cal-range: #7A5A22; --cal-past: #77736B; --cal-sel: #F0B851; --cal-sel-ink: #1B1F1C; /* date scelte: color lampione */
   color-scheme: dark;
 }
 /* Passaggio giorno/notte morbido, mai un salto di luce */
@@ -420,12 +420,12 @@ table.compare { width: 100%; border-collapse: collapse; }
 .cal-grid button.past { background: transparent; color: var(--cal-past); cursor: default; box-shadow: none; }
 .cal-grid button.booked { background: var(--cal-booked); color: var(--cal-booked-ink); text-decoration: line-through; }
 .cal-grid button.range { background: var(--cal-range); }
-.cal-grid button.start, .cal-grid button.end { background: var(--pine); color: #F6EBD2; text-decoration: none; }
+.cal-grid button.start, .cal-grid button.end { background: var(--cal-sel); color: var(--cal-sel-ink); font-weight: 600; text-decoration: none; }
 .cal-legend { display: flex; flex-wrap: wrap; gap: 18px; font-size: .88rem; color: var(--muted); margin-top: 16px; }
 .cal-legend span::before { content: ''; display: inline-block; width: 12px; height: 12px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; }
 .cal-legend .l-free::before { background: var(--cal-free); }
 .cal-legend .l-booked::before { background: var(--cal-booked); }
-.cal-legend .l-sel::before { background: var(--pine); }
+.cal-legend .l-sel::before { background: var(--cal-sel); }
 .cal-status { margin: 14px 0 0; font-weight: 600; min-height: 1.6em; }
 
 /* ---------- Modulo ---------- */
