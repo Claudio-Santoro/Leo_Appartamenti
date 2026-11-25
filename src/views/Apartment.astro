@@ -19,7 +19,7 @@ const others = apts.filter((x) => x.id !== id);
 const prices = Object.values(a.prezzi).filter((v): v is number => typeof v === 'number');
 const priceText = prices.length ? `${lang === 'it' ? 'da' : 'from'} € ${Math.min(...prices)} / ${lang === 'it' ? 'notte' : 'night'}` : T.priceVal;
 ---
-<Base lang={lang} page="apts" id={id} title={`${a.nome} · ${a.mq} m², ${a.ospiti} ${t.guests} · LEO Appartamenti Erice`} description={a.breve[lang]}>
+<Base lang={lang} page="apts" id={id} title={`${a.nome} · ${a.mq} m², ${a.ospiti} ${t.guests} · Leo Appartamenti Erice`} description={a.breve[lang]}>
   <section class="page-head" style="padding-bottom:28px"><div class="wrap enter">
     <p class="crumbs"><a href={url('apts', lang)}>{t.nav.apts}</a> / {a.nome}</p>
     <h1>{a.nome}</h1>

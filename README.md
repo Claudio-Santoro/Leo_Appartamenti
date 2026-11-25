@@ -1,4 +1,4 @@
-# LEO Appartamenti – sito
+# Leo Appartamenti – sito
 
 Sito statico (Astro) in italiano e inglese per i 3 appartamenti a Erice. Analisi e piano di lavoro in `docs/`.
 
@@ -41,6 +41,6 @@ Le richieste non sono archiviate: restano nella casella di posta (e 30 giorni su
 |---|---|
 | `RESEND_KEY` | chiave API di Resend, permesso "Sending access" |
 | `MAIL_TO` | dove arrivano le richieste. **Senza dominio verificato deve essere l'email con cui si è creato l'account Resend** |
-| `MAIL_FROM` | solo dopo aver verificato il dominio su Resend, es. `LEO Appartamenti <sito@leoappartamenti.it>` |
+| `MAIL_FROM` | solo dopo aver verificato il dominio su Resend, es. `Leo Appartamenti <sito@leoappartamenti.it>` |
 
 Prima di spegnere Netlify: inviare una richiesta di prova e controllare che arrivi (anche nello spam).

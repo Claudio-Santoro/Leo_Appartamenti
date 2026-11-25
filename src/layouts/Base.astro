@@ -63,7 +63,7 @@ const wa = `https://wa.me/${sito.whatsapp}`;
     <a class="skip" href="#main">{t.skip}</a>
     <header class:list={['site-header', { over }]}>
       <div class="wrap">
-        <a class="brand" href={url('home', lang)}>LEO Appartamenti</a>
+        <a class="brand" href={url('home', lang)}>Leo Appartamenti</a>
         <nav class="nav" aria-label="Menu">
           {links.map((l) => <a href={l.href} aria-current={l.key === page ? 'page' : undefined}>{l.label}</a>)}
           <a href={url(page, other, id)} hreflang={other} lang={other}>{other.toUpperCase()}</a>
@@ -78,7 +78,7 @@ const wa = `https://wa.me/${sito.whatsapp}`;
 
     <div class="menu-panel" id="menu-panel" role="dialog" aria-modal="true" aria-label={t.menu}>
       <div class="top">
-        <a class="brand" href={url('home', lang)}>LEO Appartamenti</a>
+        <a class="brand" href={url('home', lang)}>Leo Appartamenti</a>
         <button class="close" type="button" aria-label={t.close}>×</button>
       </div>
       <nav aria-label="Menu">
@@ -106,7 +106,7 @@ const wa = `https://wa.me/${sito.whatsapp}`;
       <div class="wrap">
         <div class="cols">
           <div>
-            <div class="logo">LEO Appartamenti</div>
+            <div class="logo">Leo Appartamenti</div>
             <p>{t.tagline}<br />{sito.indirizzo}</p>
           </div>
           <div>
@@ -128,7 +128,7 @@ const wa = `https://wa.me/${sito.whatsapp}`;
         <div class="legal">
           {t.footer.codes}: CIR {sito.cir} · CIN {sito.cin.join(' · ')}<br />
           {t.footer.photos} <a href={url('credits', lang)}>{t.footer.credits}</a><br />
-          <a href={url('privacy', lang)}>{t.footer.privacy}</a> · <a href={url('terms', lang)}>{t.footer.terms}</a> · © {new Date().getFullYear()} LEO Appartamenti
+          <a href={url('privacy', lang)}>{t.footer.privacy}</a> · <a href={url('terms', lang)}>{t.footer.terms}</a> · © {new Date().getFullYear()} Leo Appartamenti
         </div>
       </div>
     </footer>

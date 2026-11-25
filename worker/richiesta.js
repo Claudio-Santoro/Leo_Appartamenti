@@ -46,7 +46,7 @@ export async function richiesta(request, env) {
     const r = await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: { Authorization: `Bearer ${env.RESEND_KEY}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ from: env.MAIL_FROM || 'LEO Appartamenti <onboarding@resend.dev>', to: env.MAIL_TO, ...mail }),
+      body: JSON.stringify({ from: env.MAIL_FROM || 'Leo Appartamenti <onboarding@resend.dev>', to: env.MAIL_TO, ...mail }),
       signal: AbortSignal.timeout(8000),
     });
     if (r.ok) return done();

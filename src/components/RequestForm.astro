@@ -70,7 +70,7 @@ const T = {
       const apts = [...f.querySelectorAll<HTMLInputElement>('input[name="appartamenti"]:checked')].map((b) => b.parentElement!.textContent!.trim().split(' (')[0]);
       const fmt = (s: string) => s.split('-').reverse().join('/');
       const guests = Number(get('adulti') || 0) + Number(get('bambini') || 0);
-      let text = `${d.waText} ${apts.join(' + ') || 'LEO Appartamenti'}`;
+      let text = `${d.waText} ${apts.join(' + ') || 'Leo Appartamenti'}`;
       if (get('arrivo') && get('partenza')) text += ` ${d.from} ${fmt(get('arrivo'))} ${d.to} ${fmt(get('partenza'))}`;
       if (guests) text += `, ${guests} ${d.guests}`;
       if (get('nome')) text += `. ${get('nome')}`;
