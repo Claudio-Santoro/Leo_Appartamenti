@@ -120,7 +120,7 @@ export function startFog3d(host: HTMLElement, density = 1) {
   // La nebbia è morbida: la disegniamo a bassa risoluzione e la allarga il browser.
   // Le misure sono quelle del canvas, non della sezione: su telefono la nebbia copre solo la foto (CSS).
   let ratio = coarse ? 0.45 : 0.5;
-  const halo = host.querySelector<HTMLElement>('.lamp-halo'); // c'è solo nell'apertura
+  const halo = host.querySelector<HTMLElement>('.lamp-halo'); // nell'apertura e, di notte, al Castello (il primo alone)
   const size = () => {
     const w = cv.clientWidth, h = cv.clientHeight;
     if (!w || !h) return;

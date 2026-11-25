@@ -640,7 +640,17 @@ html.time-reveal::view-transition-new(root) { animation: reveal .7s var(--ease) 
 
 /* Il voto di notte prende la luce dei lampioni: il verde pino sul fondo scuro non si leggeva */
 :root[data-time='night'] .trust .score { color: var(--cotto-light); text-shadow: 0 0 28px rgba(var(--glow), .25); }
-/* Il mare di notte: meno buio delle altre foto, perché le Egadi all'orizzonte si vedano (il testo ha la sua velatura a sinistra) */
-:root[data-time='night'] #vista .bg { filter: brightness(.72) saturate(.8) contrast(1.08); }
+/* Di notte la vista e il Castello hanno una foto loro al posto di quella di giorno */
+.photo-sec .night { display: none; }
+:root[data-time='night'] :is(#vista, #nebbia) .bg { display: none; }
+:root[data-time='night'] .photo-sec .night { display: block; position: absolute; inset: 0; width: 100%; height: 100%; }
+#vista .night { object-fit: cover; object-position: 70% 50%; filter: brightness(.86); }
+/* Il Castello sta più in basso, sotto il testo: sopra, il cielo della foto continua fino al fondo della pagina.
+   La scena ha le proporzioni della foto, così gli aloni restano sulle finestre a ogni misura */
+#nebbia .night { --sky: 34%; --w: max(100%, 66svh * 840 / 438); background: linear-gradient(to bottom, #191E1B 4%, #16354F 26%, #14527F 46%); overflow: hidden; }
+#nebbia .scene { position: absolute; top: var(--sky); left: calc((100% - var(--w)) * .3); width: var(--w); aspect-ratio: 840 / 438; }
+#nebbia .scene img { width: 100%; height: 100%; filter: brightness(.74) saturate(.78); -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 20%); mask-image: linear-gradient(to bottom, transparent 0, #000 20%); }
+#nebbia .lamp-halo { height: auto; aspect-ratio: 1; margin: 0; translate: -50% -50%; }
+@media (max-width: 700px) { #nebbia .night { --sky: 20%; --w: max(100%, 60svh * 840 / 438); } }
 /* Su telefono la stessa foto del desktop, inquadrata sulle Egadi; senza parallasse, che taglierebbe l'orizzonte */
 @media (max-width: 700px) { #vista .bg { animation: none; transform: none; object-position: 72% 0; } }
