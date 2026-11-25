@@ -2,7 +2,7 @@
 // Ogni intervallo è [arrivo, partenza): la notte della partenza è libera.
 // null = calendario non collegato o non raggiungibile: il sito invita comunque a inviare la richiesta.
 //
-// Variabili d'ambiente su Netlify (mai nel codice, sono URL segreti):
+// Segreti del Worker su Cloudflare (mai nel codice, sono URL segreti):
 //   ICAL_VENERE, ICAL_ELIMO, ICAL_BALIO = uno o più URL iCal separati da virgola
 //   (Google Calendar del gestore + export di Booking dell'unità)
 
@@ -36,17 +36,19 @@ async function busy(urls, today) {
   return texts.flatMap(parseIcal).filter(([, e]) => e > today).sort(([a], [b]) => a.localeCompare(b));
 }
 
-export default async () => {
+export async function disponibilita(request, env, ctx) {
+  // Cache di 15 minuti nel data center. Sui domini workers.dev può non funzionare: in quel caso si rilegge ogni volta, niente di rotto.
+  const key = new Request(new URL('/api/disponibilita', request.url));
+  const hit = await caches.default.match(key);
+  if (hit) return hit;
   const today = new Date().toISOString().slice(0, 10);
   const out = {};
   await Promise.all(APTS.map(async (id) => {
-    const urls = (process.env[`ICAL_${id.toUpperCase()}`] || '').split(',').map((s) => s.trim()).filter(Boolean);
+    const urls = (env[`ICAL_${id.toUpperCase()}`] || '').split(',').map((s) => s.trim()).filter(Boolean);
     // Se anche un solo calendario non risponde restituisce null: mostrare libere date occupate sarebbe peggio.
     out[id] = urls.length ? await busy(urls, today).catch(() => null) : null;
   }));
-  return Response.json(out, {
-    headers: { 'Netlify-CDN-Cache-Control': 'public, s-maxage=900, stale-while-revalidate=300', 'Cache-Control': 'no-cache' },
-  });
-};
-
-export const config = { path: '/api/disponibilita' };
+  const res = Response.json(out, { headers: { 'Cache-Control': 'public, max-age=0, s-maxage=900' } });
+  if (!Object.values(out).includes(null)) ctx.waitUntil(caches.default.put(key, res.clone())); // un calendario caduto non resta in cache
+  return res;
+}

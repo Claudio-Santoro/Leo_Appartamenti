@@ -143,19 +143,6 @@ const wa = `https://wa.me/${sito.whatsapp}`;
         bar?.classList.toggle('show', y > window.innerHeight * 0.5);
       };
       addEventListener('scroll', onScroll, { passive: true });
-
-      // Il badge "Powered by Netlify" (iniettato da Netlify in basso a destra) copriva la barra:
-      // se c'è, alziamo la barra sopra di lui invece di nasconderlo.
-      const placeBar = () => {
-        const badge = [...document.querySelectorAll<HTMLElement>('iframe, [id^="nl-"]')].find((el) =>
-          /netlify|nl-badge/i.test(el.id + ' ' + (el.getAttribute('src') ?? '') + ' ' + (el.getAttribute('title') ?? '')) &&
-          getComputedStyle(el).position === 'fixed');
-        const h = badge ? Math.max(0, innerHeight - badge.getBoundingClientRect().top) : 0;
-        document.documentElement.style.setProperty('--badge-offset', h ? `${Math.ceil(h) + 4}px` : '0px');
-      };
-      new MutationObserver(placeBar).observe(document.body, { childList: true });
-      addEventListener('resize', placeBar);
-      placeBar();
       onScroll();
 
       const panel = document.getElementById('menu-panel')!;

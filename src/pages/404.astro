@@ -1,0 +1,12 @@
+---
+// Cloudflare serve questa pagina (404.html) quando l'indirizzo non esiste.
+import Base from '../layouts/Base.astro';
+import { url } from '../i18n.js';
+---
+<Base lang="it" page="home" title="Pagina non trovata · LEO Appartamenti" description="Pagina non trovata" noindex>
+  <section class="page-head"><div class="wrap prose enter">
+    <h1>Pagina non trovata</h1>
+    <p class="lead">L’indirizzo non esiste o è cambiato. <span lang="en">This page does not exist or has moved.</span></p>
+    <div class="btns"><a class="btn" href={url('home', 'it')}>Torna alla home</a><a class="btn line" href={url('home', 'en')} lang="en">English home</a></div>
+  </div></section>
+</Base>

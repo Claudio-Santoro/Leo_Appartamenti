@@ -12,3 +12,7 @@ skills-lock.json
 
 # profili Chrome temporanei lasciati da Lighthouse
 C:*
+
+# Cloudflare: file locali e segreti di prova
+.wrangler/
+.dev.vars*

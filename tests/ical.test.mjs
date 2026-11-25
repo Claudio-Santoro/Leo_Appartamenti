@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { parseIcal } from '../netlify/functions/disponibilita.mjs';
+import { parseIcal } from '../worker/disponibilita.js';
 
 const cal = (body) => `BEGIN:VCALENDAR\r\nVERSION:2.0\r\n${body}END:VCALENDAR\r\n`;
 
