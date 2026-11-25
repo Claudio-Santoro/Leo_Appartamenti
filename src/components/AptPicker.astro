@@ -11,13 +11,13 @@ interface Props { lang: 'it' | 'en' }
 const { lang } = Astro.props;
 const t = ui[lang];
 const T = {
-  it: { title: 'Scegli gli appartamenti', hint: 'Anche più di uno, per i gruppi.', select: 'Seleziona', selected: 'Selezionato', prevApt: 'Appartamento precedente', nextApt: 'Appartamento successivo', list: 'Appartamenti', photos: 'Foto di', prev: 'Foto precedente', next: 'Foto successiva', upTo: 'fino a', bath: 'bagno', all: 'Tutti i servizi', sheet: 'Apri la scheda di' },
-  en: { title: 'Choose your apartments', hint: 'Pick more than one for groups.', select: 'Select', selected: 'Selected', prevApt: 'Previous apartment', nextApt: 'Next apartment', list: 'Apartments', photos: 'Photos of', prev: 'Previous photo', next: 'Next photo', upTo: 'up to', bath: 'bathroom', all: 'All amenities', sheet: 'Open the page for' },
+  it: { title: 'Scegli 1+ appartamenti', select: 'Seleziona', prevApt: 'Appartamento precedente', nextApt: 'Appartamento successivo', list: 'Appartamenti', photos: 'Foto di', prev: 'Foto precedente', next: 'Foto successiva', upTo: 'fino a', bath: 'bagno', all: 'Tutti i servizi', sheet: 'Apri la scheda di' },
+  en: { title: 'Choose 1+ apartments', select: 'Select', prevApt: 'Previous apartment', nextApt: 'Next apartment', list: 'Apartments', photos: 'Photos of', prev: 'Previous photo', next: 'Next photo', upTo: 'up to', bath: 'bathroom', all: 'All amenities', sheet: 'Open the page for' },
 }[lang];
 ---
 <div class="picker" role="group" aria-labelledby="picker-t">
   <div class="picker-head">
-    <p id="picker-t"><b>{T.title}</b> <span class="muted">{T.hint}</span></p>
+    <p id="picker-t"><b>{T.title}</b></p>
     <div class="cal-nav picker-nav">
       <button type="button" data-step="-1" aria-label={T.prevApt}>‹</button>
       <button type="button" data-step="1" aria-label={T.nextApt}>›</button>
@@ -32,7 +32,6 @@ const T = {
             <h3>{a.nome}</h3>
             <label class="pin">
               <input type="checkbox" name="appartamenti" value={a.id} data-nome={a.nome} data-ospiti={a.ospiti} checked={i === 0} aria-label={`${T.select} ${a.nome}`} />
-              <span class="off" aria-hidden="true">{T.select}</span><span class="on" aria-hidden="true">{T.selected}</span>
               <span class="dot" aria-hidden="true"></span>
             </label>
           </div>

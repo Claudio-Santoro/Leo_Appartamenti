@@ -152,14 +152,15 @@ const cfg = { lang: lang === 'it' ? 'it-IT' : 'en-GB', labels, apts: apts.map((a
     if (r) {
       const n = nights(checkIn!, checkOut!);
       const dates = `${dmy(checkIn!)} → ${dmy(checkOut!)} · ${n} ${n === 1 ? L.night : L.nights}`;
+      // Tre righe: chi, quando, e cosa fare.
+      const ww = el('div', '', 'ww'); ww.append(el('p', names(sel), 'who'), el('p', dates, 'when')); out.push(ww);
       if (r.busy.length) {
-        out.push(el('p', `${dates}: ${explain(r)}.`));
+        out.push(el('p', `${explain(r)[0].toUpperCase()}${explain(r).slice(1)}.`, 'what'));
         const alt = choices();
         out.push(...(alt.length || r.unknown.length ? alt : [el('p', L.none)]));
       } else {
-        const p = el('p', `${names(sel)} · ${dates} `);
         const a = el('a', L.go, 'link') as HTMLAnchorElement; a.href = '#richiesta';
-        p.append(a); out.push(p);
+        out.push(a);
       }
     } else if (checkIn) {
       const one = split(data, sel, checkIn, add(checkIn, 1));
@@ -174,11 +175,14 @@ const cfg = { lang: lang === 'it' ? 'it-IT' : 'en-GB', labels, apts: apts.map((a
     if (!form || !sum) return;
     const cap = APTS.filter((a) => sel.includes(a.id)).reduce((n, a) => n + a.ospiti, 0), all = APTS.reduce((n, a) => n + a.ospiti, 0);
     const g = Number(field('adulti').value || 0) + Number(field('bambini').value || 0);
-    const parts = [sel.map((id) => names([id])).join(' + ')];
-    if (checkIn && checkOut) { const n = nights(checkIn, checkOut); parts.push(`${dmy(checkIn)} → ${dmy(checkOut)}`, `${n} ${n === 1 ? L.night : L.nights}`); }
-    parts.push(fill(L.upTo, { n: cap }));
+    // Tre righe: appartamenti, date e notti, capienza.
+    const rows = [sel.map((id) => names([id])).join(' + ')];
+    if (checkIn && checkOut) { const n = nights(checkIn, checkOut); rows.push(`${dmy(checkIn)} → ${dmy(checkOut)} · ${n} ${n === 1 ? L.night : L.nights}`); }
+    rows.push(fill(L.upTo, { n: cap }));
+    const line = el('span', '', 'rows');
+    line.append(...rows.map((r) => el('b', r)));
     const warn = conflict() ? `${L.conflict}: ${explain(range()!)}.` : g > all ? fill(L.tooManyAll, { g, n: all }) : g > cap ? fill(L.tooMany, { g, n: cap }) : '';
-    sum.replaceChildren(el('b', parts.join(' · ')), ...(warn ? [el('span', warn, 'warn')] : []), ...choices());
+    sum.replaceChildren(line, ...(warn ? [el('span', warn, 'warn')] : []), ...choices());
     sum.hidden = false;
     // Il modulo non parte con date occupate: il messaggio è quello del campo.
     field('arrivo').setCustomValidity(conflict() ? L.conflict : '');

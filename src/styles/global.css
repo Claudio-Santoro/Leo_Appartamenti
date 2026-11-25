@@ -438,7 +438,8 @@ table.compare { width: 100%; border-collapse: collapse; }
   .chip small { display: block; }
   .chip .dot { width: 20px; height: 20px; }
   .chip .dot::after { width: 9px; height: 5px; }
-  .cal-head .cal-nav { flex: 1 1 100%; justify-content: space-between; margin-bottom: -60px; }
+  .cal-head .cal-nav { flex: 1 1 100%; justify-content: space-between; margin-bottom: -60px; position: relative; z-index: 1; pointer-events: none; } /* sopra il titolo del mese, che viene dopo */
+  .cal-head .cal-nav button { pointer-events: auto; }
   .cal-month h2 { line-height: 48px; margin: 0 56px 6px; }
 }
 .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
@@ -468,9 +469,23 @@ table.compare { width: 100%; border-collapse: collapse; }
 .cal-legend .l-unknown::before { border: 1px dashed var(--rock); }
 .cal-legend .l-sel::before { background: var(--cal-sel); }
 .cal-status { margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--stone); min-height: 4em; display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; }
+.cal-status .ww { display: flex; flex-wrap: wrap; }
 .cal-status p { margin: 0; font-weight: 600; }
 .cal-status p.small { flex-basis: 100%; font-weight: 400; }
 .cal-status .btn { min-height: 48px; }
+.cal-status .what { font-weight: 400; }
+.req-sum .rows { display: flex; flex-wrap: wrap; gap: 2px 0; }
+.req-sum .rows b + b::before, .cal-status .when::before { content: '·'; margin: 0 .45em; font-weight: 400; }
+@media (max-width: 700px) {
+  /* su telefono una cosa per riga: chi, quando, cosa fare */
+  .cal-status, .cal-status .ww { flex-direction: column; align-items: flex-start; gap: 4px; }
+  .cal-status .when::before, .req-sum .rows b + b::before { content: none; }
+  .cal-status > :is(.link, .btn) { margin-top: 8px; }
+  .req-sum .rows { flex-direction: column; }
+  .req-sum .rows b:not(:first-child) { font-weight: 400; }
+  /* il modulo da bordo a bordo: i campi restano sulle righe del testo della pagina */
+  .form { --fp: var(--gutter); margin-inline: calc(-1 * var(--gutter)); border-inline: 0; border-radius: 0; }
+}
 
 /* ---------- Schede degli appartamenti nella richiesta ---------- */
 .picker { min-width: 0; }
@@ -483,12 +498,9 @@ table.compare { width: 100%; border-collapse: collapse; }
 .pick:has(.pin :checked) { border-color: var(--cal-sel); box-shadow: 0 0 0 2px var(--cal-sel); }
 .pick-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 .pick-top h3 { margin: 0; font-size: 1.9rem; }
-.form .pin { position: relative; display: inline-flex; align-items: center; gap: 10px; min-height: 44px; padding: 4px 4px 4px 12px; border-radius: 999px; cursor: pointer; font-weight: 500; transition: transform .1s ease-out; }
-.pin .on, .pin :checked ~ .off { display: none; }
-.pin :checked ~ .on { display: inline; }
+.form .pin { position: relative; display: inline-flex; align-items: center; justify-content: center; min-width: 44px; min-height: 44px; padding: 6px; border-radius: 999px; cursor: pointer; font-weight: 500; transition: transform .1s ease-out; }
 .pin .dot { width: 32px; height: 32px; }
 .pin :checked ~ .dot { background: var(--cal-sel); border-color: var(--cal-sel); color: var(--cal-sel-ink); }
-@media (max-width: 360px) { .pin .on, .pin :checked ~ .on, .pin .off { display: none; } }
 @media (max-width: 480px) { .picker-nav { display: none; } } /* qui si scorre col dito e la scheda dopo sporge */
 .pick-ph { position: relative; border-radius: 12px; overflow: hidden; background: var(--calc-2); }
 .pick-strip { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; overscroll-behavior-x: contain; scrollbar-width: none; }
@@ -524,7 +536,7 @@ table.compare { width: 100%; border-collapse: collapse; }
 .form .row { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 16px; }
 .form .row.pair { grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); }
 .form label { display: grid; gap: 6px; font-weight: 500; font-size: .95rem; }
-.form input, .form select, .form textarea { font: inherit; font-size: 1rem; padding: 12px 14px; min-height: 50px; border: 1px solid var(--stone); border-radius: 12px; background: var(--field); width: 100%; color: var(--ink); transition: border-color .2s, box-shadow .2s; }
+.form input, .form select, .form textarea { font: inherit; font-size: 1rem; padding: 12px 14px; min-height: 50px; border: 1px solid var(--stone); border-radius: 12px; background: var(--field); width: 100%; min-width: 0; color: var(--ink); transition: border-color .2s, box-shadow .2s; }
 .form input:focus, .form textarea:focus { outline: none; border-color: var(--sea); box-shadow: 0 0 0 3px rgba(31, 74, 99, .18); }
 .form .check { display: flex; gap: 10px; align-items: flex-start; font-weight: 400; min-height: 32px; }
 .form .check input { width: 20px; min-height: 20px; height: 20px; margin-top: 3px; accent-color: var(--sea); flex: none; }
