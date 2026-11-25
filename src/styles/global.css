@@ -194,7 +194,7 @@ p { margin: 0 0 1em; text-wrap: pretty; }
 .hero .eyebrow { color: rgba(255,255,255,.9); }
 /* Su smartphone il testo non sta sulla foto: foto verticale sopra (sfumata), testo sul calcare sotto */
 @media (max-width: 700px) {
-  .hero { min-height: 0; display: block; background: var(--calc); color: var(--ink); }
+  .hero { min-height: 0; display: block; background: none; color: var(--ink); } /* lo sfondo è quello della pagina, con la sua grana: niente riga sotto l'apertura */
   .hero .slides { position: relative; height: 56svh; min-height: 380px; -webkit-mask-image: linear-gradient(to bottom, #000 0, #000 70%, transparent 100%); mask-image: linear-gradient(to bottom, #000 0, #000 70%, transparent 100%); }
   .hero::after { display: none; }
   .hero .wrap { grid-template-columns: 1fr; gap: 0; margin-top: -28px; padding-bottom: 64px; }
@@ -207,8 +207,9 @@ p { margin: 0 0 1em; text-wrap: pretty; }
 }
 
 /* ---------- Sezioni con foto a tutta pagina (bordi sfumati nel calcare) ---------- */
-.photo-sec { position: relative; min-height: 100svh; display: grid; align-items: center; color: #fff; overflow: hidden; }
-.photo-sec .media { position: absolute; inset: 0; overflow: hidden; -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 8%, #000 92%, transparent 100%); mask-image: linear-gradient(to bottom, transparent 0, #000 8%, #000 92%, transparent 100%); }
+.photo-sec { --fade-top: transparent 0, rgba(0, 0, 0, .03) 4%, rgba(0, 0, 0, .12) 8%, rgba(0, 0, 0, .4) 16%, rgba(0, 0, 0, .75) 23%, rgba(0, 0, 0, .93) 27%, #000 31%; /* la foto nasce dallo sfondo: curva morbida, nessuna riga */
+  position: relative; min-height: 100svh; display: grid; align-items: center; color: #fff; overflow: hidden; }
+.photo-sec .media { position: absolute; inset: 0; overflow: hidden; -webkit-mask-image: linear-gradient(to bottom, var(--fade-top), #000 92%, transparent 100%); mask-image: linear-gradient(to bottom, var(--fade-top), #000 92%, transparent 100%); }
 .photo-sec .bg { width: 100%; height: 100%; object-fit: cover; }
 .photo-sec.left .media::after { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(20,17,13,.74) 0%, rgba(20,17,13,.4) 42%, rgba(20,17,13,0) 70%); }
 @media (min-width: 701px) and (max-width: 1100px) { .photo-sec.left .media::after { background: linear-gradient(90deg, rgba(20,17,13,.76) 0%, rgba(20,17,13,.6) 60%, rgba(20,17,13,.2) 100%); } } /* su tablet il testo arriva oltre metà foto */
@@ -230,7 +231,7 @@ p { margin: 0 0 1em; text-wrap: pretty; }
 .photo-sec.center .num { color: var(--cotto); }
 .photo-sec.center h2 { text-shadow: none; }
 @media (max-width: 700px) {
-  .photo-sec { min-height: 0; display: block; color: var(--ink); background: var(--calc); }
+  .photo-sec { min-height: 0; display: block; color: var(--ink); }
   .photo-sec .media { position: relative; height: 76svh; min-height: 460px; }
   .photo-sec.left .media::after { display: none; }
   .photo-sec .wrap { margin-top: -24px; padding-bottom: 72px; }
@@ -636,8 +637,9 @@ html.time-reveal::view-transition-new(root) { animation: reveal .7s var(--ease) 
   .fog .txt { position: relative; isolation: isolate; }
   :root[data-time='night'] .fog .txt::before { content: ''; position: absolute; inset: -18% -14%; z-index: -1; pointer-events: none; background: radial-gradient(closest-side, rgba(12, 14, 13, .5), rgba(12, 14, 13, .34) 60%, transparent); } /* le foto notturne hanno luci dietro al testo */
 }
-.photo-sec.fog { background: var(--calc-2); } /* la foto sfuma nel colore della sezione che segue */
-.photo-sec.fog .media { -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 8%, #000 62%, transparent 100%); mask-image: linear-gradient(to bottom, transparent 0, #000 8%, #000 62%, transparent 100%); }
+.photo-sec.fog { background: linear-gradient(to bottom, transparent 6%, var(--calc-2) 60%); } /* nasce dallo sfondo della pagina e finisce nel colore della sezione che segue */
+#nebbia :is(.fog-canvas, .fog-css) { -webkit-mask-image: linear-gradient(to bottom, var(--fade-top), #000 62%, transparent 100%); mask-image: linear-gradient(to bottom, var(--fade-top), #000 62%, transparent 100%); } /* anche la nebbia, o il bordo della sezione taglia netto */
+.photo-sec.fog .media { -webkit-mask-image: linear-gradient(to bottom, var(--fade-top), #000 62%, transparent 100%); mask-image: linear-gradient(to bottom, var(--fade-top), #000 62%, transparent 100%); }
 
 /* Il voto di notte prende la luce dei lampioni: il verde pino sul fondo scuro non si leggeva */
 :root[data-time='night'] .trust .score { color: var(--cotto-light); text-shadow: 0 0 28px rgba(var(--glow), .25); }
@@ -645,7 +647,7 @@ html.time-reveal::view-transition-new(root) { animation: reveal .7s var(--ease) 
 :root[data-time='night'] #vista .bg { filter: brightness(.72) saturate(.8) contrast(1.08); }
 /* Su telefono un'altra strada al tramonto, di giorno e di notte, inquadrata su lampione e isole; senza parallasse */
 @media (max-width: 700px) {
-  #vista .media { -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 8%, #000 82%, transparent 96%); mask-image: linear-gradient(to bottom, transparent 0, #000 8%, #000 82%, transparent 96%); } /* la strada è scura: il titolo sta sul fondo */
+  #vista .media { -webkit-mask-image: linear-gradient(to bottom, var(--fade-top), #000 82%, transparent 96%); mask-image: linear-gradient(to bottom, var(--fade-top), #000 82%, transparent 96%); } /* la strada è scura: il titolo sta sul fondo */
   #vista .bg { animation: none; transform: none; object-position: 70% 50%; }
   :root[data-time='night'] #vista .bg { filter: brightness(.86); }
 }
@@ -666,13 +668,3 @@ html.time-reveal::view-transition-new(root) { animation: reveal .7s var(--ease) 
   background: radial-gradient(45% 55% at 24% 38%, rgba(var(--m), .75), transparent 100%), radial-gradient(50% 60% at 74% 30%, rgba(var(--m), .7), transparent 100%), radial-gradient(60% 45% at 50% 82%, rgba(var(--m), .45), transparent 100%), linear-gradient(to bottom, rgba(var(--m), .78), rgba(var(--m), .58)); }
 @media (min-width: 701px) { .hero .mist { --m: 178, 185, 190; } } /* il titolo bianco sta sopra la foschia */
 :root[data-time='night'] .slides .mist { --m: 62, 69, 79; }
-.slides-btn { position: absolute; z-index: 3; right: var(--gutter); bottom: clamp(28px, 5vh, 56px); display: grid; place-items: center; width: 44px; height: 44px; padding: 0; border-radius: 50%; border: 1px solid rgba(255, 255, 255, .45); background: rgba(20, 17, 13, .6); color: #fff; cursor: pointer; transition: background-color .2s; }
-.slides-btn[hidden] { display: none; }
-.slides-btn:hover { background: var(--pine); }
-.slides-btn:focus-visible { outline: 2px solid var(--lamp); outline-offset: 3px; }
-.slides-btn .i-play, .slides-btn.paused .i-pause { display: none; }
-.slides-btn.paused .i-play { display: inline; }
-@media (max-width: 700px) {
-  .slides-btn { bottom: auto; top: calc(max(56svh, 380px) - 96px); }
-  .photo-sec .slides-btn { top: calc(max(76svh, 460px) - 96px); }
-}

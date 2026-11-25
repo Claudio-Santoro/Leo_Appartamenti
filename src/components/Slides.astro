@@ -17,8 +17,8 @@ interface Slide {
   filter?: string;
   lights?: number[][];     // luci accese di notte: x, y (0-1 sulla foto), larghezza dell'alone in % della foto
 }
-interface Props { slides: Slide[]; class?: string; eager?: boolean; mobileSizes?: string; pause: string; play: string }
-const { slides, class: cls, eager = false, mobileSizes = '100vw', pause, play } = Astro.props;
+interface Props { slides: Slide[]; class?: string; eager?: boolean; mobileSizes?: string }
+const { slides, class: cls, eager = false, mobileSizes = '100vw' } = Astro.props;
 const seen = new Set<string>();
 const first = slides.map((s) => s.on.split(' ').filter((k) => !seen.has(k) && seen.add(k)).join(' '));
 ---
@@ -33,9 +33,6 @@ const first = slides.map((s) => s.on.split(' ').filter((k) => !seen.has(k) && se
   ))}
   <div class="mist" aria-hidden="true"></div>
 </div>
-<button type="button" class="slides-btn" hidden data-pause={pause} data-play={play} aria-label={pause}>
-  <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><path class="i-pause" d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z" /><path class="i-play" d="M8 5l11 7-11 7z" /></svg>
-</button>
 
 <script>
   const HOLD = 6000, MOVE = 4200, LEAD = 2500; // sosta, dissolvenza, anticipo con cui si carica la foto dopo
@@ -46,10 +43,9 @@ const first = slides.map((s) => s.on.split(' ').filter((k) => !seen.has(k) && se
 
   document.querySelectorAll<HTMLElement>('.slides').forEach((box) => {
     const host = box.closest('section')!;
-    const btn = host.querySelector<HTMLButtonElement>('.slides-btn')!;
     const mist = box.querySelector<HTMLElement>('.mist')!;
     const all = [...box.querySelectorAll<HTMLElement>('.slide')];
-    let seq: HTMLElement[] = [], i = 0, key = '', run = 0, timer = 0, busy = false, paused = false, visible = false, fades: Animation[] = [];
+    let seq: HTMLElement[] = [], i = 0, key = '', run = 0, timer = 0, busy = false, visible = false, fades: Animation[] = [];
     const tell = (name: string) => host.dispatchEvent(new Event(name)); // lo ascolta la nebbia (fog3d.ts) per la luce del lampione
 
     // Gli aloni stanno sulle luci vere della foto, qualunque sia il ritaglio (object-fit: cover).
@@ -67,10 +63,9 @@ const first = slides.map((s) => s.on.split(' ').filter((k) => !seen.has(k) && se
       }
     };
 
-    const active = () => visible && !paused && !document.hidden && !still.matches && seq.length > 1;
+    const active = () => visible && !document.hidden && !still.matches && seq.length > 1;
     const sync = () => {
       clearTimeout(timer); run++; // un'attesa in corso non vale più
-      btn.hidden = seq.length < 2 || still.matches;
       if (active() && !busy) timer = window.setTimeout(next, HOLD - LEAD);
     };
     const next = async () => {
@@ -106,12 +101,6 @@ const first = slides.map((s) => s.on.split(' ').filter((k) => !seen.has(k) && se
     };
 
     all.forEach((s) => s.querySelector('img')!.addEventListener('load', () => { place(); if (s === seq[i] && !busy) tell('slideend'); }));
-    btn.addEventListener('click', () => {
-      paused = !paused;
-      btn.classList.toggle('paused', paused);
-      btn.setAttribute('aria-label', paused ? btn.dataset.play! : btn.dataset.pause!);
-      sync();
-    });
     new ResizeObserver(() => { place(); if (!busy) tell('slideend'); }).observe(box);
     new MutationObserver(reset).observe(root, { attributes: true, attributeFilter: ['data-time'] });
     new IntersectionObserver(([e]) => { visible = e.isIntersecting; sync(); }).observe(box);

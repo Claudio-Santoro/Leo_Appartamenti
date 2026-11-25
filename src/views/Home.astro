@@ -38,7 +38,6 @@ const T = {
       giardino: 'Un giardino di Erice con i tetti del borgo', mura: 'Le mura del Castello di Venere sopra la valle', torretta: 'La Torretta Pepoli vista dall’alto', torrettaCastello: 'La Torretta Pepoli sotto il Castello di Venere',
       muraNotte: 'Le mura del Castello di Venere di notte, con un lampione acceso', balio: 'Il Castello di Venere e le torri del Balio all’imbrunire, con le luci accese',
     },
-    pause: 'Ferma le foto', play: 'Riprendi le foto',
     zoom: 'Ingrandisci la foto', close: 'Chiudi', prev: 'Foto precedente', next: 'Foto successiva',
     revOn: `su Booking.com · ${sito.booking.recensioni} recensioni`,
     revThemes: ['La vista dal patio', 'Proprietari disponibili e gentili', 'Comodo, ma tranquillo', 'Appartamenti puliti e spaziosi'],
@@ -70,7 +69,6 @@ const T = {
       giardino: 'A garden in Erice with the village rooftops', mura: 'The walls of the Castle of Venus above the valley', torretta: 'The Torretta Pepoli from above', torrettaCastello: 'The Torretta Pepoli below the Castle of Venus',
       muraNotte: 'The walls of the Castle of Venus at night, with a street lamp lit', balio: 'The Castle of Venus and the Balio towers at nightfall, with the lights on',
     },
-    pause: 'Pause the photos', play: 'Play the photos',
     zoom: 'Enlarge photo', close: 'Close', prev: 'Previous photo', next: 'Next photo',
     revOn: `on Booking.com · ${sito.booking.recensioni} reviews`,
     revThemes: ['The view from the patio', 'Helpful, friendly hosts', 'Convenient, yet quiet', 'Clean, spacious apartments'],
@@ -128,7 +126,7 @@ const ld = {
   </nav>
 
   <section class="hero" id="inizio" data-enter>
-    <Slides slides={heroSlides} eager pause={T.pause} play={T.play} />
+    <Slides slides={heroSlides} eager />
     <Fog density={1.45} />
     <div class="wrap">
       <div class="enter">
@@ -163,7 +161,7 @@ const ld = {
   </section>
 
   <section class="photo-sec fog" id="nebbia">
-    <Slides slides={fogSlides} class="media" mobileSizes="125vw" pause={T.pause} play={T.play} />
+    <Slides slides={fogSlides} class="media" mobileSizes="125vw" />
     <Fog density={1.9} />
     <div class="wrap">
       <div class="txt" data-reveal>
