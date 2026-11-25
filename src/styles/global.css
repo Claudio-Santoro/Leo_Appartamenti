@@ -608,27 +608,28 @@ html.time-reveal::view-transition-new(root) { animation: reveal .7s var(--ease) 
 /* Un'ombra morbida solo dietro le parole dell'apertura: la nebbia resta piena, il testo leggibile */
 @media (min-width: 701px) {
   /* parte dal bordo dello schermo, non dal margine del testo: niente bordo netto sopra la nebbia */
-  .hero .wrap::before { content: ''; position: absolute; left: calc((100% - 100vw) / 2); bottom: 0; z-index: -1; width: 100vw; height: 150%; pointer-events: none;
+  .hero .wrap::before { content: ''; position: absolute; left: calc((100% - 100vw) / 2); bottom: var(--tail); z-index: -1; width: 100vw; height: calc((100% - var(--tail)) * 1.5); pointer-events: none;
     background: radial-gradient(ellipse 34% 26% at 18% 70%, rgba(12, 14, 13, .34), rgba(12, 14, 13, .22) 60%, transparent), radial-gradient(ellipse 80% 62% at 28% 60%, rgba(12, 14, 13, .5), rgba(12, 14, 13, .37) 50%, transparent 100%);
     -webkit-mask-image: linear-gradient(to bottom, transparent, #000 30%, #000 74%, transparent); mask-image: linear-gradient(to bottom, transparent, #000 30%, #000 74%, transparent); } /* niente orli */
   :root[data-time='night'] .hero .wrap::before { opacity: .65; }
   .hero .wrap { isolation: isolate; }
   /* il menu bianco sta in cima: la sua ombra va sopra la nebbia, che ora arriva fin lì */
-  .hero::before { content: ''; position: absolute; z-index: 2; left: 0; right: 0; top: 0; height: 26%; pointer-events: none; background: linear-gradient(180deg, rgba(18, 20, 18, .66), rgba(18, 20, 18, .36) 45%, transparent); }
+  .hero::before { content: ''; position: absolute; z-index: 2; left: 0; right: 0; top: 0; height: 26svh; pointer-events: none; background: linear-gradient(180deg, rgba(18, 20, 18, .66), rgba(18, 20, 18, .36) 45%, transparent); }
 }
 
 /* ---------- Bordi sfumati: la nebbia e le foto si sciolgono nel fondo, mai un orlo dritto ---------- */
 /* la nebbia è più densa in basso: senza maschera il suo bordo inferiore taglia netto (di notte è grigia sul nero) */
 .fog-canvas, .fog-css { -webkit-mask-image: linear-gradient(to bottom, #000 62%, transparent 100%); mask-image: linear-gradient(to bottom, #000 62%, transparent 100%); }
 @media (min-width: 701px) {
-  .hero .fog-canvas, .hero .fog-css { -webkit-mask-image: linear-gradient(to bottom, #000 78%, transparent 100%); mask-image: linear-gradient(to bottom, #000 78%, transparent 100%); }
+  .hero .fog-canvas, .hero .fog-css { -webkit-mask-image: linear-gradient(to bottom, var(--fade-end)); mask-image: linear-gradient(to bottom, var(--fade-end)); }
   /* l'apertura finisce nel fondo della pagina (con la sua grana), non su un colore pieno: niente riga.
      Di giorno la sfumatura parte sotto i pulsanti, perché il testo bianco sta in basso e vuole il fondo scuro */
-  .hero { background: none; }
-  .hero::after { background: linear-gradient(180deg, rgba(20,17,13,0) 42%, rgba(20,17,13,.8) 74%, rgba(20,17,13,0) 100%); }
-  .hero .slides { -webkit-mask-image: linear-gradient(to bottom, #000 82%, transparent 100%); mask-image: linear-gradient(to bottom, #000 82%, transparent 100%); }
-  :root[data-time='night'] .hero::after { background: linear-gradient(180deg, rgba(18,22,20,0) 42%, rgba(18,22,20,.8) 78%, rgba(18,22,20,0) 100%); } /* finisce nel fondo della pagina */
-  :root[data-time='night'] .hero .slides { -webkit-mask-image: linear-gradient(to bottom, #000 70%, transparent 100%); mask-image: linear-gradient(to bottom, #000 70%, transparent 100%); }
+  /* L'apertura è più alta dello schermo: testo e pulsanti restano dov'erano, e la foto ha lo spazio per sciogliersi piano sotto di loro */
+  .hero { --tail: 20svh; --fade-end: #000 64%, rgba(0, 0, 0, .95) 69%, rgba(0, 0, 0, .8) 75%, rgba(0, 0, 0, .5) 83%, rgba(0, 0, 0, .2) 91%, rgba(0, 0, 0, .05) 96%, transparent 100%; min-height: calc(100svh + var(--tail)); background: none; }
+  .hero .wrap { padding-bottom: calc(clamp(56px, 9vh, 96px) + var(--tail)); }
+  .hero::after { background: linear-gradient(180deg, rgba(20,17,13,0) 35%, rgba(20,17,13,.72) 64%, rgba(20,17,13,.62) 70%, rgba(20,17,13,.36) 80%, rgba(20,17,13,.12) 90%, rgba(20,17,13,0) 100%); }
+  .hero .slides { -webkit-mask-image: linear-gradient(to bottom, var(--fade-end)); mask-image: linear-gradient(to bottom, var(--fade-end)); }
+  :root[data-time='night'] .hero::after { background: linear-gradient(180deg, rgba(18,22,20,0) 35%, rgba(18,22,20,.76) 68%, rgba(18,22,20,.5) 82%, rgba(18,22,20,.16) 92%, rgba(18,22,20,0) 100%); } /* finisce nel fondo della pagina */
 }
 @media (max-width: 700px) {
   :root[data-time='night'] .hero .slides { -webkit-mask-image: linear-gradient(to bottom, #000 45%, transparent 100%); mask-image: linear-gradient(to bottom, #000 45%, transparent 100%); }
