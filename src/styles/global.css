@@ -295,6 +295,11 @@ p { margin: 0 0 1em; text-wrap: pretty; }
 .trust { display: grid; grid-template-columns: 1fr 1fr; }
 .trust > div { padding: clamp(80px, 10vw, 140px) var(--gutter); }
 .trust .score { font: 700 clamp(3.2rem, 8vw, 7rem)/1 var(--serif); color: var(--pine-2); margin: 12px 0 8px; letter-spacing: -.03em; }
+.quotes { display: grid; gap: 32px 40px; margin: 28px 0; max-width: 46rem; }
+@media (min-width: 1200px) { .quotes { grid-template-columns: 1fr 1fr; } }
+.quotes figure { margin: 0; padding-top: 16px; border-top: 1px solid var(--stone); }
+.quotes blockquote { margin: 0 0 10px; font-size: 1.05rem; line-height: 1.5; text-wrap: pretty; }
+.quotes figcaption { color: var(--muted); font-style: italic; }
 .dark { background: var(--deep); color: var(--on-deep); }
 .dark .num { color: var(--cotto-light); }
 .dark .muted, .dark .lead { color: var(--on-deep-2); }
