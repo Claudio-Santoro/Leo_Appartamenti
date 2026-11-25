@@ -3,6 +3,7 @@ import { Image } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import Gallery from '../components/Gallery.astro';
 import apts from '../data/appartamenti.json';
+import servizi from '../data/servizi.json';
 import sito from '../data/sito.json';
 import { url, ui } from '../i18n.js';
 import { photos } from '../images.js';
@@ -11,8 +12,8 @@ const { lang, id } = Astro.props;
 const a = apts.find((x) => x.id === id)!;
 const t = ui[lang];
 const T = {
-  it: { amen: 'Dotazioni', amenList: ['Cucina attrezzata', 'Aria condizionata e riscaldamento', 'Wi-Fi gratuito', 'TV satellitare', 'Lavatrice', 'Patio con tavolo all’aperto', 'Bagno con doccia, asciugacapelli, set di cortesia', 'Biancheria e asciugamani'], info: 'In breve', checkin: 'Check-in', checkout: 'Check-out', flex: 'flessibile su richiesta', price: 'Prezzo', priceVal: 'su richiesta', others: 'Gli altri appartamenti', name: 'Il nome', swipe: 'Scorri per vedere tutte le foto →', size: 'Superficie', guests: 'Ospiti', beds: 'Letti' },
-  en: { amen: 'Amenities', amenList: ['Equipped kitchen', 'Air conditioning and heating', 'Free Wi-Fi', 'Satellite TV', 'Washing machine', 'Patio with outdoor table', 'Bathroom with shower, hairdryer, toiletries', 'Bed linen and towels'], info: 'At a glance', checkin: 'Check-in', checkout: 'Check-out', flex: 'flexible on request', price: 'Price', priceVal: 'on request', others: 'The other apartments', name: 'The name', swipe: 'Swipe to see all the photos →', size: 'Size', guests: 'Guests', beds: 'Beds' },
+  it: { amen: 'Dotazioni', info: 'In breve', checkin: 'Check-in', checkout: 'Check-out', flex: 'flessibile su richiesta', price: 'Prezzo', priceVal: 'su richiesta', others: 'Gli altri appartamenti', name: 'Il nome', swipe: 'Scorri per vedere tutte le foto →', size: 'Superficie', guests: 'Ospiti', beds: 'Letti' },
+  en: { amen: 'Amenities', info: 'At a glance', checkin: 'Check-in', checkout: 'Check-out', flex: 'flexible on request', price: 'Price', priceVal: 'on request', others: 'The other apartments', name: 'The name', swipe: 'Swipe to see all the photos →', size: 'Size', guests: 'Guests', beds: 'Beds' },
 }[lang];
 const others = apts.filter((x) => x.id !== id);
 // ponytail: prezzi ancora null in appartamenti.json → "su richiesta". Quando ci saranno, mostra "da € X / notte".
@@ -37,7 +38,7 @@ const priceText = prices.length ? `${lang === 'it' ? 'da' : 'from'} € ${Math.m
         <p style="font-size:1.25rem;line-height:1.6">{a.descrizione[lang]}</p>
         <p class="muted"><em>{T.name}: {a.nomeOrigine[lang]}</em></p>
         <h2 style="font-size:2.6rem;margin-top:1.4em">{T.amen}</h2>
-        <ul class="ticks">{T.amenList.map((x) => <li>{x}</li>)}{a.camino && <li>{t.fireplace}</li>}</ul>
+        <ul class="ticks">{servizi.map((x) => <li>{x[lang]}</li>)}{a.camino && <li>{t.fireplace}</li>}</ul>
       </div>
       <aside class="info-card">
         <h2>{T.info}</h2>

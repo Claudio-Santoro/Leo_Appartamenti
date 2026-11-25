@@ -1,121 +1,242 @@
 ---
+// Calendario di uno o più appartamenti insieme. Le regole (libero, in parte, occupato) sono in src/calendario.js.
 import apts from '../data/appartamenti.json';
 interface Props { lang: 'it' | 'en' }
 const { lang } = Astro.props;
 const labels = {
-  it: { apt: 'Appartamento', prev: 'Mese precedente', next: 'Mese successivo', free: 'Libero', booked: 'Occupato', sel: 'Le tue date', pick: 'Scegli la data di arrivo', pickOut: 'Ora scegli la data di partenza', busy: 'Ci sono notti occupate in questo periodo: scegli altre date.', nights: 'notti', night: 'notte', loading: 'Caricamento disponibilità…', go: 'Continua con la richiesta ↓', unavailable: 'Il calendario non è disponibile in questo momento: invia comunque la richiesta, ti rispondiamo noi.', week: ['Lu', 'Ma', 'Me', 'Gi', 'Ve', 'Sa', 'Do'] },
-  en: { apt: 'Apartment', prev: 'Previous month', next: 'Next month', free: 'Available', booked: 'Booked', sel: 'Your dates', pick: 'Choose your arrival date', pickOut: 'Now choose your departure date', busy: 'Some nights in this period are booked: please choose other dates.', nights: 'nights', night: 'night', loading: 'Loading availability…', go: 'Continue to your request ↓', unavailable: 'The calendar is not available right now: send us a request anyway and we will reply.', week: ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'] },
+  it: {
+    q: 'Quali appartamenti vuoi vedere?', guests: 'ospiti', prev: 'Mese precedente', next: 'Mese successivo',
+    free: 'Libero', partial: 'In parte libero', booked: 'Occupato', sel: 'Le tue date', unknown: 'Da verificare',
+    letters: 'La lettera dice chi è libero: {x}.',
+    pick: 'Tocca la data di arrivo.', pickOut: 'Ora tocca la data di partenza.', loading: 'Caricamento disponibilità…',
+    night: 'notte', nights: 'notti', go: 'Continua con la richiesta ↓', keep: 'Continua con {x}', switch: 'Scegli {x}',
+    isFree: 'libero {x}', areFree: 'liberi {x}', isBusy: 'occupato {x}', areBusy: 'occupati {x}', isUnk: 'da verificare {x}',
+    none: 'In queste date non c’è posto: prova con altre.', full: 'Il {d} è occupato: scegli un altro arrivo.', atLeast: 'Serve almeno un appartamento.',
+    unavailable: 'Il calendario di {x} non è disponibile ora: scegli le date e invia la richiesta, verifichiamo noi.',
+    upTo: 'fino a {n} ospiti', tooMany: 'Siete in {g}, ma qui si sta in {n}: aggiungi un appartamento.', tooManyAll: 'Siete in {g}: i nostri appartamenti ospitano {n} persone in tutto.',
+    conflict: 'In queste date non sono liberi tutti gli appartamenti scelti', week: ['Lu', 'Ma', 'Me', 'Gi', 'Ve', 'Sa', 'Do'],
+  },
+  en: {
+    q: 'Which apartments would you like to see?', guests: 'guests', prev: 'Previous month', next: 'Next month',
+    free: 'Available', partial: 'Partly available', booked: 'Booked', sel: 'Your dates', unknown: 'To be confirmed',
+    letters: 'The letter shows which one is available: {x}.',
+    pick: 'Tap your arrival date.', pickOut: 'Now tap your departure date.', loading: 'Loading availability…',
+    night: 'night', nights: 'nights', go: 'Continue to your request ↓', keep: 'Continue with {x}', switch: 'Choose {x}',
+    isFree: '{x} available', areFree: '{x} available', isBusy: '{x} booked', areBusy: '{x} booked', isUnk: '{x} to be confirmed',
+    none: 'Nothing is available on these dates: please try others.', full: '{d} is booked: please choose another arrival.', atLeast: 'Please keep at least one apartment.',
+    unavailable: 'The calendar for {x} is not available right now: pick your dates and send the request, we will check for you.',
+    upTo: 'up to {n} guests', tooMany: 'You are {g}, but this sleeps {n}: add an apartment.', tooManyAll: 'You are {g}: our apartments sleep {n} people in total.',
+    conflict: 'Not all the chosen apartments are available on these dates', week: ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'],
+  },
 }[lang];
-const cfg = { lang: lang === 'it' ? 'it-IT' : 'en-GB', labels, apts: apts.map((a) => ({ id: a.id, nome: a.nome })) };
+const cfg = { lang: lang === 'it' ? 'it-IT' : 'en-GB', labels, apts: apts.map((a) => ({ id: a.id, nome: a.nome, ospiti: a.ospiti })) };
 ---
 <div class="cal" data-cal>
   <div class="cal-head">
-    <label>{labels.apt}&nbsp;
-      <select name="cal-apt">
-        {apts.map((a) => <option value={a.id}>{a.nome} · {a.ospiti} {lang === 'it' ? 'ospiti' : 'guests'}</option>)}
-      </select>
-    </label>
+    <fieldset class="cal-apts">
+      <legend>{labels.q}</legend>
+      {apts.map((a, i) => (
+        <label class="chip"><input type="checkbox" value={a.id} checked={i === 0} /><span class="dot" aria-hidden="true"></span><span><b>{a.nome}</b> <small>{a.ospiti} {labels.guests}</small></span></label>
+      ))}
+    </fieldset>
     <div class="cal-nav">
       <button type="button" data-step="-1" aria-label={labels.prev}>‹</button>
       <button type="button" data-step="1" aria-label={labels.next}>›</button>
     </div>
   </div>
-  <div class="cal-months" aria-live="polite"></div>
-  <div class="cal-legend"><span class="l-free">{labels.free}</span><span class="l-booked">{labels.booked}</span><span class="l-sel">{labels.sel}</span></div>
-  <p class="cal-status" role="status">{labels.loading}</p>
+  <div class="cal-months"></div>
+  <div class="cal-legend">
+    <span class="l-free">{labels.free}</span><span class="l-partial" hidden>{labels.partial}</span><span class="l-booked">{labels.booked}</span><span class="l-unknown" hidden>{labels.unknown}</span><span class="l-sel">{labels.sel}</span>
+    <small class="l-letters" hidden></small>
+  </div>
+  <div class="cal-status" role="status"><p>{labels.loading}</p></div>
   <script type="application/json" id="cal-data" set:html={JSON.stringify(cfg)} />
 </div>
 
 <script>
+  import { add, dayState, split } from '../calendario.js';
   // Date come stringhe 'YYYY-MM-DD' in UTC: niente sorprese con i fusi orari e confronti come stringhe.
+  type Apt = { id: string; nome: string; ospiti: number };
   const root = document.querySelector<HTMLElement>('[data-cal]')!;
   const cfg = JSON.parse(document.getElementById('cal-data')!.textContent!);
   const L = cfg.labels;
-  const add = (s: string, n: number) => { const d = new Date(s + 'T00:00:00Z'); d.setUTCDate(d.getUTCDate() + n); return d.toISOString().slice(0, 10); };
+  const APTS: Apt[] = cfg.apts;
+  const IDS = APTS.map((a) => a.id);
   const now = new Date();
   const today = new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate())).toISOString().slice(0, 10);
   const firstMonth = today.slice(0, 8) + '01';
   const monthAdd = (s: string, n: number) => { const d = new Date(s + 'T00:00:00Z'); d.setUTCMonth(d.getUTCMonth() + n); return d.toISOString().slice(0, 10); };
 
-  const sel = root.querySelector('select')!;
+  const fill = (s: string, v: Record<string, string | number>) => s.replace(/\{(\w)\}/g, (_, k) => String(v[k]));
+  const list = new Intl.ListFormat(cfg.lang, { type: 'conjunction' });
+  const names = (ids: string[]) => list.format(ids.map((id) => APTS.find((a) => a.id === id)!.nome)).replace(' e E', ' ed E');
+  const day = (s: string) => new Intl.DateTimeFormat(cfg.lang, { day: 'numeric', month: 'long', timeZone: 'UTC' }).format(new Date(s + 'T00:00:00Z'));
+  const dmy = (s: string) => s.split('-').reverse().join('/');
+  const nights = (a: string, b: string) => Math.round((Date.parse(b) - Date.parse(a)) / 864e5);
+  const el = (tag: string, text: string, cls = '') => { const n = document.createElement(tag); n.textContent = text; if (cls) n.className = cls; return n; };
+
   const months = root.querySelector('.cal-months')!;
   const status = root.querySelector('.cal-status')!;
   const [prev, next] = root.querySelectorAll<HTMLButtonElement>('.cal-nav button');
+  const chips = [...root.querySelectorAll<HTMLInputElement>('.chip input')];
+  const legend = (c: string) => root.querySelector<HTMLElement>(`.cal-legend .${c}`)!;
 
-  let data: Record<string, [string, string][] | null> | null = null;
-  let apt = new URLSearchParams(location.search).get('apt') ?? cfg.apts[0].id;
-  if (!cfg.apts.some((a: { id: string }) => a.id === apt)) apt = cfg.apts[0].id;
-  sel.value = apt;
+  // Il modulo nella stessa pagina: le sue caselle e le sue date seguono il calendario, e viceversa.
+  const form = document.querySelector<HTMLFormElement>('form[name="richiesta"]');
+  const pins = form ? [...form.querySelectorAll<HTMLInputElement>('input[name="appartamenti"]')] : [];
+  const field = (n: string) => form?.elements.namedItem(n) as HTMLInputElement;
+  const sum = form?.querySelector<HTMLElement>('.req-sum');
+
+  let data: Record<string, [string, string][] | null> | null = null; // null = non ancora arrivata
+  const asked = (new URLSearchParams(location.search).get('apt') ?? '').split(',').filter((id) => IDS.includes(id));
+  let sel: string[] = asked.length ? IDS.filter((id) => asked.includes(id)) : [IDS[0]];
   let view = firstMonth;
   let checkIn: string | null = null;
   let checkOut: string | null = null;
   let msg = '';
 
-  const bookedSet = () => {
-    const s = new Set<string>();
-    for (const [a, b] of data?.[apt] ?? []) for (let d = a; d < b; d = add(d, 1)) s.add(d);
-    return s;
-  };
-  const free = (a: string, b: string, B: Set<string>) => { for (let d = a; d < b; d = add(d, 1)) if (B.has(d)) return false; return true; };
-  const nights = (a: string, b: string) => Math.round((Date.parse(b) - Date.parse(a)) / 864e5);
+  const range = () => (checkIn && checkOut ? split(data, sel, checkIn, checkOut) : null);
+  const conflict = () => !!range()?.busy.length;
+  // "libero Venere, occupati Elimo e Balio"
+  const explain = (r: { free: string[]; busy: string[]; unknown: string[] }) => [
+    r.free.length && fill(r.free.length > 1 ? L.areFree : L.isFree, { x: names(r.free) }),
+    r.busy.length && fill(r.busy.length > 1 ? L.areBusy : L.isBusy, { x: names(r.busy) }),
+    r.unknown.length && fill(L.isUnk, { x: names(r.unknown) }),
+  ].filter(Boolean).join(', ');
 
-  function month(first: string, B: Set<string>) {
+  function month(first: string) {
     const d0 = new Date(first + 'T00:00:00Z');
     const days = new Date(Date.UTC(d0.getUTCFullYear(), d0.getUTCMonth() + 1, 0)).getUTCDate();
     const offset = (d0.getUTCDay() + 6) % 7;
     const title = new Intl.DateTimeFormat(cfg.lang, { month: 'long', year: 'numeric', timeZone: 'UTC' }).format(d0);
+    const bad = conflict();
     let html = `<div class="cal-month"><h2>${title}</h2><div class="cal-grid">`;
     html += L.week.map((w: string) => `<span class="cal-wd" aria-hidden="true">${w}</span>`).join('') + '<span></span>'.repeat(offset);
     for (let i = 1; i <= days; i++) {
       const s = first.slice(0, 8) + String(i).padStart(2, '0');
       const past = s < today;
-      const isB = !past && B.has(s);
-      const cls = [past && 'past', isB && 'booked', s === checkIn && 'start', s === checkOut && 'end', checkIn && checkOut && s > checkIn && s < checkOut && 'range'].filter(Boolean).join(' ');
-      const label = new Intl.DateTimeFormat(cfg.lang, { day: 'numeric', month: 'long', timeZone: 'UTC' }).format(new Date(s + 'T00:00:00Z')) + (isB ? ` – ${L.booked}` : '');
-      html += `<button type="button" data-d="${s}" class="${cls}" ${past ? 'disabled' : ''} aria-label="${label}" aria-pressed="${s === checkIn || s === checkOut}">${i}</button>`;
+      const st = past ? 'past' : data ? dayState(data, sel, s) : 'unknown';
+      const inside = checkIn && checkOut && s > checkIn && s < checkOut;
+      const cls = [st, s === checkIn && 'start', s === checkOut && 'end', inside && 'range', bad && (s === checkIn || s === checkOut || inside) && 'bad'].filter(Boolean).join(' ');
+      const who = st === 'partial' ? split(data, sel, s, add(s, 1)) : null;
+      const label = day(s) + (past || !data ? '' : `, ${who ? explain(who) : L[st].toLowerCase()}`);
+      const letters = who?.free.length ? `<small aria-hidden="true">${who.free.map((id) => APTS.find((a) => a.id === id)!.nome[0]).join(' ')}</small>` : '';
+      html += `<button type="button" data-d="${s}" class="${cls}" ${past ? 'disabled' : ''} aria-label="${label}" aria-pressed="${s === checkIn || s === checkOut}">${i}${letters}</button>`;
     }
     return html + '</div></div>';
   }
 
-  function render() {
-    const B = bookedSet();
-    months.innerHTML = month(view, B) + month(monthAdd(view, 1), B);
-    prev.disabled = view <= firstMonth;
-    if (data && data[apt] === null) status.textContent = L.unavailable;
-    else if (!data) status.textContent = L.loading;
-    else if (msg) status.textContent = msg;
-    else if (checkIn && checkOut) {
-      const n = nights(checkIn, checkOut);
-      // Solo date e numeri generati qui: niente input dell'utente nell'HTML.
-      status.innerHTML = `${checkIn.split('-').reverse().join('/')} → ${checkOut.split('-').reverse().join('/')} · ${n} ${n === 1 ? L.night : L.nights} &nbsp;<a class="link" href="#richiesta">${L.go}</a>`;
-    }
-    else status.textContent = checkIn ? L.pickOut : L.pick;
+  // Le scorciatoie quando le date non vanno bene per tutti: tenere chi è libero, o passare a un altro appartamento.
+  function choices(): HTMLElement[] {
+    const r = range();
+    if (!r?.busy.length) return [];
+    const btn = (ids: string[], label: string) => {
+      const b = el('button', fill(label, { x: names(ids) }), 'btn') as HTMLButtonElement;
+      b.type = 'button';
+      b.addEventListener('click', () => {
+        const inForm = !!b.closest('form');
+        sel = IDS.filter((id) => ids.includes(id)); msg = ''; render();
+        (inForm ? field('adulti') : root.querySelector<HTMLElement>('.cal-status .link'))?.focus({ preventScroll: true });
+      });
+      return b;
+    };
+    if (r.free.length) return [btn(r.free, L.keep)];
+    return split(data, IDS.filter((id) => !sel.includes(id)), checkIn!, checkOut!).free.map((id) => btn([id], L.switch));
   }
 
-  // Sincronizza le date scelte con il modulo di richiesta nella stessa pagina.
-  function sync() {
-    const f = document.querySelector<HTMLFormElement>('form[name="richiesta"]');
-    if (!f) return;
-    (f.elements.namedItem('arrivo') as HTMLInputElement).value = checkIn ?? '';
-    (f.elements.namedItem('partenza') as HTMLInputElement).value = checkOut ?? '';
-    const box = f.querySelector<HTMLInputElement>(`input[name="appartamenti"][value="${apt}"]`);
-    if (box && checkIn) box.checked = true;
+  function message(): Node[] {
+    if (!data) return [el('p', L.loading)];
+    const out: Node[] = [];
+    const r = range();
+    if (msg) out.push(el('p', msg));
+    if (r) {
+      const n = nights(checkIn!, checkOut!);
+      const dates = `${dmy(checkIn!)} → ${dmy(checkOut!)} · ${n} ${n === 1 ? L.night : L.nights}`;
+      if (r.busy.length) {
+        out.push(el('p', `${dates}: ${explain(r)}.`));
+        const alt = choices();
+        out.push(...(alt.length || r.unknown.length ? alt : [el('p', L.none)]));
+      } else {
+        const p = el('p', `${names(sel)} · ${dates} `);
+        const a = el('a', L.go, 'link') as HTMLAnchorElement; a.href = '#richiesta';
+        p.append(a); out.push(p);
+      }
+    } else if (checkIn) {
+      const one = split(data, sel, checkIn, add(checkIn, 1));
+      out.push(el('p', one.busy.length ? `${day(checkIn)}: ${explain(one)}. ${L.pickOut}` : L.pickOut));
+    } else if (!msg) out.push(el('p', L.pick));
+    const unk = sel.filter((id) => !data![id]);
+    if (unk.length) out.push(el('p', fill(L.unavailable, { x: names(unk) }), 'small muted'));
+    return out;
+  }
+
+  function summary() {
+    if (!form || !sum) return;
+    const cap = APTS.filter((a) => sel.includes(a.id)).reduce((n, a) => n + a.ospiti, 0), all = APTS.reduce((n, a) => n + a.ospiti, 0);
+    const g = Number(field('adulti').value || 0) + Number(field('bambini').value || 0);
+    const parts = [sel.map((id) => names([id])).join(' + ')];
+    if (checkIn && checkOut) { const n = nights(checkIn, checkOut); parts.push(`${dmy(checkIn)} → ${dmy(checkOut)}`, `${n} ${n === 1 ? L.night : L.nights}`); }
+    parts.push(fill(L.upTo, { n: cap }));
+    const warn = conflict() ? `${L.conflict}: ${explain(range()!)}.` : g > all ? fill(L.tooManyAll, { g, n: all }) : g > cap ? fill(L.tooMany, { g, n: cap }) : '';
+    sum.replaceChildren(el('b', parts.join(' · ')), ...(warn ? [el('span', warn, 'warn')] : []), ...choices());
+    sum.hidden = false;
+    // Il modulo non parte con date occupate: il messaggio è quello del campo.
+    field('arrivo').setCustomValidity(conflict() ? L.conflict : '');
+  }
+
+  function render() {
+    const focus = (document.activeElement as HTMLElement | null)?.dataset?.d;
+    months.innerHTML = month(view) + month(monthAdd(view, 1));
+    if (focus) months.querySelector<HTMLElement>(`[data-d="${focus}"]`)?.focus();
+    prev.disabled = view <= firstMonth;
+    for (const b of [...chips, ...pins]) b.checked = sel.includes(b.value);
+    legend('l-partial').hidden = legend('l-letters').hidden = sel.length < 2;
+    legend('l-letters').textContent = fill(L.letters, { x: sel.map((id) => `${names([id])[0]} ${names([id])}`).join(', ') });
+    legend('l-unknown').hidden = !data || sel.every((id) => data![id]);
+    legend('l-free').hidden = legend('l-booked').hidden = !!data && sel.every((id) => !data![id]); // solo date da verificare
+    status.replaceChildren(...message());
+    summary();
+  }
+
+  function setDates(a: string | null, b: string | null) {
+    checkIn = a; checkOut = b;
+    if (form) { field('arrivo').value = a ?? ''; field('partenza').value = b ?? ''; field('partenza').setCustomValidity(''); }
   }
 
   months.addEventListener('click', (e) => {
     const b = (e.target as HTMLElement).closest<HTMLButtonElement>('button[data-d]');
     if (!b || b.disabled) return;
     const d = b.dataset.d!;
-    const B = bookedSet();
     msg = '';
-    if (checkIn && !checkOut && d > checkIn) {
-      if (free(checkIn, d, B)) checkOut = d;
-      else { msg = L.busy; checkIn = B.has(d) ? null : d; }
-    } else if (!B.has(d)) { checkIn = d; checkOut = null; }
-    else { checkIn = checkOut = null; msg = L.busy; }
-    render(); sync();
+    if (checkIn && !checkOut && d > checkIn) setDates(checkIn, d);
+    else if (data && dayState(data, sel, d) === 'booked') { setDates(null, null); msg = fill(L.full, { d: day(d) }); }
+    else setDates(d, null);
+    render();
   });
-  sel.addEventListener('change', () => { apt = sel.value; checkIn = checkOut = null; msg = ''; render(); sync(); });
+  // Frecce: un giorno o una settimana alla volta.
+  months.addEventListener('keydown', (e) => {
+    const step = ({ ArrowLeft: -1, ArrowRight: 1, ArrowUp: -7, ArrowDown: 7 } as Record<string, number>)[(e as KeyboardEvent).key];
+    const d = (e.target as HTMLElement).dataset.d;
+    if (!step || !d) return;
+    e.preventDefault();
+    months.querySelector<HTMLButtonElement>(`[data-d="${add(d, step)}"]:not(:disabled)`)?.focus();
+  });
+  for (const b of [...chips, ...pins]) b.addEventListener('change', () => {
+    const now = b.checked ? [...sel, b.value] : sel.filter((id) => id !== b.value);
+    msg = now.length ? '' : L.atLeast;
+    if (now.length) sel = IDS.filter((id) => now.includes(id));
+    render();
+    if (!now.length && sum && pins.includes(b)) sum.append(el('span', L.atLeast, 'warn'));
+  });
+  if (form) {
+    for (const n of ['arrivo', 'partenza']) field(n).addEventListener('change', () => {
+      const a = field('arrivo').value || null, b = field('partenza').value || null;
+      checkIn = a; checkOut = a && b && b > a ? b : null; msg = '';
+      if (a && a >= today) view = a.slice(0, 8) + '01';
+      render();
+    });
+    for (const n of ['adulti', 'bambini']) field(n).addEventListener('input', summary);
+  }
   prev.addEventListener('click', () => { view = monthAdd(view, -1); render(); });
   next.addEventListener('click', () => { view = monthAdd(view, 1); render(); });
 
@@ -123,6 +244,6 @@ const cfg = { lang: lang === 'it' ? 'it-IT' : 'en-GB', labels, apts: apts.map((a
   fetch('/api/disponibilita')
     .then((r) => (r.ok ? r.json() : Promise.reject()))
     .then((j) => { data = j; })
-    .catch(() => { data = Object.fromEntries(cfg.apts.map((a: { id: string }) => [a.id, null])); })
+    .catch(() => { data = {}; }) // nessun calendario: date da verificare
     .finally(render);
 </script>

@@ -1,0 +1,106 @@
+---
+// Le schede dei tre appartamenti nella richiesta: foto, letti, servizi e il selettore tondo.
+// Il selettore è la casella "appartamenti" del modulo: senza JavaScript si invia lo stesso.
+import { Image } from 'astro:assets';
+import Icon from './Icon.astro';
+import apts from '../data/appartamenti.json';
+import servizi from '../data/servizi.json';
+import { url, ui } from '../i18n.js';
+import { photos } from '../images.js';
+interface Props { lang: 'it' | 'en' }
+const { lang } = Astro.props;
+const t = ui[lang];
+const T = {
+  it: { title: 'Scegli gli appartamenti', hint: 'Anche più di uno, per i gruppi.', select: 'Seleziona', selected: 'Selezionato', prevApt: 'Appartamento precedente', nextApt: 'Appartamento successivo', list: 'Appartamenti', photos: 'Foto di', prev: 'Foto precedente', next: 'Foto successiva', upTo: 'fino a', bath: 'bagno', all: 'Tutti i servizi', sheet: 'Apri la scheda di' },
+  en: { title: 'Choose your apartments', hint: 'Pick more than one for groups.', select: 'Select', selected: 'Selected', prevApt: 'Previous apartment', nextApt: 'Next apartment', list: 'Apartments', photos: 'Photos of', prev: 'Previous photo', next: 'Next photo', upTo: 'up to', bath: 'bathroom', all: 'All amenities', sheet: 'Open the page for' },
+}[lang];
+---
+<div class="picker" role="group" aria-labelledby="picker-t">
+  <div class="picker-head">
+    <p id="picker-t"><b>{T.title}</b> <span class="muted">{T.hint}</span></p>
+    <div class="cal-nav picker-nav">
+      <button type="button" data-step="-1" aria-label={T.prevApt}>‹</button>
+      <button type="button" data-step="1" aria-label={T.nextApt}>›</button>
+    </div>
+  </div>
+  <div class="picker-row" tabindex="0" role="region" aria-label={T.list}>
+    {apts.map((a, i) => {
+      const list = photos(a.id, lang, a.nome);
+      return (
+        <article class="pick">
+          <div class="pick-top">
+            <h3>{a.nome}</h3>
+            <label class="pin">
+              <input type="checkbox" name="appartamenti" value={a.id} data-nome={a.nome} data-ospiti={a.ospiti} checked={i === 0} aria-label={`${T.select} ${a.nome}`} />
+              <span class="off" aria-hidden="true">{T.select}</span><span class="on" aria-hidden="true">{T.selected}</span>
+              <span class="dot" aria-hidden="true"></span>
+            </label>
+          </div>
+          <div class="pick-ph">
+            <div class="pick-strip" tabindex="0" role="region" aria-label={`${T.photos} ${a.nome}`}>
+              {list.map((p) => <Image src={p.src} alt={p.alt} widths={[480, 800]} sizes="(max-width: 520px) 80vw, 430px" loading="lazy" />)}
+            </div>
+            <button type="button" class="prev" aria-label={T.prev}>‹</button>
+            <button type="button" class="next" aria-label={T.next}>›</button>
+            <span class="count" aria-hidden="true"><b>1</b> / {list.length}</span>
+          </div>
+          <ul class="pick-facts">
+            <li><Icon name="letti" /><span>{a.letti[lang]}</span></li>
+            <li><Icon name="ospiti" /><span>{T.upTo} {a.ospiti} {t.guests}</span></li>
+            <li><Icon name="mq" /><span>{a.mq} m²</span></li>
+            <li><Icon name="bagni" /><span>{a.bagni} {T.bath}</span></li>
+          </ul>
+          <ul class="pick-amen">
+            <li><Icon name="casa" />{a.piano[lang]}</li>
+            {a.camino && <li><Icon name="camino" />{t.fireplace}</li>}
+            {servizi.filter((s) => s.primo).map((s) => <li><Icon name={s.icona as any} />{s[lang]}</li>)}
+          </ul>
+          <details>
+            <summary>{T.all}</summary>
+            <ul class="pick-amen">{servizi.filter((s) => !s.primo).map((s) => <li><Icon name={s.icona as any} />{s[lang]}</li>)}</ul>
+          </details>
+          <a class="link pick-link" href={url('apts', lang, a.id)} target="_blank" rel="noopener">{T.sheet} {a.nome} ↗</a>
+        </article>
+      );
+    })}
+  </div>
+</div>
+
+<script>
+  // Scorrimento nativo: si può sempre fermare col dito. Le frecce spostano di una foto o di una scheda.
+  const smooth: ScrollBehavior = matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth';
+  const go = (row: HTMLElement, items: HTMLElement[], d: number) => {
+    const at = items.map((el) => el.offsetLeft - items[0].offsetLeft);
+    const i = at.reduce((b, x, n) => (Math.abs(x - row.scrollLeft) < Math.abs(at[b] - row.scrollLeft) ? n : b), 0);
+    row.scrollTo({ left: at[Math.max(0, Math.min(at.length - 1, i + d))], behavior: smooth });
+  };
+  const ends = (row: HTMLElement, prev: HTMLButtonElement, next: HTMLButtonElement) => {
+    const upd = () => { prev.disabled = row.scrollLeft < 4; next.disabled = row.scrollLeft > row.scrollWidth - row.clientWidth - 4; };
+    row.addEventListener('scroll', upd, { passive: true });
+    new ResizeObserver(upd).observe(row);
+  };
+
+  document.querySelectorAll<HTMLElement>('.picker').forEach((p) => {
+    const row = p.querySelector<HTMLElement>('.picker-row')!;
+    const cards = [...row.querySelectorAll<HTMLElement>('.pick')];
+    const [prev, next] = p.querySelectorAll<HTMLButtonElement>('.picker-nav button');
+    prev.addEventListener('click', () => go(row, cards, -1));
+    next.addEventListener('click', () => go(row, cards, 1));
+    ends(row, prev, next);
+
+    cards.forEach((c) => {
+      const strip = c.querySelector<HTMLElement>('.pick-strip')!;
+      const imgs = [...strip.querySelectorAll('img')];
+      const [pv, nx] = c.querySelectorAll<HTMLButtonElement>('.pick-ph button');
+      const n = c.querySelector('.count b')!;
+      pv.addEventListener('click', () => go(strip, imgs, -1));
+      nx.addEventListener('click', () => go(strip, imgs, 1));
+      ends(strip, pv, nx);
+      strip.addEventListener('scroll', () => { n.textContent = String(Math.round(strip.scrollLeft / strip.clientWidth) + 1); }, { passive: true });
+      // Le altre foto partono al primo segno d'interesse: scorrendo non resta mai un riquadro vuoto.
+      const load = () => imgs.forEach((im) => { im.loading = 'eager'; });
+      c.addEventListener('pointerenter', load, { once: true });
+      c.addEventListener('focusin', load, { once: true });
+    });
+  });
+</script>

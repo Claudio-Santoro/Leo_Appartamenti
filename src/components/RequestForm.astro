@@ -1,12 +1,12 @@
 ---
-import apts from '../data/appartamenti.json';
+import AptPicker from './AptPicker.astro';
 import sito from '../data/sito.json';
 import { url } from '../i18n.js';
 interface Props { lang: 'it' | 'en' }
 const { lang } = Astro.props;
 const T = {
-  it: { name: 'Nome e cognome', email: 'Email', phone: 'Telefono (facoltativo)', apts: 'Appartamenti (anche più di uno per i gruppi)', in: 'Arrivo', out: 'Partenza', adults: 'Adulti', kids: 'Bambini', pets: 'Viaggio con un animale', msg: 'Messaggio (orario di arrivo, richieste…)', privacy: 'Ho letto l’', privacyLink: 'informativa privacy', privacyEnd: ' e acconsento al trattamento dei dati per rispondere alla mia richiesta.', send: 'Invia la richiesta', wa: 'Scrivici su WhatsApp', note: 'Non è una prenotazione vincolante: ti rispondiamo con disponibilità e prezzo, di solito entro poche ore.', dateErr: 'La partenza deve essere dopo l’arrivo.', sendErr: 'Non siamo riusciti a inviare la richiesta. Riprova, oppure scrivici su WhatsApp: il messaggio è già pronto con le tue date.', waText: 'Ciao! Vorrei informazioni per', from: 'dal', to: 'al', guests: 'ospiti' },
-  en: { name: 'Full name', email: 'Email', phone: 'Phone (optional)', apts: 'Apartments (choose more than one for groups)', in: 'Arrival', out: 'Departure', adults: 'Adults', kids: 'Children', pets: 'Travelling with a pet', msg: 'Message (arrival time, requests…)', privacy: 'I have read the ', privacyLink: 'privacy notice', privacyEnd: ' and consent to my data being used to reply to my request.', send: 'Send request', wa: 'Message us on WhatsApp', note: 'This is not a binding booking: we will reply with availability and price, usually within a few hours.', dateErr: 'Departure must be after arrival.', sendErr: 'We could not send your request. Please try again, or message us on WhatsApp: the message already has your dates.', waText: 'Hi! I would like information about', from: 'from', to: 'to', guests: 'guests' },
+  it: { name: 'Nome e cognome', email: 'Email', phone: 'Telefono (facoltativo)', in: 'Arrivo', out: 'Partenza', adults: 'Adulti', kids: 'Bambini', pets: 'Viaggio con un animale', msg: 'Messaggio (orario di arrivo, richieste…)', privacy: 'Ho letto l’', privacyLink: 'informativa privacy', privacyEnd: ' e acconsento al trattamento dei dati per rispondere alla mia richiesta.', send: 'Invia la richiesta', wa: 'Scrivici su WhatsApp', note: 'Non è una prenotazione vincolante: ti rispondiamo con disponibilità e prezzo, di solito entro poche ore.', dateErr: 'La partenza deve essere dopo l’arrivo.', sendErr: 'Non siamo riusciti a inviare la richiesta. Riprova, oppure scrivici su WhatsApp: il messaggio è già pronto con le tue date.', waText: 'Ciao! Vorrei informazioni per', from: 'dal', to: 'al', guests: 'ospiti' },
+  en: { name: 'Full name', email: 'Email', phone: 'Phone (optional)', in: 'Arrival', out: 'Departure', adults: 'Adults', kids: 'Children', pets: 'Travelling with a pet', msg: 'Message (arrival time, requests…)', privacy: 'I have read the ', privacyLink: 'privacy notice', privacyEnd: ' and consent to my data being used to reply to my request.', send: 'Send request', wa: 'Message us on WhatsApp', note: 'This is not a binding booking: we will reply with availability and price, usually within a few hours.', dateErr: 'Departure must be after arrival.', sendErr: 'We could not send your request. Please try again, or message us on WhatsApp: the message already has your dates.', waText: 'Hi! I would like information about', from: 'from', to: 'to', guests: 'guests' },
 }[lang];
 ---
 <form class="form" name="richiesta" method="POST" action="/api/richiesta" data-thanks={url('thanks', lang)}
@@ -14,12 +14,8 @@ const T = {
   <input type="hidden" name="lingua" value={lang} />
   <p class="hp"><label>Non compilare <input name="bot-field" tabindex="-1" autocomplete="off" /></label></p>
 
-  <fieldset>
-    <legend>{T.apts}</legend>
-    {apts.map((a) => (
-      <label class="check"><input type="checkbox" name="appartamenti" value={a.id} /> {a.nome} ({a.ospiti} max)</label>
-    ))}
-  </fieldset>
+  <AptPicker lang={lang} />
+  <p class="req-sum" role="status" hidden></p>
   <div class="row pair">
     <label>{T.in}<input type="date" name="arrivo" required /></label>
     <label>{T.out}<input type="date" name="partenza" required /></label>
@@ -67,7 +63,7 @@ const T = {
     // Il link WhatsApp porta con sé quanto già compilato nel modulo.
     f.querySelector<HTMLAnchorElement>('[data-wa-link]')!.addEventListener('click', (e) => {
       const d = f.dataset;
-      const apts = [...f.querySelectorAll<HTMLInputElement>('input[name="appartamenti"]:checked')].map((b) => b.parentElement!.textContent!.trim().split(' (')[0]);
+      const apts = [...f.querySelectorAll<HTMLInputElement>('input[name="appartamenti"]:checked')].map((b) => b.dataset.nome);
       const fmt = (s: string) => s.split('-').reverse().join('/');
       const guests = Number(get('adulti') || 0) + Number(get('bambini') || 0);
       let text = `${d.waText} ${apts.join(' + ') || 'Leo Appartamenti'}`;

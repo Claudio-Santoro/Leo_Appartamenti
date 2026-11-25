@@ -1,0 +1,10 @@
+[
+  { "icona": "cucina", "it": "Cucina attrezzata", "en": "Equipped kitchen", "primo": true },
+  { "icona": "clima", "it": "Aria condizionata e riscaldamento", "en": "Air conditioning and heating", "primo": true },
+  { "icona": "wifi", "it": "Wi-Fi gratuito", "en": "Free Wi-Fi", "primo": true },
+  { "icona": "tv", "it": "TV satellitare", "en": "Satellite TV" },
+  { "icona": "lavatrice", "it": "Lavatrice", "en": "Washing machine" },
+  { "icona": "patio", "it": "Patio con tavolo all’aperto", "en": "Patio with outdoor table", "primo": true },
+  { "icona": "doccia", "it": "Bagno con doccia, asciugacapelli, set di cortesia", "en": "Bathroom with shower, hairdryer, toiletries" },
+  { "icona": "biancheria", "it": "Biancheria e asciugamani", "en": "Bed linen and towels" }
+]
