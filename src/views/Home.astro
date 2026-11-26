@@ -21,7 +21,7 @@ const T = {
     h1: ['Erice,', 'sopra le nuvole.'],
     sub: 'Tre appartamenti appena fuori dalle mura, con il patio che guarda Trapani e il mare. Arrivi in auto fino alla porta, ti accogliamo noi.',
     discover: 'Gli appartamenti',
-    trail: ['Erice', 'La vista', 'Le case', 'I servizi', 'La nebbia', 'Il borgo', 'Gli ospiti'], trailLabel: 'Il sentiero della pagina',
+    trail: ['Erice', 'La vista', 'Le case', 'I servizi', 'Il borgo', 'Gli ospiti'], trailLabel: 'Il sentiero della pagina',
     heroAlt: 'Erice, il borgo di pietra sospeso sopra il mare e le nuvole',
     nightAlt: 'Un vicolo di Erice al crepuscolo, con un lampione acceso', vistaH: 'Da Erice: Trapani, il mare, le Egadi.',
     vistaP: 'Dal patio guardi Trapani e il mare: è la cosa che i nostri ospiti ricordano di più. Al tramonto le saline si accendono di rosa e le isole compaiono una dietro l’altra.',
@@ -29,8 +29,6 @@ const T = {
     aptsP: 'Tre appartamenti vicini, tutti con cucina, aria condizionata, riscaldamento e Wi-Fi. Per i gruppi si prenotano insieme: fino a 15 persone.', servN: 'Altri servizi', servH: 'La tua giornata, la organizziamo noi.',
     servP: 'Ti aiutiamo a vivere Erice e i dintorni senza pensieri. Tutti i servizi sono su richiesta: chiedili quando prenoti o durante il soggiorno.',
     serv: [['Servizio taxi', 'Ti accompagniamo dove vuoi: in città, al porto, alla stazione o all’aeroporto.'], ['Tour delle Isole Egadi', 'Favignana, Levanzo e Marettimo in giornata, in barca o in aliscafo: organizziamo tutto noi.'], ['Degustazioni di vini', 'Visite e assaggi nelle cantine della zona, tra i vigneti della Sicilia occidentale.']],
-    fogH: 'Quando sale la nebbia.',
-    fogP: 'Capita spesso, anche d’estate: il Castello di Venere sparisce e riappare tra le nuvole. Erice cambia faccia in pochi minuti, ed è bellissima così.',
     fogAlt: 'Il Castello di Venere a Erice, nella nebbia', fogNightAlt: 'Il Castello di Venere di notte, illuminato dai lampioni', borgoH: 'Tutto il borgo, a pochi passi.',
     borgoP: 'Siamo appena fuori dalle mura: in pochi minuti sei nel centro medievale, tra chiese, vicoli di pietra e pasticcerie.',
     walk: [['Porta Trapani', 'circa 110 m'], ['Real Duomo', 'circa 200 m'], ['Castello di Venere', 'circa 600 m'], ['Funivia per Trapani', 'a pochi minuti']],
@@ -54,7 +52,7 @@ const T = {
     h1: ['Erice,', 'above the clouds.'],
     sub: 'Three apartments just outside the old walls, with a patio looking out over Trapani and the sea. Drive right up to the door — we’ll be there to welcome you.',
     discover: 'The apartments',
-    trail: ['Erice', 'The view', 'The homes', 'Services', 'The fog', 'The village', 'Our guests'], trailLabel: 'Page trail',
+    trail: ['Erice', 'The view', 'The homes', 'Services', 'The village', 'Our guests'], trailLabel: 'Page trail',
     heroAlt: 'Erice, the stone village hanging above the sea and the clouds',
     nightAlt: 'An alley in Erice at dusk, with a street lamp lit', vistaH: 'From Erice: Trapani, the sea, the Egadi.',
     vistaP: 'From the patio you look out over Trapani and the sea: it’s what our guests remember most. At sunset the salt pans glow pink and the islands appear one behind the other.',
@@ -62,8 +60,6 @@ const T = {
     aptsP: 'Three neighbouring apartments, all with kitchen, air conditioning, heating and Wi-Fi. Groups can book them together: up to 15 people.', servN: 'More services', servH: 'Your day, organised by us.',
     servP: 'We help you enjoy Erice and its surroundings with no hassle. All services are on request: ask when you book or during your stay.',
     serv: [['Taxi service', 'We take you wherever you need: around town, to the port, the station or the airport.'], ['Egadi Islands tours', 'Favignana, Levanzo and Marettimo in a day, by boat or hydrofoil: we arrange everything.'], ['Wine tastings', 'Visits and tastings at local wineries, among the vineyards of western Sicily.']],
-    fogH: 'When the fog rolls in.',
-    fogP: 'It happens often, even in summer: the Castle of Venus vanishes and reappears among the clouds. Erice changes its face in minutes, and it’s beautiful that way.',
     fogAlt: 'The Castle of Venus in Erice, in the fog', fogNightAlt: 'The Castle of Venus at night, lit by street lamps', borgoH: 'The whole village, a few steps away.',
     borgoP: 'We are just outside the walls: in a few minutes you are in the medieval centre, among churches, stone lanes and pastry shops.',
     walk: [['Porta Trapani', 'about 110 m'], ['Cathedral', 'about 200 m'], ['Castle of Venus', 'about 600 m'], ['Cable car to Trapani', 'a few minutes']],
@@ -89,7 +85,7 @@ const stops = [
   { file: 'borgo/castello-venere', pos: '21% 50%', tall: false },
   { file: 'borgo/funivia', pos: '50% 50%', tall: true },
 ];
-// Le foto che si alternano in apertura e nella nebbia. Le luci (x, y sulla foto) sono misurate a mano: se cambia una foto, vanno rimisurate.
+// Le foto che si alternano in apertura. Le luci (x, y sulla foto) sono misurate a mano: se cambia una foto, vanno rimisurate.
 // La prima luce di ogni foto è quella che scalda la nebbia (fog3d.ts).
 const muraNotte = { on: 'pn', src: img('borgo/m-mura-castello-notte'), alt: T.alts.muraNotte, lights: [[0.6685, 0.243, 46]] };
 const heroSlides = [
@@ -105,14 +101,11 @@ const heroSlides = [
   { on: 'pd', src: img('borgo/m-mura-castello'), alt: T.alts.mura, pos: '50% 30%' },
   { on: 'pd', src: img('borgo/m-torretta-pepoli'), alt: T.alts.torretta, pos: '50% 85%' },
   { ...muraNotte, pos: '50% 20%' },
-];
-const fogSlides = [
-  { on: 'dd dn pd', src: img('borgo/castello-nebbia'), mobile: img('borgo/m-castello'), alt: T.fogAlt, dim: true },
+  // dalla vecchia sezione della nebbia
+  { on: 'dd pd', src: img('borgo/castello-nebbia'), mobile: img('borgo/m-castello'), alt: T.fogAlt, dim: true }, // di notte su computer, sotto il velo dell'apertura, era solo grigio scuro
   { on: 'dn', src: img('borgo/balio-notte'), alt: T.alts.balio, pos: '50% 45%', filter: 'brightness(.42) saturate(.95)', lights: [[0.81, 0.662, 13], [0.6586, 0.381, 9], [0.785, 0.38, 9], [0.493, 0.392, 8], [0.137, 0.548, 5]] },
   { on: 'pn', src: img('borgo/m-castello-notte'), alt: T.fogNightAlt, pos: '25% 0%', lights: [[0.4297, 0.3858, 20], [0.2076, 0.4225, 20], [0.5167, 0.4158, 17], [0.615, 0.4233, 17]] },
-  { on: 'pd', src: img('borgo/m-mura-castello'), alt: T.alts.mura, pos: '75% 0%' },
   { on: 'pd', src: img('borgo/m-torretta-castello'), alt: T.alts.torrettaCastello, pos: '60% 50%' },
-  { ...muraNotte, pos: '75% 0%' },
 ];
 const stopFull = await Promise.all(stops.map((st) => getImage({ src: img(st.file), width: 1600, format: 'webp' })));
 const abs = (u: string) => new URL(u, Astro.site).href;
@@ -132,7 +125,7 @@ const ld = {
   <script slot="head" type="application/ld+json" set:html={JSON.stringify(ld)} />
 
   <nav class="sentiero" aria-label={T.trailLabel}>
-    <ol>{['inizio', 'vista', 'appartamenti', 'servizi', 'nebbia', 'borgo', 'ospiti'].map((id, i) => <li><a href={`#${id}`}><span>{T.trail[i]}</span></a></li>)}</ol>
+    <ol>{['inizio', 'vista', 'appartamenti', 'servizi', 'borgo', 'ospiti'].map((id, i) => <li><a href={`#${id}`}><span>{T.trail[i]}</span></a></li>)}</ol>
   </nav>
 
   <section class="hero" id="inizio" data-enter>
@@ -178,17 +171,6 @@ const ld = {
       </div>
       <div class="grid three">
         {T.serv.map(([h, p], i) => <div data-reveal style={`--d:${i * .12}s`}><h3>{h}</h3><p>{p}</p></div>)}
-      </div>
-    </div>
-  </section>
-
-  <section class="photo-sec fog" id="nebbia">
-    <Slides slides={fogSlides} class="media" mobileSizes="125vw" />
-    <Fog density={1.9} />
-    <div class="wrap">
-      <div class="txt" data-reveal>
-        <h2>{T.fogH}</h2>
-        <p>{T.fogP}</p>
       </div>
     </div>
   </section>

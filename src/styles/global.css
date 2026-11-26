@@ -64,6 +64,9 @@ h2 { font-size: clamp(2.4rem, 5vw, 4.6rem); }
 h3 { font-size: clamp(1.9rem, 3vw, 2.8rem); }
 p { margin: 0 0 1em; text-wrap: pretty; }
 
+/* Foschia, aloni dei lampioni e foto in movimento escono di proposito dai bordi: tagliati in orizzontale, così la
+   pagina non scorre di lato. clip (non hidden) non crea un contenitore di scorrimento e lascia libero il verticale */
+main { overflow-x: clip; }
 .wrap { max-width: var(--wrap); margin: 0 auto; padding: 0 var(--gutter); }
 .section { padding: clamp(88px, 12vw, 160px) 0; }
 .section.alt { background: var(--calc-2); }
@@ -212,13 +215,6 @@ p { margin: 0 0 1em; text-wrap: pretty; }
 .photo-sec h2 { text-shadow: 0 2px 24px rgba(0,0,0,.25); }
 .photo-sec p { font-size: 1.2rem; line-height: 1.6; }
 .photo-sec .num { color: var(--cotto-light); }
-/* Il testo sta in alto, sul cielo chiaro (azzurro o nebbia): inchiostro scuro, nessun pannello */
-.photo-sec.fog { align-items: start; color: var(--ink); }
-.fog h2 { text-shadow: none; }
-@media (min-width: 701px) {
-  .fog .wrap { padding-top: calc(var(--header-h) + 9vh); }
-  .fog .txt { max-width: 30rem; margin-left: auto; } /* a destra, dove c'è solo cielo */
-}
 /* Testo scuro su un pannello di calcare velato, sempre leggibile */
 .photo-sec.center { justify-items: center; text-align: center; }
 .photo-sec.center .txt { max-width: 40rem; margin: 0 auto; padding: clamp(32px, 5vw, 56px); border-radius: 28px; background: rgba(238, 231, 219, .84); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); color: var(--ink); }
@@ -714,7 +710,6 @@ html.time-reveal::view-transition-new(root) { animation: reveal .7s var(--ease) 
   .js [data-reveal] { opacity: 1; filter: none; transform: none; }
 }
 @media (max-width: 700px) { .hero .fog-canvas, .hero .fog-css { height: calc(56svh + var(--header-h)); min-height: 444px; bottom: auto; } }
-@media (max-width: 700px) { .photo-sec .fog-canvas, .photo-sec .fog-css { height: 76svh; min-height: 460px; bottom: auto; } }
 /* il menu bianco sta in cima: la sua ombra va sopra la nebbia, che ora arriva fin lì */
 .hero::before { content: ''; position: absolute; z-index: 2; left: 0; right: 0; top: 0; height: 26svh; pointer-events: none; background: linear-gradient(180deg, rgba(18, 20, 18, .66), rgba(18, 20, 18, .36) 45%, transparent); }
 /* Un'ombra morbida solo dietro le parole dell'apertura: la nebbia resta piena, il testo leggibile */
@@ -744,13 +739,6 @@ html.time-reveal::view-transition-new(root) { animation: reveal .7s var(--ease) 
 @media (max-width: 700px) {
   :root[data-time='night'] .hero .slides { -webkit-mask-image: linear-gradient(to bottom, #000 45%, transparent 100%); mask-image: linear-gradient(to bottom, #000 45%, transparent 100%); }
 }
-@media (min-width: 701px) {
-  .fog .txt { position: relative; isolation: isolate; }
-  :root[data-time='night'] .fog .txt::before { content: ''; position: absolute; inset: -18% -14%; z-index: -1; pointer-events: none; background: radial-gradient(closest-side, rgba(12, 14, 13, .5), rgba(12, 14, 13, .34) 60%, transparent); } /* le foto notturne hanno luci dietro al testo */
-}
-.photo-sec.fog { background: var(--calc-2); } /* sopra (Altri servizi) e sotto (il borgo) c'è il calcare: la foto si scioglie in quel colore, nessuno stacco */
-#nebbia :is(.fog-canvas, .fog-css) { -webkit-mask-image: linear-gradient(to bottom, var(--fade-top), #000 62%, transparent 100%); mask-image: linear-gradient(to bottom, var(--fade-top), #000 62%, transparent 100%); } /* anche la nebbia, o il bordo della sezione taglia netto */
-.photo-sec.fog .media { -webkit-mask-image: linear-gradient(to bottom, var(--fade-top), #000 62%, transparent 100%); mask-image: linear-gradient(to bottom, var(--fade-top), #000 62%, transparent 100%); }
 
 /* Il voto di notte prende la luce dei lampioni: il verde pino sul fondo scuro non si leggeva */
 :root[data-time='night'] .trust .score { color: var(--cotto-light); text-shadow: 0 0 28px rgba(var(--glow), .25); }
