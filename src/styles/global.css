@@ -776,8 +776,8 @@ html.time-reveal::view-transition-new(root) { animation: reveal .7s var(--ease) 
 @media (min-width: 701px) { .hero .mist { --m: 178, 185, 190; } } /* il titolo bianco sta sopra la foschia */
 :root[data-time='night'] .slides .mist { --m: 62, 69, 79; }
 
-/* Fine delle pagine guida: un pulsante per riga */
-.page-links { display: grid; justify-items: start; gap: 18px; margin-top: 40px; }
-@media (max-width: 700px) { .page-links .btn { justify-self: stretch; } }
+/* Fine delle pagine guida: un pulsante per riga, tutti larghi quanto il più lungo; su telefono a tutta larghezza */
+.page-links { display: grid; width: fit-content; gap: 18px; margin-top: 40px; }
+@media (max-width: 700px) { .page-links { width: auto; } }
 /* Le luci di Natale sono il soggetto: di notte la foto si scurisce meno delle altre, come #vista */
 :root[data-time='night'] #luci .bg { filter: brightness(.78) saturate(.9); }
