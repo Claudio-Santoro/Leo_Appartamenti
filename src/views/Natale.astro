@@ -1,29 +1,28 @@
 ---
 // Pagina stagionale: risponde a "Erice a Natale" / "Erice at Christmas" e porta prenotazioni in bassa stagione.
-import { Image } from 'astro:assets';
 import Base from '../layouts/Base.astro';
-import ArtImage from '../components/ArtImage.astro';
+import PhotoSection from '../components/PhotoSection.astro';
 import { url, ui } from '../i18n.js';
 import { img } from '../images.js';
 interface Props { lang: 'it' | 'en' }
 const { lang } = Astro.props;
 const t = ui[lang];
 const roman = ['I', 'II', 'III', 'IV', 'V'];
-// [titolo, testo, foto o null, alt]
-type Part = [string, string, string | null, string];
-const T: { title: string; desc: string; eyebrow: string; h1: string; lead: string; banner: string; parts: Part[]; tipsH: string; tips: string[]; venere: string; guide: string } = {
+// [titolo, testo, [foto desktop, foto telefono o null] o null, alt]
+// Come la home: le parti con la foto sono sezioni a tutto schermo che nascono dallo sfondo, le altre stanno in tre colonne.
+type Part = [string, string, [string, string | null] | null, string];
+const T: { title: string; desc: string; eyebrow: string; h1: string; lead: string; parts: Part[]; tipsH: string; tips: string[]; venere: string; guide: string; arrive: string; cta: string; more: string } = {
   it: {
     title: 'Erice a Natale: luci, presepi e genovesi nel borgo · Leo Appartamenti',
     desc: 'Erice a Natale: il borgo illuminato, i mercatini, il presepe vivente di Custonaci, le genovesi e la nebbia tra i vicoli. Consigli per un soggiorno d’inverno.',
     eyebrow: 'Le feste nel borgo', h1: 'Erice a Natale',
     lead: 'D’inverno i pullman se ne vanno ed Erice torna a essere un borgo di pietra, lampioni e nebbia. A dicembre le strade si accendono di luci, e il Natale quassù ha un’atmosfera che in Sicilia è difficile trovare altrove.',
-    banner: 'Il Real Duomo di Erice nella nebbia',
     parts: [
-      ['Il borgo illuminato', 'Durante le feste vicoli, piazze e chiese si illuminano, e tra dicembre e l’Epifania il borgo ospita mercatini, concerti ed eventi. Il programma cambia ogni anno: lo trovi sul sito del Comune di Erice, oppure chiedilo a noi.', 'borgo/m-notte-vicolo', 'Un vicolo di Erice di notte, con un lampione acceso'],
+      ['Il borgo illuminato', 'Durante le feste vicoli, piazze e chiese si illuminano, e tra dicembre e l’Epifania il borgo ospita mercatini, concerti ed eventi. Il programma cambia ogni anno: lo trovi sul sito del Comune di Erice, oppure chiedilo a noi.', ['natale/luci-vicolo', 'natale/m-luci-vicolo'], 'Luci di Natale e una stella cometa sopra un vicolo di Erice, nella nebbia'],
       ['I presepi', 'Nel Trapanese il Natale è anche presepi. Nelle chiese di Erice se ne allestiscono durante le feste, e a Trapani, a dieci minuti di funivia, il Museo Pepoli conserva i presepi degli artigiani trapanesi, anche in corallo.', null, ''],
       ['Il presepe vivente di Custonaci', 'A circa mezz’ora d’auto, a Custonaci, la Grotta Mangiapane ospita ogni anno uno dei presepi viventi più famosi della Sicilia: un antico borgo dentro una grotta, animato per qualche sera dai mestieri di una volta. Si tiene in alcune date tra Natale e l’Epifania: controlla il calendario prima di partire.', null, ''],
-      ['Le genovesi', 'Le pasticcerie del borgo fanno le genovesi, il dolce di Erice: pasta frolla ripiena di crema, da mangiare ancora calda. D’inverno, dopo una passeggiata nella nebbia, sono ancora più buone.', null, ''],
-      ['Il freddo, la nebbia e il camino', 'Erice è a 750 metri: a dicembre fa freddo, la nebbia è frequente e qualche volta, di rado, nevica. Tutti gli appartamenti hanno il riscaldamento, e Venere ha anche il camino: dopo una passeggiata tra i vicoli è il posto migliore dove tornare.', 'venere/03-pranzo-camino', 'Il camino nella zona pranzo dell’appartamento Venere'],
+      ['Le genovesi', 'Le pasticcerie del borgo fanno le genovesi, il dolce di Erice: pasta frolla ripiena di crema, da mangiare ancora calda. D’inverno, dopo una passeggiata nella nebbia, sono ancora più buone.', ['natale/genovesi', 'natale/m-genovesi'], 'Due genovesi di Erice coperte di zucchero a velo'],
+      ['Il freddo, la nebbia e il camino', 'Erice è a 750 metri: a dicembre fa freddo, la nebbia è frequente e qualche volta, di rado, nevica. Tutti gli appartamenti hanno il riscaldamento, e Venere ha anche il camino: dopo una passeggiata tra i vicoli è il posto migliore dove tornare.', ['venere/03-pranzo-camino', null], 'Il camino nella zona pranzo dell’appartamento Venere'],
     ],
     tipsH: 'Consigli per le feste',
     tips: [
@@ -31,20 +30,19 @@ const T: { title: string; desc: string; eyebrow: string; h1: string; lead: strin
       'Porta un cappotto vero e scarpe che non scivolano: con l’umidità le strade di pietra diventano lisce.',
       'D’inverno la funivia chiude più spesso per il vento: in auto arrivi fino alla porta, e c’è parcheggio.',
     ],
-    venere: 'Scopri Venere, con il camino', guide: 'Cosa vedere a Erice',
+    venere: 'Scopri Venere, con il camino', guide: 'Cosa vedere a Erice', arrive: 'Come arrivare a Erice', cta: 'I nostri appartamenti a Erice', more: 'Continua a leggere',
   },
   en: {
     title: 'Erice at Christmas: lights, nativity scenes and genovesi · Leo Appartamenti',
     desc: 'Erice at Christmas: the village lit up, markets, the living nativity of Custonaci, genovesi and fog in the lanes. Tips for a winter stay.',
     eyebrow: 'The holidays in the village', h1: 'Erice at Christmas',
     lead: 'In winter the coaches leave and Erice becomes a village of stone, street lamps and fog again. In December the streets light up, and Christmas up here has an atmosphere that is hard to find anywhere else in Sicily.',
-    banner: 'Erice Cathedral in the fog',
     parts: [
-      ['The village lit up', 'During the holidays lanes, squares and churches are lit up, and between December and Epiphany the village hosts markets, concerts and events. The programme changes every year: check the Comune di Erice website, or ask us.', 'borgo/m-notte-vicolo', 'An alley in Erice at night, with a street lamp lit'],
+      ['The village lit up', 'During the holidays lanes, squares and churches are lit up, and between December and Epiphany the village hosts markets, concerts and events. The programme changes every year: check the Comune di Erice website, or ask us.', ['natale/luci-vicolo', 'natale/m-luci-vicolo'], 'Christmas lights and a comet star above an alley in Erice, in the fog'],
       ['Nativity scenes', 'Around Trapani, Christmas means nativity scenes. Erice’s churches set them up during the holidays, and in Trapani, ten minutes away by cable car, the Pepoli Museum holds nativity scenes by Trapani’s craftsmen, some made of coral.', null, ''],
       ['The living nativity of Custonaci', 'About half an hour’s drive away, in Custonaci, the Mangiapane Cave hosts one of the most famous living nativity scenes in Sicily every year: an old hamlet inside a cave, brought to life for a few evenings by the crafts of the past. It runs on selected dates between Christmas and Epiphany: check the calendar before you go.', null, ''],
-      ['Genovesi', 'The village’s pastry shops make genovesi, Erice’s own pastry: shortcrust filled with custard, best eaten still warm. In winter, after a walk in the fog, they are even better.', null, ''],
-      ['The cold, the fog and the fireplace', 'Erice is 750 m above sea level: December is cold, fog is common and, occasionally, it snows. All apartments have heating, and Venere also has a fireplace: after a walk through the lanes it is the best place to come back to.', 'venere/03-pranzo-camino', 'The fireplace in the dining area of the Venere apartment'],
+      ['Genovesi', 'The village’s pastry shops make genovesi, Erice’s own pastry: shortcrust filled with custard, best eaten still warm. In winter, after a walk in the fog, they are even better.', ['natale/genovesi', 'natale/m-genovesi'], 'Two genovesi from Erice dusted with icing sugar'],
+      ['The cold, the fog and the fireplace', 'Erice is 750 m above sea level: December is cold, fog is common and, occasionally, it snows. All apartments have heating, and Venere also has a fireplace: after a walk through the lanes it is the best place to come back to.', ['venere/03-pranzo-camino', null], 'The fireplace in the dining area of the Venere apartment'],
     ],
     tipsH: 'Tips for the holidays',
     tips: [
@@ -52,7 +50,7 @@ const T: { title: string; desc: string; eyebrow: string; h1: string; lead: strin
       'Bring a proper coat and non-slip shoes: in damp weather the stone streets get slippery.',
       'In winter the cable car closes more often because of wind: by car you can drive right up to the door, and there is parking.',
     ],
-    venere: 'Discover Venere, with its fireplace', guide: 'Things to do in Erice',
+    venere: 'Discover Venere, with its fireplace', guide: 'Things to do in Erice', arrive: 'How to get to Erice', cta: 'Our apartments in Erice', more: 'Keep reading',
   },
 }[lang];
 const abs = (u: string) => new URL(u, Astro.site).href;
@@ -61,7 +59,7 @@ const ld = { '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemLi
   { '@type': 'ListItem', position: 2, name: T.h1, item: abs(url('natale', lang)) },
 ] };
 ---
-<Base lang={lang} page="natale" title={T.title} description={T.desc} image={img('borgo/duomo-nebbia')}>
+<Base lang={lang} page="natale" title={T.title} description={T.desc} image={img('natale/luci-vicolo')}>
   <script slot="head" type="application/ld+json" set:html={JSON.stringify(ld)} />
   <section class="page-head"><div class="wrap enter">
     <p class="eyebrow">{T.eyebrow}</p>
@@ -69,32 +67,28 @@ const ld = { '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemLi
     <p class="lead">{T.lead}</p>
   </div></section>
 
-  <ArtImage desktop={img('borgo/duomo-nebbia')} mobile={img('borgo/m-nebbia-vicolo')} alt={T.banner} class="page-banner fade-y" />
+  <PhotoSection id="luci" desktop={T.parts[0][2]![0]} mobile={T.parts[0][2]![1]} alt={T.parts[0][3]} num={roman[0]} title={T.parts[0][0]} text={T.parts[0][1]} />
 
   <section class="section">
-    <div class="wrap prose">
-      {T.parts.map(([h, p, file, alt], i) => (
-        <article data-reveal>
-          <span class="num" style="margin-top:1.6em">{roman[i]}</span>
-          <h2 style="margin-top:0">{h}</h2>
-          <p>{p}</p>
-          {file && <Image src={img(file)} alt={alt} widths={[480, 800, 1200]} sizes="(max-width: 800px) 100vw, 68ch" style="width:100%;height:auto;border-radius:14px" />}
-        </article>
-      ))}
+    <div class="wrap grid two">
+      {T.parts.slice(1, 3).map(([h, p], i) => <div data-reveal style={`--d:${i * .12}s`}><span class="num">{roman[i + 1]}</span><h3>{h}</h3><p>{p}</p></div>)}
     </div>
   </section>
 
-  <section class="section alt">
-    <div class="wrap prose">
-      <h2 style="margin-top:0">{T.tipsH}</h2>
+  <PhotoSection desktop={T.parts[3][2]![0]} mobile={T.parts[3][2]![1]} alt={T.parts[3][3]} num={roman[3]} title={T.parts[3][0]} text={T.parts[3][1]} />
+  <PhotoSection desktop={T.parts[4][2]![0]} mobile={T.parts[4][2]![1]} alt={T.parts[4][3]} num={roman[4]} title={T.parts[4][0]} text={T.parts[4][1]} />
+
+  <section class="section">
+    <div class="wrap"><div class="prose">
+      <h2>{T.tipsH}</h2>
       <ul class="ticks">{T.tips.map((x) => <li>{x}</li>)}</ul>
-      <p style="margin-top:32px">
-        <a class="btn" href={url('avail', lang)}>{t.checkAvail}</a>
-      </p>
-      <p>
+      <nav class="page-links" aria-label={T.more}>
         <a class="link" href={url('apts', lang, 'venere')}>{T.venere} →</a>
-        <a class="link" href={url('erice', lang)} style="margin-left:20px">{T.guide} →</a>
-      </p>
-    </div>
+        <a class="link" href={url('erice', lang)}>{T.guide} →</a>
+        <a class="link" href={url('arrive', lang)}>{T.arrive} →</a>
+        <a class="btn" href={url('apts', lang)}>{T.cta}</a>
+        <a class="btn" href={url('avail', lang)}>{t.checkAvail}</a>
+      </nav>
+    </div></div>
   </section>
 </Base>

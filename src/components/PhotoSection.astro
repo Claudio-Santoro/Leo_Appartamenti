@@ -1,0 +1,15 @@
+---
+// Sezione a tutto schermo come #vista in home: la foto nasce dallo sfondo, il testo sta a sinistra.
+import ArtImage from './ArtImage.astro';
+import { img } from '../images.js';
+interface Props { id?: string; desktop: string; mobile?: string | null; alt: string; num?: string; title: string; text: string }
+const { id, desktop, mobile, alt, num, title, text } = Astro.props;
+---
+<section class="photo-sec left" id={id}>
+  <div class="media"><ArtImage desktop={img(desktop)} mobile={mobile ? img(mobile) : undefined} mobileSizes="125vw" alt={alt} class="bg parallax" /></div>
+  <div class="wrap"><div class="txt" data-reveal>
+    {num && <span class="num">{num}</span>}
+    <h2>{title}</h2>
+    <p>{text}</p>
+  </div></div>
+</section>

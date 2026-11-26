@@ -206,5 +206,21 @@
   "license": "Pexels License",
   "licenseUrl": "https://www.pexels.com/license/",
   "source": "https://www.pexels.com/photo/36338145/"
+ },
+ {
+  "file": "natale/luci-vicolo.jpg",
+  "title": "Christmas-lights-Erice.jpg",
+  "author": "Kned Wiki",
+  "license": "CC0 1.0",
+  "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+  "source": "https://commons.wikimedia.org/wiki/File:Christmas-lights-Erice.jpg"
+ },
+ {
+  "file": "natale/genovesi.jpg",
+  "title": "Genovesi di Erice.jpg",
+  "author": "Enzo Rippa",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+  "source": "https://commons.wikimedia.org/wiki/File:Genovesi_di_Erice.jpg"
  }
 ]

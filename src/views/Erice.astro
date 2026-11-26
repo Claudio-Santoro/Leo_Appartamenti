@@ -1,34 +1,33 @@
 ---
 // Guida al borgo: la pagina che risponde a "cosa vedere a Erice" / "things to do in Erice".
-import { Image } from 'astro:assets';
 import Base from '../layouts/Base.astro';
-import ArtImage from '../components/ArtImage.astro';
+import PhotoSection from '../components/PhotoSection.astro';
 import { url, ui } from '../i18n.js';
 import { img } from '../images.js';
 interface Props { lang: 'it' | 'en' }
 const { lang } = Astro.props;
 const t = ui[lang];
 const roman = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII'];
-// [titolo, testo (HTML), foto o null, alt, distanza da casa o null]
-type Stop = [string, string, string | null, string, string | null];
-const T: { title: string; desc: string; eyebrow: string; h1: string; lead: string; banner: string; from: string; stops: Stop[]; outH: string; outP: string; out: [string, string][]; timeH: string; timeP: string; cta: string; arrive: string; xmas: string } = {
+// [titolo, testo, [foto desktop, foto telefono] o null, alt, distanza da casa o null]
+// Come la home: le tappe con la foto sono sezioni a tutto schermo che nascono dallo sfondo, le altre stanno in tre colonne.
+type Stop = [string, string, [string, string] | null, string, string | null];
+const T: { title: string; desc: string; eyebrow: string; h1: string; lead: string; from: string; stops: Stop[]; outH: string; outP: string; outAlt: string; more: string; out: [string, string][]; timeH: string; timeP: string; cta: string; arrive: string; xmas: string } = {
   it: {
     title: 'Cosa vedere a Erice: guida al borgo e ai dintorni · Leo Appartamenti',
     desc: 'Cosa vedere a Erice a piedi: Castello di Venere, Giardino del Balio, Real Duomo, Quartiere Spagnolo, le genovesi. E nei dintorni: saline, Egadi, Segesta.',
     eyebrow: 'Guida al borgo', h1: 'Cosa vedere a Erice',
     lead: 'Erice è un borgo medievale in cima al Monte Erice, a 750 metri sopra Trapani: vicoli di pietra, chiese, un castello e una vista che arriva alle Egadi. Ecco cosa vedere, tutto a piedi, partendo dalla nostra porta.',
-    banner: 'Erice al tramonto, sopra la pianura di Trapani',
     from: 'Da casa',
     stops: [
-      ['Il Castello di Venere', 'Sulla punta del monte, dove nell’antichità sorgeva il santuario della dea che i Romani chiamavano Venere Ericina, i Normanni costruirono il loro castello. Dalle mura si vedono Trapani, le saline e le isole Egadi: al tramonto è il punto più bello di Erice.', 'borgo/castello-venere', 'Il Castello di Venere sulla rupe di Erice', 'circa 600 m'],
-      ['Il Giardino del Balio e la Torretta Pepoli', 'Sotto il castello c’è il Giardino del Balio, un parco pubblico ombreggiato con le torri medievali e le panchine sul panorama. Poco più in basso, sulla roccia, la Torretta Pepoli, che il conte Agostino Pepoli fece costruire nell’Ottocento: lo stesso conte che dà il nome alla nostra strada.', 'borgo/torri-balio', 'Le torri del Balio a Erice', 'circa 500 m'],
-      ['Il Real Duomo e la Torre di Re Federico', 'La Chiesa Madre dell’Assunta è del Trecento, con un portico gotico e l’interno chiaro e decorato. Accanto c’è il campanile, nato come torre di avvistamento: si può salire, e dall’alto si vedono i tetti del borgo e il mare.', 'borgo/m-duomo', 'Il Real Duomo di Erice e il suo campanile', 'circa 200 m'],
-      ['Le chiese e i vicoli', 'Il bello di Erice è perdersi. Le strade sono lastricate a riquadri di pietra, le case si chiudono attorno a cortili fioriti e a ogni angolo c’è una chiesa: San Giuliano, San Martino, San Giovanni Battista con la cupola affacciata sul mare.', 'borgo/san-giovanni-mare', 'La chiesa di San Giovanni Battista a Erice, sopra il mare', null],
+      ['Il Castello di Venere', 'Sulla punta del monte, dove nell’antichità sorgeva il santuario della dea che i Romani chiamavano Venere Ericina, i Normanni costruirono il loro castello. Dalle mura si vedono Trapani, le saline e le isole Egadi: al tramonto è il punto più bello di Erice.', ['borgo/castello-venere', 'borgo/m-castello'], 'Il Castello di Venere sulla rupe di Erice', 'circa 600 m'],
+      ['Il Giardino del Balio e la Torretta Pepoli', 'Sotto il castello c’è il Giardino del Balio, un parco pubblico ombreggiato con le torri medievali e le panchine sul panorama. Poco più in basso, sulla roccia, la Torretta Pepoli, che il conte Agostino Pepoli fece costruire nell’Ottocento: lo stesso conte che dà il nome alla nostra strada.', ['borgo/torri-balio', 'borgo/m-torretta-pepoli'], 'Le torri del Balio a Erice', 'circa 500 m'],
+      ['Il Real Duomo e la Torre di Re Federico', 'La Chiesa Madre dell’Assunta è del Trecento, con un portico gotico e l’interno chiaro e decorato. Accanto c’è il campanile, nato come torre di avvistamento: si può salire, e dall’alto si vedono i tetti del borgo e il mare.', ['borgo/duomo-nebbia', 'borgo/m-duomo'], 'Il Real Duomo di Erice e il suo campanile', 'circa 200 m'],
+      ['Le chiese e i vicoli', 'Il bello di Erice è perdersi. Le strade sono lastricate a riquadri di pietra, le case si chiudono attorno a cortili fioriti e a ogni angolo c’è una chiesa: San Giuliano, San Martino, San Giovanni Battista con la cupola affacciata sul mare.', ['borgo/san-giovanni-mare', 'borgo/m-arco-strada'], 'La chiesa di San Giovanni Battista a Erice, sopra il mare', null],
+      ['I dolci di Erice', 'Le pasticcerie di Erice fanno le genovesi, il dolce del borgo: pasta frolla ripiena di crema, da mangiare ancora calda. Una sosta che nessuno dei nostri ospiti salta.', ['natale/genovesi', 'natale/m-genovesi'], 'Due genovesi di Erice coperte di zucchero a velo', null],
       ['Il Quartiere Spagnolo', 'Un grande edificio del Seicento rimasto incompiuto, sul lato nord del borgo. Dalla terrazza si vedono Monte Cofano, il golfo di Bonagia e la costa verso San Vito Lo Capo.', null, '', null],
       ['Le mura e il Museo Cordici', 'Sul lato nord-ovest corrono le mura elimo-puniche, con le porte Spada e Carmine: alla base ci sono blocchi enormi, posati più di duemila anni fa. In piazza, il Museo Civico Antonino Cordici racconta la storia di Erice e conserva un’Annunciazione in marmo di Antonello Gagini.', null, '', null],
-      ['I dolci di Erice', 'Le pasticcerie di Erice fanno le genovesi, il dolce del borgo: pasta frolla ripiena di crema, da mangiare ancora calda. Una sosta che nessuno dei nostri ospiti salta.', null, '', null],
     ],
-    outH: 'Nei dintorni',
+    outH: 'Nei dintorni', outAlt: 'Le saline di Trapani viste da Erice', more: 'Continua a leggere',
     outP: 'Erice è un buon punto di partenza per la Sicilia occidentale. Con l’auto, quasi tutto è a meno di un’ora.',
     out: [
       ['Trapani e la funivia', 'In dieci minuti di funivia sei a Trapani: il centro storico, il porto, il lungomare.'],
@@ -46,18 +45,17 @@ const T: { title: string; desc: string; eyebrow: string; h1: string; lead: strin
     desc: 'What to see in Erice on foot: the Castle of Venus, Balio Garden, the Cathedral, the Spanish Quarter, genovesi. And nearby: salt pans, Egadi Islands, Segesta.',
     eyebrow: 'A guide to the village', h1: 'Things to do in Erice',
     lead: 'Erice is a medieval village on top of Mount Erice, 750 metres above Trapani: stone lanes, churches, a castle and a view that reaches the Egadi Islands. Here is what to see, all on foot, starting from our door.',
-    banner: 'Erice at sunset, above the Trapani plain',
     from: 'From our door',
     stops: [
-      ['The Castle of Venus', 'On the tip of the mountain, where in ancient times stood the sanctuary of the goddess the Romans called Venus Erycina, the Normans built their castle. From the walls you can see Trapani, the salt pans and the Egadi Islands: at sunset it is the most beautiful spot in Erice.', 'borgo/castello-venere', 'The Castle of Venus on its cliff in Erice', 'about 600 m'],
-      ['Balio Garden and Torretta Pepoli', 'Below the castle lies the Balio Garden, a shady public park with medieval towers and benches facing the view. Just below, on the rock, stands the Torretta Pepoli, built in the 19th century by Count Agostino Pepoli, the same count our street is named after.', 'borgo/torri-balio', 'The Balio towers in Erice', 'about 500 m'],
-      ['The Cathedral and King Frederick’s Tower', 'The Chiesa Madre dell’Assunta dates from the 14th century, with a Gothic porch and a bright, ornate interior. Next to it is the bell tower, originally a watchtower: you can climb it and look down over the rooftops and the sea.', 'borgo/m-duomo', 'Erice Cathedral and its bell tower', 'about 200 m'],
-      ['Churches and lanes', 'The best of Erice is getting lost. The streets are paved in squares of stone, houses close around flowered courtyards and there is a church at every corner: San Giuliano, San Martino, San Giovanni Battista with its dome above the sea.', 'borgo/san-giovanni-mare', 'The church of San Giovanni Battista in Erice, above the sea', null],
+      ['The Castle of Venus', 'On the tip of the mountain, where in ancient times stood the sanctuary of the goddess the Romans called Venus Erycina, the Normans built their castle. From the walls you can see Trapani, the salt pans and the Egadi Islands: at sunset it is the most beautiful spot in Erice.', ['borgo/castello-venere', 'borgo/m-castello'], 'The Castle of Venus on its cliff in Erice', 'about 600 m'],
+      ['Balio Garden and Torretta Pepoli', 'Below the castle lies the Balio Garden, a shady public park with medieval towers and benches facing the view. Just below, on the rock, stands the Torretta Pepoli, built in the 19th century by Count Agostino Pepoli, the same count our street is named after.', ['borgo/torri-balio', 'borgo/m-torretta-pepoli'], 'The Balio towers in Erice', 'about 500 m'],
+      ['The Cathedral and King Frederick’s Tower', 'The Chiesa Madre dell’Assunta dates from the 14th century, with a Gothic porch and a bright, ornate interior. Next to it is the bell tower, originally a watchtower: you can climb it and look down over the rooftops and the sea.', ['borgo/duomo-nebbia', 'borgo/m-duomo'], 'Erice Cathedral and its bell tower', 'about 200 m'],
+      ['Churches and lanes', 'The best of Erice is getting lost. The streets are paved in squares of stone, houses close around flowered courtyards and there is a church at every corner: San Giuliano, San Martino, San Giovanni Battista with its dome above the sea.', ['borgo/san-giovanni-mare', 'borgo/m-arco-strada'], 'The church of San Giovanni Battista in Erice, above the sea', null],
+      ['Erice pastries', 'Erice’s pastry shops make genovesi, the village’s own pastry: shortcrust filled with custard, best eaten still warm. A stop none of our guests skip.', ['natale/genovesi', 'natale/m-genovesi'], 'Two genovesi from Erice dusted with icing sugar', null],
       ['The Spanish Quarter', 'A large 17th-century building that was never finished, on the north side of the village. From its terrace you can see Monte Cofano, the Gulf of Bonagia and the coast towards San Vito Lo Capo.', null, '', null],
       ['The walls and the Cordici Museum', 'Along the north-west side run the Elymian-Punic walls, with the Spada and Carmine gates: at their base lie huge blocks laid more than two thousand years ago. On the main square, the Antonino Cordici Civic Museum tells the story of Erice and holds a marble Annunciation by Antonello Gagini.', null, '', null],
-      ['Erice pastries', 'Erice’s pastry shops make genovesi, the village’s own pastry: shortcrust filled with custard, best eaten still warm. A stop none of our guests skip.', null, '', null],
     ],
-    outH: 'Around Erice',
+    outH: 'Around Erice', outAlt: 'The Trapani salt pans seen from Erice', more: 'Keep reading',
     outP: 'Erice is a good base for western Sicily. By car, almost everything is less than an hour away.',
     out: [
       ['Trapani and the cable car', 'Ten minutes by cable car and you are in Trapani: the old town, the harbour, the seafront.'],
@@ -75,7 +73,7 @@ const abs = (u: string) => new URL(u, Astro.site).href;
 const ld = [
   { '@context': 'https://schema.org', '@type': 'TouristDestination', name: 'Erice', description: T.desc, url: abs(url('erice', lang)),
     geo: { '@type': 'GeoCoordinates', latitude: 38.0375, longitude: 12.5866 },
-    includesAttraction: [...T.stops.slice(0, 6), ...T.out].map(([name]) => ({ '@type': 'TouristAttraction', name })) },
+    includesAttraction: [...T.stops.slice(0, 4), ...T.stops.slice(5), ...T.out].map(([name]) => ({ '@type': 'TouristAttraction', name })) },
   { '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: [
     { '@type': 'ListItem', position: 1, name: 'Leo Appartamenti', item: abs(url('home', lang)) },
     { '@type': 'ListItem', position: 2, name: T.h1, item: abs(url('erice', lang)) },
@@ -90,41 +88,32 @@ const ld = [
     <p class="lead">{T.lead}</p>
   </div></section>
 
-  <ArtImage desktop={img('borgo/tramonto-erice')} mobile={img('borgo/m-vista-pianura')} alt={T.banner} class="page-banner fade-y" />
+  {T.stops.map(([h, p, photo, alt, dist], i) => photo && <PhotoSection desktop={photo[0]} mobile={photo[1]} alt={alt} num={`${roman[i]}${dist ? ` · ${T.from.toLowerCase()}, ${dist}` : ''}`} title={h} text={p} />)}
 
   <section class="section">
-    <div class="wrap prose">
-      {T.stops.map(([h, p, file, alt, dist], i) => (
-        <article data-reveal>
-          <span class="num" style="margin-top:1.6em">{roman[i]}</span>
-          <h2 style="margin-top:0">{h}</h2>
-          {dist && <p class="muted small">{T.from}: {dist}</p>}
-          <p set:html={p} />
-          {file && <Image src={img(file)} alt={alt} widths={[480, 800, 1200]} sizes="(max-width: 800px) 100vw, 68ch" style="width:100%;height:auto;border-radius:14px" />}
-        </article>
-      ))}
+    <div class="wrap grid two">
+      {T.stops.map(([h, p, photo], i) => !photo && <div data-reveal><span class="num">{roman[i]}</span><h3>{h}</h3><p>{p}</p></div>)}
     </div>
   </section>
 
-  <section class="section alt">
-    <div class="wrap prose">
-      <h2 style="margin-top:0">{T.outH}</h2>
-      <p>{T.outP}</p>
-      <dl>{T.out.map(([h, p]) => <><dt><strong>{h}</strong></dt><dd style="margin:0 0 1em">{p}</dd></>)}</dl>
-      <Image src={img('borgo/saline')} alt={lang === 'it' ? 'Le saline di Trapani viste da Erice' : 'The Trapani salt pans seen from Erice'} widths={[480, 800, 1200]} sizes="(max-width: 800px) 100vw, 68ch" style="width:100%;height:auto;border-radius:14px" />
+  <PhotoSection desktop="borgo/saline" mobile="borgo/m-vista-pianura" alt={T.outAlt} title={T.outH} text={T.outP} />
+
+  <section class="section">
+    <div class="wrap grid three">
+      {T.out.map(([h, p], i) => <div data-reveal style={`--d:${(i % 3) * .12}s`}><h3>{h}</h3><p>{p}</p></div>)}
     </div>
   </section>
 
-  <section class="section">
-    <div class="wrap prose">
-      <h2 style="margin-top:0">{T.timeH}</h2>
+  <section class="section tight">
+    <div class="wrap"><div class="prose">
+      <h2>{T.timeH}</h2>
       <p>{T.timeP}</p>
-      <p style="margin-top:32px">
-        <a class="btn" href={url('apts', lang)}>{T.cta} →</a>
-        <a class="link" href={url('arrive', lang)} style="margin-left:20px">{T.arrive} →</a>
-        <a class="link" href={url('natale', lang)} style="margin-left:20px">{T.xmas} →</a>
-      </p>
-      <p><a class="btn" href={url('avail', lang)}>{t.checkAvail}</a></p>
-    </div>
+      <nav class="page-links" aria-label={T.more}>
+        <a class="link" href={url('arrive', lang)}>{T.arrive} →</a>
+        <a class="link" href={url('natale', lang)}>{T.xmas} →</a>
+        <a class="btn" href={url('apts', lang)}>{T.cta}</a>
+        <a class="btn" href={url('avail', lang)}>{t.checkAvail}</a>
+      </nav>
+    </div></div>
   </section>
 </Base>
