@@ -21,12 +21,15 @@ const T = {
     h1: ['Erice,', 'sopra le nuvole.'],
     sub: 'Tre appartamenti appena fuori dalle mura, con il patio che guarda Trapani e il mare. Arrivi in auto fino alla porta, ti accogliamo noi.',
     discover: 'Gli appartamenti',
-    trail: ['Erice', 'La vista', 'Le case', 'La nebbia', 'Il borgo', 'Gli ospiti'], trailLabel: 'Il sentiero della pagina',
+    trail: ['Erice', 'La vista', 'Le case', 'I servizi', 'La nebbia', 'Il borgo', 'Gli ospiti'], trailLabel: 'Il sentiero della pagina',
     heroAlt: 'Erice, il borgo di pietra sospeso sopra il mare e le nuvole',
     nightAlt: 'Un vicolo di Erice al crepuscolo, con un lampione acceso', vistaH: 'Da Erice: Trapani, il mare, le Egadi.',
     vistaP: 'Dal patio guardi Trapani e il mare: è la cosa che i nostri ospiti ricordano di più. Al tramonto le saline si accendono di rosa e le isole compaiono una dietro l’altra.',
-    vistaAlt: 'Tramonto sul mare e sulle Egadi da una strada di Erice', aptsH: 'Venere, Elimo e Balio.',
-    aptsP: 'Tre appartamenti vicini, tutti con cucina, aria condizionata, riscaldamento e Wi-Fi. Per i gruppi si prenotano insieme: fino a 15 persone.', fogH: 'Quando sale la nebbia.',
+    vistaAlt: 'Tramonto sul mare e sulle Egadi da una strada di Erice', aptsN: 'Gli appartamenti', aptsH: 'Venere, Elimo e Balio.',
+    aptsP: 'Tre appartamenti vicini, tutti con cucina, aria condizionata, riscaldamento e Wi-Fi. Per i gruppi si prenotano insieme: fino a 15 persone.', servN: 'Altri servizi', servH: 'La tua giornata, la organizziamo noi.',
+    servP: 'Ti aiutiamo a vivere Erice e i dintorni senza pensieri. Tutti i servizi sono su richiesta: chiedili quando prenoti o durante il soggiorno.',
+    serv: [['Servizio taxi', 'Ti accompagniamo dove vuoi: in città, al porto, alla stazione o all’aeroporto. Su richiesta.'], ['Tour delle Isole Egadi', 'Favignana, Levanzo e Marettimo in giornata, in barca o in aliscafo: organizziamo tutto noi. Su richiesta.'], ['Degustazioni di vini', 'Visite e assaggi nelle cantine della zona, tra i vigneti della Sicilia occidentale. Su richiesta.']],
+    fogH: 'Quando sale la nebbia.',
     fogP: 'Capita spesso, anche d’estate: il Castello di Venere sparisce e riappare tra le nuvole. Erice cambia faccia in pochi minuti, ed è bellissima così.',
     fogAlt: 'Il Castello di Venere a Erice, nella nebbia', fogNightAlt: 'Il Castello di Venere di notte, illuminato dai lampioni', borgoH: 'Tutto il borgo, a pochi passi.',
     borgoP: 'Siamo appena fuori dalle mura: in pochi minuti sei nel centro medievale, tra chiese, vicoli di pietra e pasticcerie.',
@@ -51,12 +54,15 @@ const T = {
     h1: ['Erice,', 'above the clouds.'],
     sub: 'Three apartments just outside the old walls, with a patio looking out over Trapani and the sea. Drive right up to the door — we’ll be there to welcome you.',
     discover: 'The apartments',
-    trail: ['Erice', 'The view', 'The homes', 'The fog', 'The village', 'Our guests'], trailLabel: 'Page trail',
+    trail: ['Erice', 'The view', 'The homes', 'Services', 'The fog', 'The village', 'Our guests'], trailLabel: 'Page trail',
     heroAlt: 'Erice, the stone village hanging above the sea and the clouds',
     nightAlt: 'An alley in Erice at dusk, with a street lamp lit', vistaH: 'From Erice: Trapani, the sea, the Egadi.',
     vistaP: 'From the patio you look out over Trapani and the sea: it’s what our guests remember most. At sunset the salt pans glow pink and the islands appear one behind the other.',
-    vistaAlt: 'Sunset over the sea and the Egadi Islands from a road in Erice', aptsH: 'Venere, Elimo and Balio.',
-    aptsP: 'Three neighbouring apartments, all with kitchen, air conditioning, heating and Wi-Fi. Groups can book them together: up to 15 people.', fogH: 'When the fog rolls in.',
+    vistaAlt: 'Sunset over the sea and the Egadi Islands from a road in Erice', aptsN: 'The apartments', aptsH: 'Venere, Elimo and Balio.',
+    aptsP: 'Three neighbouring apartments, all with kitchen, air conditioning, heating and Wi-Fi. Groups can book them together: up to 15 people.', servN: 'More services', servH: 'Your day, organised by us.',
+    servP: 'We help you enjoy Erice and its surroundings with no hassle. All services are on request: ask when you book or during your stay.',
+    serv: [['Taxi service', 'We take you wherever you need: around town, to the port, the station or the airport. On request.'], ['Egadi Islands tours', 'Favignana, Levanzo and Marettimo in a day, by boat or hydrofoil: we arrange everything. On request.'], ['Wine tastings', 'Visits and tastings at local wineries, among the vineyards of western Sicily. On request.']],
+    fogH: 'When the fog rolls in.',
     fogP: 'It happens often, even in summer: the Castle of Venus vanishes and reappears among the clouds. Erice changes its face in minutes, and it’s beautiful that way.',
     fogAlt: 'The Castle of Venus in Erice, in the fog', fogNightAlt: 'The Castle of Venus at night, lit by street lamps', borgoH: 'The whole village, a few steps away.',
     borgoP: 'We are just outside the walls: in a few minutes you are in the medieval centre, among churches, stone lanes and pastry shops.',
@@ -121,7 +127,7 @@ const ld = {
   <script slot="head" type="application/ld+json" set:html={JSON.stringify(ld)} />
 
   <nav class="sentiero" aria-label={T.trailLabel}>
-    <ol>{['inizio', 'vista', 'appartamenti', 'nebbia', 'borgo', 'ospiti'].map((id, i) => <li><a href={`#${id}`}><span>{T.trail[i]}</span></a></li>)}</ol>
+    <ol>{['inizio', 'vista', 'appartamenti', 'servizi', 'nebbia', 'borgo', 'ospiti'].map((id, i) => <li><a href={`#${id}`}><span>{T.trail[i]}</span></a></li>)}</ol>
   </nav>
 
   <section class="hero" id="inizio" data-enter>
@@ -151,11 +157,23 @@ const ld = {
 
   <section class="section" id="appartamenti">
     <div class="wrap head" data-reveal>
-      <h2>{T.aptsH}</h2>
+      <div><span class="num">{T.aptsN}</span><h2>{T.aptsH}</h2></div>
       <p>{T.aptsP}</p>
     </div>
     <div class="apts">
       {apts.map((a) => <ApartmentCard a={a} lang={lang} full />)}
+    </div>
+  </section>
+
+  <section class="section alt" id="servizi">
+    <div class="wrap">
+      <div class="head" data-reveal>
+        <div><span class="num">{T.servN}</span><h2>{T.servH}</h2></div>
+        <p>{T.servP}</p>
+      </div>
+      <div class="grid three">
+        {T.serv.map(([h, p], i) => <div data-reveal style={`--d:${i * .12}s`}><h3>{h}</h3><p>{p}</p></div>)}
+      </div>
     </div>
   </section>
 
