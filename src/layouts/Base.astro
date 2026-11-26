@@ -5,26 +5,31 @@ import '@fontsource/almendra/latin-400-italic.css';
 import '@fontsource-variable/eb-garamond/wght.css';
 import '@fontsource-variable/eb-garamond/wght-italic.css';
 import '../styles/global.css';
+import { getImage } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
 import { url, ui } from '../i18n.js';
+import { img } from '../images.js';
 import sito from '../data/sito.json';
 
 interface Props {
   lang: 'it' | 'en'; page: string; id?: string; title: string; description: string;
   noindex?: boolean;
+  image?: ImageMetadata; // anteprima per i social (og:image); di default la foto d'apertura
   over?: boolean;  // header trasparente sopra la foto d'apertura (home)
   bar?: boolean;   // barra Disponibilità / WhatsApp fissa su smartphone
 }
-const { lang, page, id, title, description, noindex = false, over = false, bar = true } = Astro.props;
+const { lang, page, id, title, description, noindex = false, over = false, bar = true, image } = Astro.props;
 const t = ui[lang];
 const other = lang === 'it' ? 'en' : 'it';
 const abs = (l: 'it' | 'en') => new URL(url(page, l, id), Astro.site).href;
 const links = [
   { href: url('apts', lang), label: t.nav.apts, key: 'apts' },
-  { href: `${url('home', lang)}#borgo`, label: t.nav.erice, key: 'erice' },
+  { href: url('erice', lang), label: t.nav.erice, key: 'erice' },
   { href: url('arrive', lang), label: t.nav.arrive, key: 'arrive' },
   { href: url('faq', lang), label: t.nav.faq, key: 'faq' },
 ];
 const wa = `https://wa.me/${sito.whatsapp}`;
+const og = await getImage({ src: image ?? img('borgo/belvedere-nuvole'), width: 1200, format: 'jpg', quality: 80 });
 ---
 <!doctype html>
 <html lang={lang}>
@@ -42,6 +47,10 @@ const wa = `https://wa.me/${sito.whatsapp}`;
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
+    <meta property="og:url" content={abs(lang)} />
+    <meta property="og:site_name" content="Leo Appartamenti" />
+    <meta property="og:image" content={new URL(og.src, Astro.site).href} />
+    <meta name="twitter:card" content="summary_large_image" />
     <meta property="og:locale" content={lang === 'it' ? 'it_IT' : 'en_GB'} />
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 40'%3E%3Cpath d='M2 16A14 14 0 0 1 30 16V40H2Z' fill='%231E1A15'/%3E%3Ctext x='16' y='33' font-size='18' text-anchor='middle' fill='%23EEE7DB' font-family='Georgia'%3EL%3C/text%3E%3C/svg%3E" />
     <script is:inline>
@@ -113,6 +122,7 @@ const wa = `https://wa.me/${sito.whatsapp}`;
             <h3>{t.footer.explore}</h3>
             <ul>
               {links.map((l) => <li><a href={l.href}>{l.label}</a></li>)}
+              <li><a href={url('natale', lang)}>{t.footer.christmas}</a></li>
               <li><a href={url('avail', lang)}>{t.nav.book}</a></li>
             </ul>
           </div>

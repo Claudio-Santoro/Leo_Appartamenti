@@ -6,8 +6,8 @@ import sito from '../data/sito.json';
 interface Props { lang: 'it' | 'en' }
 const { lang } = Astro.props;
 const T = {
-  it: { title: 'Disponibilità e richiesta di prenotazione · Leo Appartamenti Erice', desc: 'Controlla le date libere di Venere, Elimo e Balio e chiedi la tua prenotazione diretta.', h1: 'Disponibilità', lead: 'Scegli uno o più appartamenti e tocca le date: il modulo qui sotto si compila da solo. Ti rispondiamo con conferma e prezzo.', formN: 'Ultimo passo', form: 'La tua richiesta', or: 'Preferisci parlarci?', call: 'Chiamaci al' },
-  en: { title: 'Availability and booking request · Leo Appartamenti Erice', desc: 'Check available dates for Venere, Elimo and Balio and send a direct booking request.', h1: 'Availability', lead: 'Pick one or more apartments and tap your dates: the form below fills in automatically. We will reply with confirmation and price.', formN: 'Last step', form: 'Your request', or: 'Prefer to talk?', call: 'Call us on' },
+  it: { title: 'Disponibilità e prenotazione diretta · Appartamenti a Erice', desc: 'Controlla le date libere dei nostri appartamenti a Erice (Venere, Elimo e Balio) e chiedi la tua prenotazione diretta, senza costi di intermediazione.', h1: 'Disponibilità', lead: 'Scegli uno o più appartamenti e tocca le date: il modulo qui sotto si compila da solo. Ti rispondiamo con conferma e prezzo.', formN: 'Ultimo passo', form: 'La tua richiesta', or: 'Preferisci parlarci?', call: 'Chiamaci al' },
+  en: { title: 'Availability and direct booking · Apartments in Erice', desc: 'Check available dates for our apartments in Erice (Venere, Elimo and Balio) and send a direct booking request, with no booking fees.', h1: 'Availability', lead: 'Pick one or more apartments and tap your dates: the form below fills in automatically. We will reply with confirmation and price.', formN: 'Last step', form: 'Your request', or: 'Prefer to talk?', call: 'Call us on' },
 }[lang];
 ---
 <Base lang={lang} page="avail" title={T.title} description={T.desc} bar={false}>

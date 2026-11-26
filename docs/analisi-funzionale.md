@@ -17,7 +17,7 @@ Gestione privata · lingue: italiano, inglese · Booking: **8,7 su 175 recension
 **Struttura**: giardino, parcheggio sul posto e in strada, **colonnina per auto elettriche**, navetta per l'aeroporto a pagamento, non fumatori, adatta alle famiglie.
 **Regole**: check-in **di persona** 15:00–23:30, **orario flessibile su richiesta** (comunicare l'orario di arrivo), check-out 08:00–11:00, animali su richiesta (possibile costo extra), bambini di ogni età, niente feste o addii al celibato/nubilato, nessuna cauzione, contanti accettati.
 **Codici**: CIR 19081008C256200 · CIN IT081008C2CK6GS8ZN, IT081008C2JLZFMDZ2 *(2 CIN confermati per 3 unità; ⚠️ manca l'abbinamento CIN ↔ appartamento, che serve per le schede)*
-**Distanze** ⚠️ *(stimate dai portali)*: Porta Trapani 250 m, Real Duomo 160 m, Castello di Venere circa 600 m (7 minuti a piedi), porto di Trapani 13 km, aeroporto di Trapani Birgi 30 km, aeroporto di Palermo 90 km.
+**Distanze** ⚠️ *(stimate dai portali)*: Porta Trapani 110 m, Real Duomo 160 m, Castello di Venere circa 600 m (7 minuti a piedi), porto di Trapani 13 km, aeroporto di Trapani Birgi 30 km, aeroporto di Palermo 90 km.
 
 **Cosa dicono le recensioni**
 - 👍 **Vista** "mozzafiato" dal patio su Trapani e sul mare · **posizione** comoda ma tranquilla · **proprietari** disponibili e gentili · spazi puliti, bagni grandi · adatta a famiglie e gruppi

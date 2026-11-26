@@ -7,6 +7,7 @@ import servizi from '../data/servizi.json';
 import sito from '../data/sito.json';
 import { url, ui } from '../i18n.js';
 import { photos } from '../images.js';
+import { getImage } from 'astro:assets';
 interface Props { lang: 'it' | 'en'; id: string }
 const { lang, id } = Astro.props;
 const a = apts.find((x) => x.id === id)!;
@@ -18,9 +19,25 @@ const T = {
 const others = apts.filter((x) => x.id !== id);
 // ponytail: prezzi ancora null in appartamenti.json → "su richiesta". Quando ci saranno, mostra "da € X / notte".
 const prices = Object.values(a.prezzi).filter((v): v is number => typeof v === 'number');
+const gallery = photos(a.id, lang, a.nome);
+const abs = (u: string) => new URL(u, Astro.site).href;
+const cover = await getImage({ src: gallery[0].src, width: 1200, format: 'jpg', quality: 80 });
+const desc = `${a.breve[lang]} ${lang === 'it' ? 'Appena fuori dalle mura di Erice, con parcheggio e Wi-Fi gratuito.' : 'Just outside the walls of Erice, with parking and free Wi-Fi.'}`;
+const ld = [
+  { '@context': 'https://schema.org', '@type': 'Apartment', name: `${a.nome} · Leo Appartamenti`, description: a.descrizione[lang], url: abs(url('apts', lang, a.id)), image: abs(cover.src),
+    floorSize: { '@type': 'QuantitativeValue', value: a.mq, unitCode: 'MTK' }, occupancy: { '@type': 'QuantitativeValue', maxValue: a.ospiti }, numberOfBathroomsTotal: a.bagni,
+    amenityFeature: servizi.map((x) => ({ '@type': 'LocationFeatureSpecification', name: x[lang], value: true })),
+    containedInPlace: { '@id': `${abs('/')}#struttura` } },
+  { '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Leo Appartamenti', item: abs(url('home', lang)) },
+    { '@type': 'ListItem', position: 2, name: t.nav.apts, item: abs(url('apts', lang)) },
+    { '@type': 'ListItem', position: 3, name: a.nome, item: abs(url('apts', lang, a.id)) },
+  ] },
+];
 const priceText = prices.length ? `${lang === 'it' ? 'da' : 'from'} € ${Math.min(...prices)} / ${lang === 'it' ? 'notte' : 'night'}` : T.priceVal;
 ---
-<Base lang={lang} page="apts" id={id} title={`${a.nome} · ${a.mq} m², ${a.ospiti} ${t.guests} · Leo Appartamenti Erice`} description={a.breve[lang]}>
+<Base lang={lang} page="apts" id={id} title={`${a.nome} · ${a.mq} m², ${a.ospiti} ${t.guests} · Leo Appartamenti Erice`} description={desc} image={gallery[0].src}>
+  <script slot="head" type="application/ld+json" set:html={JSON.stringify(ld)} />
   <section class="page-head" style="padding-bottom:28px"><div class="wrap enter">
     <p class="crumbs"><a href={url('apts', lang)}>{t.nav.apts}</a> / {a.nome}</p>
     <h1>{a.nome}</h1>
@@ -28,7 +45,7 @@ const priceText = prices.length ? `${lang === 'it' ? 'da' : 'from'} € ${Math.m
   </div></section>
 
   <section>
-    <Gallery photos={photos(a.id, lang, a.nome)} lang={lang} />
+    <Gallery photos={gallery} lang={lang} />
     <p class="gallery-hint wrap">{T.swipe}</p>
   </section>
 
