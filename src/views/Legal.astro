@@ -6,7 +6,7 @@ interface Props { lang: 'it' | 'en'; kind: 'privacy' | 'terms' }
 const { lang, kind } = Astro.props;
 const c = sito.condizioni;
 const ph = (s: string) => `<span class="ph">${s}</span>`;
-const titolare = ph('[[Nome e cognome / ragione sociale del titolare, codice fiscale o P.IVA]]');
+const titolare = 'Carmelo Ferro';
 const pages = {
   privacy: {
     it: {
@@ -34,25 +34,25 @@ const pages = {
     it: {
       title: 'Condizioni di soggiorno', sections: [
         ['Prenotazione', `La richiesta inviata dal sito non è vincolante. La prenotazione è confermata quando ricevi la nostra conferma e versi la caparra (${c.caparra.it}).`],
-        ['Soggiorno minimo', ph(c.soggiornoMinimo)],
-        ['Cancellazione', `Cancellazione ${c.cancellazione.it}. ${ph('[[cosa succede alla caparra in caso di cancellazione tardiva]]')}`],
+        ['Soggiorno minimo', c.soggiornoMinimo.it],
+        ['Cancellazione', `Cancellazione ${c.cancellazione.it}. Se cancelli a meno di 30 giorni dall’arrivo la caparra non viene restituita, salvo motivi validi e documentati.`],
         ['Check-in e check-out', `Check-in di persona dalle ${sito.checkin.replace('–', ' alle ')}, flessibile su richiesta. Check-out dalle ${sito.checkout.replace('–', ' alle ')}. All’arrivo serve un documento d’identità valido per ogni ospite (obbligo di legge).`],
         ['Tassa di soggiorno', `${ph(c.tassaSoggiorno)}, non inclusa nel prezzo.`],
         ['Animali', `Ammessi su richiesta, ${ph(c.animali)}.`],
         ['Regole della casa', 'Non sono ammesse feste né addii al celibato o al nubilato. Gli appartamenti sono per non fumatori. Rispettate il riposo dei vicini.'],
-        ['Pagamento', `Caparra con bonifico bancario; saldo ${ph('[[all’arrivo / con bonifico prima dell’arrivo]]')}. Accettiamo contanti in loco.`],
+        ['Pagamento', `Caparra con bonifico bancario; saldo all’arrivo. Accettiamo contanti in loco.`],
       ],
     },
     en: {
       title: 'Terms of stay', sections: [
         ['Booking', `A request sent through the website is not binding. Your booking is confirmed once you receive our confirmation and pay the deposit (${c.caparra.en}).`],
-        ['Minimum stay', ph(c.soggiornoMinimo)],
-        ['Cancellation', `Cancellation ${c.cancellazione.en}. ${ph('[[what happens to the deposit on late cancellation]]')}`],
+        ['Minimum stay', c.soggiornoMinimo.en],
+        ['Cancellation', `Cancellation ${c.cancellazione.en}. If you cancel less than 30 days before arrival the deposit is not refunded, unless for valid, documented reasons.`],
         ['Check-in and check-out', `In-person check-in from ${sito.checkin.replace('–', ' to ')}, flexible on request. Check-out from ${sito.checkout.replace('–', ' to ')}. A valid ID is required for every guest on arrival (legal requirement).`],
         ['Tourist tax', `${ph(c.tassaSoggiorno)}, not included in the price.`],
         ['Pets', `Allowed on request, ${ph(c.animali)}.`],
         ['House rules', 'No parties, stag or hen dos. All apartments are non-smoking. Please respect the neighbours’ rest.'],
-        ['Payment', `Deposit by bank transfer; balance ${ph('[[on arrival / by bank transfer before arrival]]')}. Cash accepted on site.`],
+        ['Payment', `Deposit by bank transfer; balance on arrival. Cash accepted on site.`],
       ],
     },
   },

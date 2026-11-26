@@ -32,7 +32,7 @@
   "checkout": "08:00–11:00",
   "condizioni": {
     "cancellazione": { "it": "gratuita fino a 30 giorni prima dell’arrivo", "en": "free of charge up to 30 days before arrival" },
-    "soggiornoMinimo": "[[N notti]]",
+    "soggiornoMinimo": { "it": "Una notte.", "en": "One night." },
     "caparra": { "it": "30% con bonifico bancario", "en": "30% by bank transfer" },
     "tassaSoggiorno": "[[€ X a persona a notte]]",
     "animali": "[[€ XX a soggiorno]]",
