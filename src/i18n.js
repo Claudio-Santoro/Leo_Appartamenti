@@ -17,7 +17,7 @@ export const url = (page, lang, id) => routes[page][lang] + (id ? `${id}/` : '')
 
 export const ui = {
   it: {
-    nav: { apts: 'Appartamenti', erice: 'Erice', arrive: 'Come arrivare', faq: 'Domande', book: 'Disponibilità' },
+    nav: { apts: 'Appartamenti', erice: 'Erice', ericeLong: 'Cosa vedere a Erice', arrive: 'Come arrivare', faq: 'Domande', book: 'Disponibilità' },
     langName: 'English',
     tagline: 'Appartamenti con vista panoramica a Erice',
     guests: 'ospiti',
@@ -31,7 +31,7 @@ export const ui = {
     lamps: 'Accendi i lampioni (modalità notte)',
   },
   en: {
-    nav: { apts: 'Apartments', erice: 'Erice', arrive: 'Getting here', faq: 'FAQ', book: 'Availability' },
+    nav: { apts: 'Apartments', erice: 'Erice', ericeLong: 'Things to do in Erice', arrive: 'Getting here', faq: 'FAQ', book: 'Availability' },
     langName: 'Italiano',
     tagline: 'Apartments with panoramic views in Erice',
     guests: 'guests',

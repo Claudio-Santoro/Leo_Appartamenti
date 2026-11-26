@@ -216,8 +216,10 @@ const ld = {
       <div class="walk-more" data-reveal>
         <h3>{T.arriveQ}</h3>
         <p>{T.arriveP}</p>
-        <a class="btn" href={url('arrive', lang)}>{T.arriveCta} →</a>
-        <a class="link" href={url('erice', lang)} style="margin-left:20px">{T.guideCta} →</a>
+        <div class="btns">
+          <a class="btn" href={url('arrive', lang)}>{T.arriveCta} →</a>
+          <a class="btn" href={url('erice', lang)}>{T.guideCta} →</a>
+        </div>
       </div>
       <dialog class="lightbox" id="borgo-zoom">
         <img alt="" />

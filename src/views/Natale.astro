@@ -83,9 +83,9 @@ const ld = { '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemLi
       <h2>{T.tipsH}</h2>
       <ul class="ticks">{T.tips.map((x) => <li>{x}</li>)}</ul>
       <nav class="page-links" aria-label={T.more}>
-        <a class="link" href={url('apts', lang, 'venere')}>{T.venere} →</a>
-        <a class="link" href={url('erice', lang)}>{T.guide} →</a>
-        <a class="link" href={url('arrive', lang)}>{T.arrive} →</a>
+        <a class="btn" href={url('apts', lang, 'venere')}>{T.venere}</a>
+        <a class="btn" href={url('erice', lang)}>{T.guide}</a>
+        <a class="btn" href={url('arrive', lang)}>{T.arrive}</a>
         <a class="btn" href={url('apts', lang)}>{T.cta}</a>
         <a class="btn" href={url('avail', lang)}>{t.checkAvail}</a>
       </nav>

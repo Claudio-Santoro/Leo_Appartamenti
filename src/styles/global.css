@@ -348,6 +348,8 @@ p { margin: 0 0 1em; text-wrap: pretty; }
 .walk-more h3 { margin: 0; }
 .walk-more p { margin: 0; color: var(--muted); font-size: 1.1rem; line-height: 1.6; max-width: 44ch; }
 @media (max-width: 1000px) { .walk-more { grid-template-columns: 1fr; align-items: start; } .walk-more .btn { justify-self: start; } }
+.walk-more .btns { flex-direction: column; align-items: stretch; } /* Come arrivare e Cosa vedere, uno sotto l'altro, larghi uguali */
+@media (min-width: 701px) and (max-width: 1000px) { .walk-more .btns { align-items: start; } }
 .route-from { display: none; }
 @media (max-width: 800px) {
   .route-from { display: flex; align-items: center; gap: 12px; margin: 0 0 18px; font: italic 400 1.25rem/1.2 var(--serif); }
@@ -774,9 +776,8 @@ html.time-reveal::view-transition-new(root) { animation: reveal .7s var(--ease) 
 @media (min-width: 701px) { .hero .mist { --m: 178, 185, 190; } } /* il titolo bianco sta sopra la foschia */
 :root[data-time='night'] .slides .mist { --m: 62, 69, 79; }
 
-/* Fine delle pagine guida: un link per riga, poi i pulsanti, uno sotto l'altro */
+/* Fine delle pagine guida: un pulsante per riga */
 .page-links { display: grid; justify-items: start; gap: 18px; margin-top: 40px; }
-.page-links .link + .btn { margin-top: 14px; }
 @media (max-width: 700px) { .page-links .btn { justify-self: stretch; } }
 /* Le luci di Natale sono il soggetto: di notte la foto si scurisce meno delle altre, come #vista */
 :root[data-time='night'] #luci .bg { filter: brightness(.78) saturate(.9); }

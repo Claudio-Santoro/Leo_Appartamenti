@@ -24,7 +24,7 @@ const other = lang === 'it' ? 'en' : 'it';
 const abs = (l: 'it' | 'en') => new URL(url(page, l, id), Astro.site).href;
 const links = [
   { href: url('apts', lang), label: t.nav.apts, key: 'apts' },
-  { href: url('erice', lang), label: t.nav.erice, key: 'erice' },
+  { href: url('erice', lang), label: t.nav.erice, long: t.nav.ericeLong, key: 'erice' },
   { href: url('arrive', lang), label: t.nav.arrive, key: 'arrive' },
   { href: url('faq', lang), label: t.nav.faq, key: 'faq' },
 ];
@@ -91,7 +91,7 @@ const og = await getImage({ src: image ?? img('borgo/belvedere-nuvole'), width: 
         <button class="close" type="button" aria-label={t.close}>×</button>
       </div>
       <nav aria-label="Menu">
-        {links.map((l) => <a href={l.href}>{l.label}</a>)}
+        {links.map((l) => <a href={l.href}>{l.long ?? l.label}</a>)}
         <a href={url(page, other, id)} hreflang={other} lang={other}>{t.langName}</a>
       </nav>
       <div class="btns">
