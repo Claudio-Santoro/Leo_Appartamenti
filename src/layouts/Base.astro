@@ -28,6 +28,8 @@ const links = [
   { href: url('arrive', lang), label: t.nav.arrive, key: 'arrive' },
   { href: url('faq', lang), label: t.nav.faq, key: 'faq' },
 ];
+// Il menu del telefono ha in più due sezioni della home, dopo Appartamenti
+const menuLinks = [links[0], { href: `${url('home', lang)}#servizi`, label: t.nav.services }, { href: `${url('home', lang)}#ospiti`, label: t.nav.reviews }, ...links.slice(1)];
 const wa = `https://wa.me/${sito.whatsapp}`;
 const og = await getImage({ src: image ?? img('borgo/belvedere-nuvole'), width: 1200, format: 'jpg', quality: 80 });
 ---
@@ -91,7 +93,7 @@ const og = await getImage({ src: image ?? img('borgo/belvedere-nuvole'), width: 
         <button class="close" type="button" aria-label={t.close}>×</button>
       </div>
       <nav aria-label="Menu">
-        {links.map((l) => <a href={l.href}>{l.long ?? l.label}</a>)}
+        {menuLinks.map((l) => <a href={l.href}>{'long' in l ? l.long : l.label}</a>)}
         <a href={url(page, other, id)} hreflang={other} lang={other}>{t.langName}</a>
       </nav>
       <div class="btns">

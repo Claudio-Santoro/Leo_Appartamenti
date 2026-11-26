@@ -342,6 +342,10 @@ p { margin: 0 0 1em; text-wrap: pretty; }
   .route .dot { order: -1; margin-bottom: 14px; position: relative; }
   .route .window, .route .window.tall { aspect-ratio: 3 / 4; margin: 0 0 12px; }
   .route .start .name { margin-top: 0; }
+  /* Niente comparsa tappa per tappa nella striscia: le tappe fuori schermo a destra restavano invisibili e sfocate
+     (con il loro tratto di sentiero), scendevano di 24px quando arrivavano e, finché erano nascoste, Chrome su
+     Android non lasciava partire lo scorrimento verticale della pagina dal dito appoggiato sulla striscia */
+  .js .route [data-reveal] { opacity: 1; filter: none; transform: none; transition: none; }
 }
 /* Come arrivare: una domanda con la sua risposta breve, sotto il sentiero */
 .walk-more { margin-top: clamp(56px, 7vw, 96px); padding-top: clamp(36px, 4vw, 52px); border-top: 1px solid var(--stone); display: grid; grid-template-columns: 1fr 1.2fr auto; gap: 16px clamp(24px, 4vw, 64px); align-items: center; }
